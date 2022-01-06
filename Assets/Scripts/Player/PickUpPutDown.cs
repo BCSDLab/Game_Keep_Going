@@ -70,7 +70,7 @@ public class PickUpPutDown : MonoBehaviour
 
         equipPoint.transform.DetachChildren();
 
-        nearItem.transform.position = equipPoint.transform.position - new Vector3(0, 1.5f, 0);
+        nearItem.transform.position = equipPoint.transform.position - new Vector3(0, 0.8f, 0);
 
         Collider itemColider = nearItem.GetComponent<Collider>();
         Rigidbody itemRigidbody = nearItem.GetComponent<Rigidbody>();
