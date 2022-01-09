@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3374305003802210459}
   - component: {fileID: 1945376239212014538}
   m_Layer: 0
-  m_Name: dirt
+  m_Name: dirtBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
