@@ -2,22 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 레일 설치 가능 존 표시
 public class LastRail: MonoBehaviour
 {
     [SerializeField]
     private PickUpPutDown player;
-    [SerializeField]
-    private GameObject canSetZone;
+    //[SerializeField]
+    //private GameObject canSetZone;
 
     // 상태 변수
 
 
-    // 필요한 컴포넌트
-    private BoxCollider theBoxCollider;
+    
     
     void Start()
     {
-        theBoxCollider = GetComponent<BoxCollider>();
+        
     }
 
     
@@ -30,7 +30,10 @@ public class LastRail: MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Player") && player.isHoldRail)
 		{
-            canSetZone.SetActive(true);
+            //this.gameObject.SetActive(true);
+
+            Transform trChild = this.transform.GetChild(0);
+            trChild.gameObject.SetActive(true);
 		}
 	}
 
@@ -38,7 +41,10 @@ public class LastRail: MonoBehaviour
 	{
 		if(other.gameObject.CompareTag("Player"))
 		{
-            canSetZone.SetActive(false);
-		}
+            //this.gameObject.SetActive(false);
+
+            Transform trChild = this.transform.GetChild(0);
+            trChild.gameObject.SetActive(false);
+        }
 	}
 }

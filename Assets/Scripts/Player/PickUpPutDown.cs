@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 레일 집기, 내려놓기, 설치하기
 public class PickUpPutDown : MonoBehaviour
 {
     [SerializeField]
-    private GameObject canSetZone;
+    private GameObject canSetZoneFront;
+    [SerializeField]
+    private GameObject canSetZoneLeft;
+    [SerializeField]
+    private GameObject canSetZoneRight;
     [SerializeField]
     private GameObject lastRailPos;
     private GameObject equipPoint;
@@ -73,7 +78,8 @@ public class PickUpPutDown : MonoBehaviour
 
     private void ItemPutDown()
 	{
-        if (nearItem.CompareTag("Rail") && canSetZone.activeSelf == false)
+        // 레일 내려놓기
+        if (nearItem.CompareTag("Rail") && canSetZoneFront.activeSelf == false && canSetZoneLeft.activeSelf == false && canSetZoneRight.activeSelf == false)
         {
             Debug.Log("아이템 내려놓기");
 
@@ -89,16 +95,27 @@ public class PickUpPutDown : MonoBehaviour
             isHoldRail = false;
         }
 
-		else if (nearItem.CompareTag("Rail") && canSetZone.activeSelf == true)
+        // 앞에 레일 설치하기
+		else if (nearItem.CompareTag("Rail") && canSetZoneFront.activeSelf == true)
 		{
 			Debug.Log("레일 설치하기");
 
 			equipPoint.transform.DetachChildren();
-			nearItem.transform.position = lastRailPos.transform.position + new Vector3(1.6f, 0, 0);
-            lastRailPos.transform.position = nearItem.transform.position;
-            nearItem.transform.eulerAngles = new Vector3(0, 90, 0);
 
-			Collider itemColider = nearItem.GetComponent<Collider>();
+            lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));
+            nearItem.transform.position = lastRailPos.transform.position;
+
+            //lastRailPos.transform.eulerAngles = new Vector3(0, 0, 0);
+            //nearItem.transform.eulerAngles = new Vector3(0, 90, 0);
+            //nearItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+            //nearItem.transform.Rotate(new Vector3(0, 90, 0));
+            //nearItem.transform.Rotate(0, 0, 0);
+            nearItem.transform.rotation = lastRailPos.transform.rotation;
+            nearItem.transform.Rotate(0, 90, 0);
+
+
+
+            Collider itemColider = nearItem.GetComponent<Collider>();
 			Rigidbody itemRigidbody = nearItem.GetComponent<Rigidbody>();
 			itemColider.enabled = true;
 			itemRigidbody.isKinematic = false;
@@ -108,9 +125,69 @@ public class PickUpPutDown : MonoBehaviour
 			isHold = false;
 			isHoldRail = false;
 
-            canSetZone.SetActive(false);
+            canSetZoneFront.SetActive(false);
 		}
-	}
+
+        // 왼쪽에 레일 설치하기
+        else if(nearItem.CompareTag("Rail") && canSetZoneLeft.activeSelf == true)
+		{
+            Debug.Log("레일 설치하기");
+
+            equipPoint.transform.DetachChildren();
+
+            lastRailPos.transform.Translate(new Vector3(0, 0, 1.6f));
+            nearItem.transform.position = lastRailPos.transform.position;
+
+            lastRailPos.transform.Rotate(0, -90, 0);
+            //nearItem.transform.eulerAngles = new Vector3(0, 180, 0);
+            //nearItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+            //nearItem.transform.Rotate(0, 180, 0);
+            nearItem.transform.rotation = lastRailPos.transform.rotation;
+            nearItem.transform.Rotate(0, 90, 0);
+
+            Collider itemColider = nearItem.GetComponent<Collider>();
+            Rigidbody itemRigidbody = nearItem.GetComponent<Rigidbody>();
+            itemColider.enabled = true;
+            itemRigidbody.isKinematic = false;
+
+            nearItem.layer = 0;
+
+            isHold = false;
+            isHoldRail = false;
+
+            canSetZoneLeft.SetActive(false);
+        }
+
+        // 오른쪽에 레일 설치하기
+        else if (nearItem.CompareTag("Rail") && canSetZoneRight.activeSelf == true)
+        {
+            Debug.Log("레일 설치하기");
+
+            equipPoint.transform.DetachChildren();
+
+            lastRailPos.transform.Translate(new Vector3(0, 0, -1.6f));
+            nearItem.transform.position = lastRailPos.transform.position;
+
+            lastRailPos.transform.Rotate(0, 90, 0);
+            //nearItem.transform.eulerAngles = new Vector3(0, 0, 0);
+            //nearItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+            //nearItem.transform.Rotate(0, 0, 0);
+            nearItem.transform.rotation = lastRailPos.transform.rotation;
+            nearItem.transform.Rotate(0, 90, 0);
+
+            Collider itemColider = nearItem.GetComponent<Collider>();
+            Rigidbody itemRigidbody = nearItem.GetComponent<Rigidbody>();
+            itemColider.enabled = true;
+            itemRigidbody.isKinematic = false;
+
+            nearItem.layer = 0;
+
+            isHold = false;
+            isHoldRail = false;
+
+            canSetZoneRight.SetActive(false);
+        }
+    }
 
 	private void OnTriggerEnter(Collider other)
 	{
