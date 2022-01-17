@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
         Vector3 moveVelocity = moveInput.normalized * moveSpeed;
         myRigidbody.MovePosition(myRigidbody.position + moveVelocity * Time.deltaTime);
 
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        Plane groundPlane = new Plane(Vector3.up, -1.6f);
         float rayDistance;
         Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);
         if (groundPlane.Raycast(ray, out rayDistance))
