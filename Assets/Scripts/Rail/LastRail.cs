@@ -7,14 +7,10 @@ public class LastRail: MonoBehaviour
 {
     [SerializeField]
     private PickUpPutDown player;
-    //[SerializeField]
-    //private GameObject canSetZone;
-
-    // 상태 변수
+    [SerializeField]
+    private CanSetZone canSetZone;
 
 
-    
-    
     void Start()
     {
         
@@ -28,10 +24,8 @@ public class LastRail: MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.CompareTag("Player") && player.isHoldRail)
+		if (other.gameObject.CompareTag("Player") && player.isHoldRail && !canSetZone.isThereRail)
 		{
-            //this.gameObject.SetActive(true);
-
             Transform trChild = this.transform.GetChild(0);
             trChild.gameObject.SetActive(true);
 		}
@@ -41,8 +35,6 @@ public class LastRail: MonoBehaviour
 	{
 		if(other.gameObject.CompareTag("Player"))
 		{
-            //this.gameObject.SetActive(false);
-
             Transform trChild = this.transform.GetChild(0);
             trChild.gameObject.SetActive(false);
         }

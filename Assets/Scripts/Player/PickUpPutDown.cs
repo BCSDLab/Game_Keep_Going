@@ -12,9 +12,19 @@ public class PickUpPutDown : MonoBehaviour
     [SerializeField]
     private GameObject canSetZoneRight;
     [SerializeField]
+    private CanSetZone canSetZoneFrontS;
+    [SerializeField]
+    private CanSetZone canSetZoneLeftS;
+    [SerializeField]
+    private CanSetZone canSetZoneRightS;
+    [SerializeField]
     private GameObject lastRailPos;
+    [SerializeField]
+    private GameObject curvedRail;
     private GameObject equipPoint;
     private GameObject nearItem;
+    [SerializeField]
+    private GameObject lastBeforeRail; // 설치한 레일의 이전 레일
 
     // 상태 변수
     private bool isHold = false;
@@ -29,6 +39,7 @@ public class PickUpPutDown : MonoBehaviour
     {
         theBoxCollider = GetComponent<BoxCollider>();
         equipPoint = GameObject.FindGameObjectWithTag("EquipPoint");
+
     }
 
     void Update()
@@ -93,6 +104,7 @@ public class PickUpPutDown : MonoBehaviour
 
             isHold = false;
             isHoldRail = false;
+            
         }
 
         // 앞에 레일 설치하기
@@ -105,28 +117,25 @@ public class PickUpPutDown : MonoBehaviour
             lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));
             nearItem.transform.position = lastRailPos.transform.position;
 
-            //lastRailPos.transform.eulerAngles = new Vector3(0, 0, 0);
-            //nearItem.transform.eulerAngles = new Vector3(0, 90, 0);
-            //nearItem.transform.rotation = new Quaternion(0, 0, 0, 0);
-            //nearItem.transform.Rotate(new Vector3(0, 90, 0));
-            //nearItem.transform.Rotate(0, 0, 0);
             nearItem.transform.rotation = lastRailPos.transform.rotation;
             nearItem.transform.Rotate(0, 90, 0);
-
-
 
             Collider itemColider = nearItem.GetComponent<Collider>();
 			Rigidbody itemRigidbody = nearItem.GetComponent<Rigidbody>();
 			itemColider.enabled = true;
 			itemRigidbody.isKinematic = false;
-
+          
             nearItem.layer = 0;
 
-			isHold = false;
+            isHold = false;
 			isHoldRail = false;
+            canSetZoneFrontS.isThereRail = false;
+            canSetZoneLeftS.isThereRail = false;
+            canSetZoneRightS.isThereRail = false;
 
             canSetZoneFront.SetActive(false);
-		}
+            lastBeforeRail = nearItem;
+        }
 
         // 왼쪽에 레일 설치하기
         else if(nearItem.CompareTag("Rail") && canSetZoneLeft.activeSelf == true)
@@ -134,28 +143,40 @@ public class PickUpPutDown : MonoBehaviour
             Debug.Log("레일 설치하기");
 
             equipPoint.transform.DetachChildren();
+            //lastBeforeRail.SetActive(false);
+            Destroy(lastBeforeRail);
+            Transform lastBeforeRailT = lastBeforeRail.transform;
+            GameObject curvedRailObject = Instantiate(curvedRail);
+            //curvedRailObject.transform.position = lastBeforeRail.transform.position;
+            curvedRailObject.transform.position = lastBeforeRailT.position;
+            curvedRailObject.transform.position = lastBeforeRailT.position;
 
             lastRailPos.transform.Translate(new Vector3(0, 0, 1.6f));
             nearItem.transform.position = lastRailPos.transform.position;
 
             lastRailPos.transform.Rotate(0, -90, 0);
-            //nearItem.transform.eulerAngles = new Vector3(0, 180, 0);
-            //nearItem.transform.rotation = new Quaternion(0, 0, 0, 0);
-            //nearItem.transform.Rotate(0, 180, 0);
             nearItem.transform.rotation = lastRailPos.transform.rotation;
             nearItem.transform.Rotate(0, 90, 0);
+
+            curvedRailObject.transform.rotation = lastRailPos.transform.rotation;
+            curvedRailObject.transform.Rotate(0, 90, 0);
 
             Collider itemColider = nearItem.GetComponent<Collider>();
             Rigidbody itemRigidbody = nearItem.GetComponent<Rigidbody>();
             itemColider.enabled = true;
             itemRigidbody.isKinematic = false;
 
+            
             nearItem.layer = 0;
 
             isHold = false;
             isHoldRail = false;
+            canSetZoneFrontS.isThereRail = false;
+            canSetZoneLeftS.isThereRail = false;
+            canSetZoneRightS.isThereRail = false;
 
             canSetZoneLeft.SetActive(false);
+            lastBeforeRail = nearItem;
         }
 
         // 오른쪽에 레일 설치하기
@@ -164,28 +185,39 @@ public class PickUpPutDown : MonoBehaviour
             Debug.Log("레일 설치하기");
 
             equipPoint.transform.DetachChildren();
+            Destroy(lastBeforeRail);
+            Transform lastBeforeRailT = lastBeforeRail.transform;
+            //lastBeforeRail.SetActive(false);
+            GameObject curvedRailObject = Instantiate(curvedRail);
+            //curvedRailObject.transform.position = lastBeforeRail.transform.position;
+            curvedRailObject.transform.position = lastBeforeRailT.position;
 
             lastRailPos.transform.Translate(new Vector3(0, 0, -1.6f));
             nearItem.transform.position = lastRailPos.transform.position;
 
             lastRailPos.transform.Rotate(0, 90, 0);
-            //nearItem.transform.eulerAngles = new Vector3(0, 0, 0);
-            //nearItem.transform.rotation = new Quaternion(0, 0, 0, 0);
-            //nearItem.transform.Rotate(0, 0, 0);
             nearItem.transform.rotation = lastRailPos.transform.rotation;
             nearItem.transform.Rotate(0, 90, 0);
+
+            curvedRailObject.transform.rotation = lastRailPos.transform.rotation;
+            curvedRailObject.transform.Rotate(0, 180, 0);
 
             Collider itemColider = nearItem.GetComponent<Collider>();
             Rigidbody itemRigidbody = nearItem.GetComponent<Rigidbody>();
             itemColider.enabled = true;
             itemRigidbody.isKinematic = false;
 
+            
             nearItem.layer = 0;
 
             isHold = false;
             isHoldRail = false;
+            canSetZoneFrontS.isThereRail = false;
+            canSetZoneLeftS.isThereRail = false;
+            canSetZoneRightS.isThereRail = false;
 
             canSetZoneRight.SetActive(false);
+            lastBeforeRail = nearItem;
         }
     }
 
