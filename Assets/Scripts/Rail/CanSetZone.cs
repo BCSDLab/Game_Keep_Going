@@ -21,8 +21,9 @@ public class CanSetZone : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Rail"))
 		{
-            this.gameObject.SetActive(false);
+            //this.gameObject.SetActive(false);
             isThereRail = true;
+            Debug.Log("레일이 설치되어있음");
 		}
 	}
 }

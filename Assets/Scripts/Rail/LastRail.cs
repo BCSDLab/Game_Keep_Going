@@ -26,7 +26,7 @@ public class LastRail: MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Player") && player.isHoldRail && !canSetZone.isThereRail)
 		{
-            Transform trChild = this.transform.GetChild(0);
+            Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
             trChild.gameObject.SetActive(true);
 		}
 	}
@@ -35,7 +35,7 @@ public class LastRail: MonoBehaviour
 	{
 		if(other.gameObject.CompareTag("Player"))
 		{
-            Transform trChild = this.transform.GetChild(0);
+            Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
             trChild.gameObject.SetActive(false);
         }
 	}
