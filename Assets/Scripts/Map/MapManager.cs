@@ -15,7 +15,7 @@ public class MapManager : MonoBehaviour
     private int block_VertLength = 24;
 
     [SerializeField]
-    private string Seed = "sdxcveas"; // 시드는 8단어의 String으로 구성.
+    private string Seed = "qweasfds"; // 시드는 8단어의 String으로 구성.
 
     [SerializeField]
     private GameObject dirt;
@@ -27,10 +27,25 @@ public class MapManager : MonoBehaviour
     private GameObject wood;
     [SerializeField]
     private GameObject stone;
+    [SerializeField]
+    private GameObject rock;
+    [SerializeField]
+    private GameObject marker;
 
     private List<GameObject> blockSet;
+    [SerializeField]
+    private List<Vector2Int> colliderBlockSet;
     private List<GameObject> objectSet;
     private List<Vector2Int> objectPos;
+
+    [SerializeField]
+    private List<int> LakeLineTop;
+    [SerializeField]
+    private List<int> LakeLineBottom;
+    [SerializeField]
+    private List<int> HillLineTop;
+    [SerializeField]
+    private List<int> HillLineBottom;
     public static MapManager instance;
     
 
@@ -58,14 +73,439 @@ public class MapManager : MonoBehaviour
         objectSet = new List<GameObject>();
         objectPos = new List<Vector2Int>();
         blockSet = new List<GameObject>();
-
+        colliderBlockSet = new List<Vector2Int>();
+        LakeLineTop = new List<int>();
+        LakeLineBottom = new List<int>();
+        HillLineTop = new List<int>();
+        HillLineBottom = new List<int>();
         // 최초 업데이트.
+
         RandomNumberGenSetup(); // 시드기반 랜덤 숫자 제너레이팅 설정.
         BaseField(); // 기반이 되는 블럭 설정.
-        DataBasePositionSelection(); // 시드기반 오브젝트 제작.
         
+        LakeLineGen(); // Lake의 기준이 되는 Line생성.
+        //LakeLineTest();
+        LakeGroupGen(); // Lake생성.
+        HillLineGen(); // Hill Line 생성.
+        HillLineTest();
+        HillGroupGen(); // Hill Group 생성.
+
+        //StationGen(); // 역 생성.
+        //DataBasePositionSelection(); // 시드기반 오브젝트 제작.
+        
+
+       
+        
+        
+
     }
 
+    /// <summary>
+    /// 강 지역이 반으로 가르지 않도록 만드는 기능. 양쪽 호수의 최대 범위를 만들어놓음.
+    /// 위쪽 Line의 경우는 최대 길이시 가운데에서 3 떨어지고
+    /// 아랫쪽 Line의 경우는 4칸 떨어지게.
+    /// </summary>
+    void LakeLineGen()
+    {
+        LakeLineTop.Add(Random.Range(8, (block_VertLength / 2) - 4));
+        LakeLineBottom.Add(Random.Range((block_VertLength / 2)+ 4, block_VertLength - 4));
+        for (int i = 1; i < block_HorizLength ; i++)
+        {
+            int up = LakeLineTop[LakeLineTop.Count - 1];
+            int down = LakeLineBottom[LakeLineBottom.Count - 1];
+
+            up += Random.Range(-3, 3);
+            down += Random.Range(-3, 3);
+            if(up > (block_VertLength / 2) - 1)
+            {
+                up = (block_VertLength / 2) - 1;
+            }
+            else if(up < 3)
+            {
+                up = 3;
+            }
+            if(down < (block_VertLength / 2) + 1)
+            {
+                down = (block_VertLength / 2) + 1;
+            }
+            else if(down > block_VertLength - 3)
+            {
+                down = block_VertLength - 3;
+            }
+            LakeLineTop.Add(up);
+            LakeLineBottom.Add(down);
+        }
+    }
+
+    void HillLineGen()
+    {
+        HillLineTop.Add(Random.Range(4, (block_VertLength / 2) - 4));
+        HillLineBottom.Add(Random.Range((block_VertLength / 2) + 4, block_VertLength - 6));
+        for (int i = 1; i < block_HorizLength; i++)
+        {
+            int up = HillLineTop[HillLineTop.Count - 1];
+            int down = HillLineBottom[HillLineBottom.Count - 1];
+
+            up += Random.Range(-2, 2);
+            down += Random.Range(-2, 2);
+            if (up > (block_VertLength / 2) - 3)
+            {
+                up = (block_VertLength / 2) - 3;
+            }
+            else if (up < 4)
+            {
+                up = 4;
+            }
+            if (down < (block_VertLength / 2) + 3)
+            {
+                down = (block_VertLength / 2) + 3;
+            }
+            else if (down > block_VertLength - 4)
+            {
+                down = block_VertLength - 4;
+            }
+            HillLineTop.Add(up);
+            HillLineBottom.Add(down);
+        }
+    }
+
+    void HillGroupGen()
+    {
+        GenHillFromCenter(10);
+        GenHillFromTop(5);
+        GenHillFromBottom(15);
+        GenHillFromBottom(5);
+        GenHillFromTop(15);
+    }
+
+    int GenHillFromCenter(int x)
+    {
+        if (x + 3 >= block_HorizLength || x == -1)
+        {
+            return -1;
+        }
+        int ybottom = block_VertLength / 2;
+        int ytop = block_VertLength / 2;
+        int dx = x;
+        bool isReachedLine = false;
+        while (!isReachedLine && dx < block_HorizLength)
+        {
+            ytop += Random.Range(0, 2);
+            ybottom += Random.Range(-2, 0);
+            if (ytop > HillLineBottom[dx] || ybottom < HillLineTop[dx])
+            {
+                
+                isReachedLine = true;
+            }
+            else
+            {
+                AddObject(dx, ytop, 2);
+                AddObject(dx, ybottom, 2);
+                
+                for (int dy = block_VertLength / 2 ; dy < ytop; dy++)
+                {
+                 
+                    AddObject(dx, dy, 2);
+                }
+                for(int dy = block_VertLength / 2; dy > ybottom; dy--)
+                {
+                 
+                    AddObject(dx, dy, 2);
+                }
+                
+            }
+            print(dx + " , " + ytop);
+            print(dx + " , " + ybottom);
+            dx++;
+        }
+        dx--;
+        print(" ytop is : " + ytop);
+        print(" ybottom is : " + ybottom);
+        while (isReachedLine && dx < block_HorizLength)
+        {
+            ytop += Random.Range(-2, 0);
+            ybottom += Random.Range(0, 2);
+            if (ytop > block_VertLength / 2 || ybottom < block_VertLength / 2)
+            {
+                isReachedLine = false;
+            }
+            else
+            {
+                if(isReachedLine == false)
+                {
+                    break;
+                }
+                AddObject(dx, ytop, 2);
+                AddObject(dx, ybottom, 2);
+
+                
+                for (int dy = block_VertLength / 2 ; dy < ytop; dy++)
+                {
+                    
+                    AddObject(dx, dy, 2);
+                }
+                for(int dy = block_VertLength / 2; dy > ybottom; dy--)
+                {
+                    
+                    AddObject(dx, dy, 2);
+                }
+                
+            }
+            dx++;
+            print("왔냐?");
+        }
+        return dx;
+    }
+
+    int GenHillFromTop(int x)
+    {
+        if (x + 3 >= block_HorizLength || x == -1)
+        {
+            return -1;
+        }
+        int y = 0;
+        int dx = x;
+        bool isReachedLine = false;
+        while (!isReachedLine && dx < block_HorizLength)
+        {
+            y += Random.Range(0, 3);
+            if (y > HillLineTop[dx])
+            {
+                isReachedLine = true;
+            }
+            else
+            {
+                for (int dy = 0; dy < y; dy++)
+                {
+                    AddObject(dx, dy, 2);
+                   
+                }
+            }
+            dx++;
+        }
+        dx--;
+        print(y + " " + dx);
+        while (isReachedLine && dx < block_HorizLength)
+        {
+            y += Random.Range(-3, 0);
+            if (y <= 0)
+            {
+                isReachedLine = false;
+            }
+            else
+            {
+                for (int dy = 0; dy < y; dy++)
+                {
+                    AddObject(dx, dy, 2);
+                }
+            }
+            dx++;
+        }
+        return dx;
+    }
+
+    int GenHillFromBottom(int x)
+    {
+        if (x + 3 >= block_HorizLength || x == -1)
+        {
+            return -1;
+        }
+        int y = block_VertLength;
+        int dx = x;
+        bool isReachedLine = false;
+        while (!isReachedLine && dx < block_HorizLength)
+        {
+            y += Random.Range(-3, 0);
+            if (y < HillLineBottom[dx])
+            {
+                isReachedLine = true;
+            }
+            else
+            {
+                for (int dy = y; dy < block_VertLength; dy++)
+                {
+                    AddObject(dx, dy, 2);
+                }
+            }
+            dx++;
+        }
+        dx--;
+        print(y + " " + dx);
+        while (isReachedLine && dx < block_HorizLength)
+        {
+            y += Random.Range(0, 3);
+            if (y >= block_VertLength)
+            {
+                isReachedLine = false;
+            }
+            else
+            {
+                for (int dy = y; dy < block_VertLength; dy++)
+                {
+                    AddObject(dx, dy, 2);
+                }
+            }
+            dx++;
+        }
+        return dx;
+    }
+
+    void HillLineTest()
+    {
+        for (int x = 0; x < block_HorizLength; x++)
+        {
+            AddObject(x, HillLineTop[x], 9);
+            AddObject(x, HillLineBottom[x], 9);
+            /*
+            for (int y = 0; y < HillLineTop[x]; y++)
+            {
+                AddObject(x, y, 9);
+            }
+            for (int y = block_VertLength - 1; y > HillLineBottom[x]; y--)
+            {
+                AddObject(x, y, 9);
+            }
+            */
+        }
+
+    }
+    void LakeLineTest() {
+        for (int x = 0; x < block_HorizLength; x++) {
+            for(int y = 0; y < LakeLineTop[x]; y++)
+            {
+                ReplaceBlock(x, y, 0);
+            }
+            for (int y = block_VertLength-1; y > LakeLineBottom[x]; y--)
+            {
+                ReplaceBlock(x, y, 0);
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// 어느 면을 기점으로 해서 만들어지는 큰 호수 제작 스크립트. Lakeline을 기준으로 해서 그 선은 못넘음.
+    /// </summary>
+    void LakeGroupGen()
+    {
+        int countermaking = 0;
+       
+        while (countermaking != -1)
+        {
+            print(countermaking + "에서 위호수 생성.");
+            countermaking = GenLakeFromTop(countermaking);
+            if(countermaking  > 4)
+            {
+                countermaking -= 4;
+            }
+            print(countermaking + "에서 아래호수 생성.");
+            countermaking = GenLakeFromBottom(countermaking);
+        }
+    }
+
+    /// <summary>
+    /// 받은 x좌표를 시작으로 좌표상 위쪽 (바라보는 기준 아래쪽)의 호수 생성.
+    /// 호수의 가장 마지막 좌표를 return.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <returns></returns>
+    int GenLakeFromTop(int x)
+    {
+        if(x+3 >= block_HorizLength || x == -1)
+        {
+            return -1;
+        }
+        int y = 0;
+        int dx = x;
+        bool isReachedLine = false;
+        while (!isReachedLine && dx < block_HorizLength)
+        {
+            y += Random.Range(0, 3);
+            if (y > LakeLineTop[dx])
+            {
+                isReachedLine = true;
+            }
+            else
+            {
+                for (int dy = 0; dy < y; dy++)
+                {
+                    ReplaceBlock(dx, dy, 2);
+                }
+            }
+            dx++;
+        }
+        dx--;
+        print(y + " " + dx);
+        while (isReachedLine && dx < block_HorizLength)
+        {
+            y += Random.Range(-3, 0);
+            if (y <= 0)
+            {
+                isReachedLine = false;
+            }
+            else
+            {
+                for (int dy = 0; dy < y; dy++)
+                {
+                    ReplaceBlock(dx, dy, 2);
+                }
+            }
+            dx++;
+        }
+        return dx;
+    }
+
+    /// <summary>
+    /// 받은 x좌표를 시작으로 좌표상 큰쪽 (바라보는 기준 위쪽)의 호수 생성.
+    /// 호수의 가장 마지막 좌표를 return.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <returns></returns>
+    int GenLakeFromBottom(int x)
+    {
+        if (x+3 >= block_HorizLength || x == -1)
+        {
+            return -1;
+        }
+        int y = block_VertLength;
+        int dx = x;
+        bool isReachedLine = false;
+        while (!isReachedLine && dx < block_HorizLength)
+        {
+            y += Random.Range(-3, 0);
+            if (y < LakeLineBottom[dx])
+            {
+                isReachedLine = true;
+            }
+            else
+            {
+                for (int dy = y; dy < block_VertLength; dy++)
+                {
+                    ReplaceBlock(dx, dy, 2);
+                }
+            }
+            dx++;
+        }
+        dx--;
+        print(y + " " + dx);
+        while (isReachedLine && dx < block_HorizLength)
+        {
+            y += Random.Range(0, 3);
+            if (y >= block_VertLength)
+            {
+                isReachedLine = false;
+            }
+            else
+            {
+                for (int dy = y; dy < block_VertLength; dy++)
+                {
+                    ReplaceBlock(dx, dy, 2);
+                }
+            }
+            dx++;
+        }
+        return dx;
+    }
     /// <summary>
     /// 기반이 되는 땅을 생성. 
     /// block_StartPosition에서부터 block_EndPosition까지의 16개 단위 블럭을 생성.
@@ -89,7 +529,7 @@ public class MapManager : MonoBehaviour
         int seednum = 0;
         for(int index = 0; index < 8; index++)
         {
-            int c = (int)Seed[index] * index;
+            int c = (int)Seed[index] * (int)Mathf.Pow(index* (int)Seed[index], index);
             seednum += c;
         }
         print("Seed is " + Seed);
@@ -145,7 +585,7 @@ public class MapManager : MonoBehaviour
     /// <param name="type"></param>
     void GenObjectPile(int x, int y, int type)
     {
-        int cnt = 10;
+        int cnt = 15;
         int x_setpos = x;
         int y_setpos = y;
 
@@ -172,13 +612,13 @@ public class MapManager : MonoBehaviour
         switch (RandomNumberDir())
         {
             case 0: //위쪽
-                if (y_setpos < block_VertLength)
+                if (y_setpos < block_VertLength-1)
                 {
                     y_setpos++;
                 }
                 break;
             case 1: // 오른쪽
-                if (x_setpos < block_HorizLength)
+                if (x_setpos < block_HorizLength-1)
                 {
                     x_setpos++;
                 }
@@ -196,7 +636,7 @@ public class MapManager : MonoBehaviour
                 }
                 break;
         }
-        print(x_setpos + " " + y_setpos);
+        //print(x_setpos + " " + y_setpos);
         return new Vector2Int(x_setpos, y_setpos);
     }
 
@@ -208,15 +648,49 @@ public class MapManager : MonoBehaviour
     /// <returns></returns>
     bool IsObjectPosValid(int x, int y)
     {
-        foreach(Vector2Int vec2 in objectPos)
+        foreach (Vector2Int vec in colliderBlockSet)
+        {
+            if (vec.x == x && vec.y == y)
+            {
+                print("오브젝트와 물 블럭 겹침 확인");
+                return false;
+            }
+        }
+
+        foreach (Vector2Int vec2 in objectPos)
         {
             if(vec2.x == x && vec2.y == y)
             {
+                print("오브젝트와 오브젝트 겹침 확인");
                 return false;
             }
         }
         return true;
     }
+
+    /// <summary>
+    /// 해당 좌표에 만약 collider block이 있다면 (물, 용암) 해당 속성을 제거.
+    /// replaceblock과 함께 사용할 예정.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    bool RemoveColliderBlockPos(int x, int y)
+    {
+        foreach(Vector2Int vec2 in colliderBlockSet)
+        {
+            if(vec2.x == x && vec2.y == y)
+            {
+                colliderBlockSet.Remove(vec2);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    
+
+    
 
     /// <summary>
     /// 해당 좌표축에 타입에 해당하는 오브젝트를 추가하고, 그 오브젝트와 위치를 리스트에 저장.
@@ -226,20 +700,39 @@ public class MapManager : MonoBehaviour
     /// <param name="type"></param>
     void AddObject(int x, int y, int type)
     {
-        GameObject tempObject;
-        tempObject = new GameObject();
-        if (type == 0) //wood
+        
+        if (IsObjectPosValid(x,y))
         {
-            Destroy(tempObject);
-            tempObject = Instantiate(wood, new Vector3(x * BLOCK_SIZE, 0.0f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            GameObject tempObject;
+            if (type == 0) //wood
+            {
+                tempObject = Instantiate(wood, new Vector3(x * BLOCK_SIZE, 0.0f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if (type == 1) // stone
+            {
+                tempObject = Instantiate(stone, new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if(type == 2) // rock
+            {
+                tempObject = Instantiate(rock, new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if(type == 9) // marker
+            {
+                tempObject = Instantiate(marker, new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else
+            {
+                tempObject = new GameObject();
+                print("정해지지 않은 타입의 오브젝트를 설치하려 했습니다.");
+            }
+            objectSet.Add(tempObject);
+            objectPos.Add(new Vector2Int(x, y));
         }
-        if (type == 1) // stone
+        else
         {
-            Destroy(tempObject);
-            tempObject = Instantiate(stone, new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            print("(" + x + "," + y + ") 지점의 (" + type + " )오브젝트 추가가 오브젝트 겹침으로 취소되었습니다.");
+
         }
-        objectSet.Add(tempObject);
-        objectPos.Add(new Vector2Int(x, y));
     }
 
     /// <summary>
@@ -262,34 +755,38 @@ public class MapManager : MonoBehaviour
     void AddBlock(int x, int y, int type)
     {
         GameObject tempBlock;
-        tempBlock = new GameObject();
         if(type == 0)
         {
-            Destroy(tempBlock);
             tempBlock = Instantiate(dummy, new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
         }
         if (type == 1) // dirt
-        {
-            Destroy(tempBlock);
+        {  
             tempBlock = Instantiate(dirt, new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
         }
-        else if(type == 2)
+        else if(type == 2) // water
         {
-            Destroy(tempBlock);
             tempBlock = Instantiate(water, new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            colliderBlockSet.Add(new Vector2Int(x, y));
+        }
+        else
+        {
+            tempBlock = new GameObject();
         }
         blockSet.Insert(block_VertLength * x + y, tempBlock);
     }
 
     /// <summary>
     /// x,y,z의 함수를 Replace하는 함수. 
+    /// 0은 빈거, 1은 흙, 2는 물
     /// 현재 코드 더러움.
     /// </summary>
     void ReplaceBlock(int x, int y, int type)
     {
         Destroy(blockSet[block_VertLength * x + y]);
         blockSet.RemoveAt(block_VertLength * x + y);
+        RemoveColliderBlockPos(x, y);
         AddBlock(x, y, type);
+
     }
 
     /// <summary>
