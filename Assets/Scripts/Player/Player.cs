@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
-[RequireComponent(typeof(PlayerMining))]
 
 public class Player : MonoBehaviour
 {
@@ -11,7 +10,6 @@ public class Player : MonoBehaviour
     public float moveSpeed = 5.0f;
     PlayerController controller;
     Rigidbody myRigidbody;
-    public PlayerMining playerMining;
 
     void Start()
     {
@@ -20,27 +18,6 @@ public class Player : MonoBehaviour
         viewCamera = Camera.main;
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "Resources")
-        {
-            GameObject resourceObject = collision.gameObject;
-            Debug.Log(collision.gameObject.name);
-            playerMining.StartMining(resourceObject);
-        }
-        else
-        {
-            return;
-        }
-    }
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.tag == "Resources")
-        {
-            Debug.Log("stopMining");
-            playerMining.StopMining();
-        }
-    }
     void Update()
     {
         Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));

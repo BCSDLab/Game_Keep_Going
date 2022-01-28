@@ -6,7 +6,6 @@ public class TrainColorTest : MonoBehaviour
 {
     Color color;
     Coroutine colorCorutine;
-    float colorTime = 2.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +23,7 @@ public class TrainColorTest : MonoBehaviour
     }
     IEnumerator ColorCorutine()
     {
-            float curtime = 0.0f;
+        float curtime = 0.0f;
         while (color.r < 20.0f)
         {
             curtime += Time.deltaTime;
@@ -32,7 +31,10 @@ public class TrainColorTest : MonoBehaviour
             GetComponent<MeshRenderer>().materials[0].color = color;
             yield return new WaitForFixedUpdate();
         }
-        color.r = 0;
+    }
+    public void CoolingTrain()
+    {
+        color.r = 0.0f;
     }
 
     // Update is called once per frame

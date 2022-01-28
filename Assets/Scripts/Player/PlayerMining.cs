@@ -20,7 +20,29 @@ public class PlayerMining : MonoBehaviour
         woodResourceObj =  Resources.Load("Prefabs/wood_stack") as GameObject;
         miningCorutine = null;
     }
-    
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.tag == "Resources")
+        {
+            GameObject resourceObject = collider.gameObject;
+            Debug.Log(collider.gameObject.name);
+            StartMining(resourceObject);
+        }
+        else
+        {
+            return;
+        }
+    }
+    void OnTriggerExit(Collider collider)
+    {
+        if (collider.gameObject.tag == "Resources")
+        {
+            Debug.Log("stopMining");
+            StopMining();
+        }
+    }
+
     public void StartMining(GameObject collObj)
     {
         if (miningCorutine != null)
