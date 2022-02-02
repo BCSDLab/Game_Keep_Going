@@ -7,6 +7,8 @@ TagManager:
   - Rail
   - EquipPoint
   - Resources
+  - Axe
+  - Pickaxe
   layers:
   - Default
   - TransparentFX
