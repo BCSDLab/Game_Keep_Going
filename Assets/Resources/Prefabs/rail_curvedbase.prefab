@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 6118616872033856910}
   - component: {fileID: 6118616872033856911}
   m_Layer: 0
-  m_Name: rail_curved
+  m_Name: rail_curvedbase
   m_TagString: Rail
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -659,6 +659,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6806601045315322172, guid: a72b4276afa55d44a9db5b6fcd4b95c0, type: 3}
+      propertyPath: rail
+      value: 
+      objectReference: {fileID: 4440719346928936694, guid: fb20018888818ba49aeb9185cbd45efa, type: 3}
+    - target: {fileID: 6806601045315322172, guid: a72b4276afa55d44a9db5b6fcd4b95c0, type: 3}
       propertyPath: rock
       value: 
       objectReference: {fileID: 6006717006439218504, guid: 8367475a22a7a754fb0fefb2963fdecf, type: 3}
@@ -674,6 +678,10 @@ PrefabInstance:
       propertyPath: station
       value: 
       objectReference: {fileID: 8707162244468087665, guid: 6445f745aec7ea847af5773b16c5ba8d, type: 3}
+    - target: {fileID: 6806601045315322172, guid: a72b4276afa55d44a9db5b6fcd4b95c0, type: 3}
+      propertyPath: lastrailpos
+      value: 
+      objectReference: {fileID: 69932774}
     - target: {fileID: 6806601045315322174, guid: a72b4276afa55d44a9db5b6fcd4b95c0, type: 3}
       propertyPath: m_Name
       value: TempDirtSet
@@ -1204,6 +1212,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeImage: {fileID: 0}
+  stoneResourceObj: {fileID: 0}
+  woodResourceObj: {fileID: 0}
 --- !u!1001 &440524518
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2432,7 +2442,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &817532143
 Transform:
   m_ObjectHideFlags: 0
