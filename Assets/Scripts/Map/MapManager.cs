@@ -33,6 +33,11 @@ public class MapManager : MonoBehaviour
     private GameObject marker;
     [SerializeField]
     private GameObject station;
+    [SerializeField]
+    public GameObject rail;
+    [SerializeField]
+    public GameObject lastrailpos;
+
 
     private List<GameObject> blockSet;
     [SerializeField]
@@ -92,8 +97,7 @@ public class MapManager : MonoBehaviour
         //HillLineTest();
         HillGroupGen(); // Hill Group 생성.
 
-        //StationGen(); // 역 생성.
-        //DataBasePositionSelection(); // 시드기반 오브젝트 제작.
+        DataBasePositionSelection(); // 시드기반 오브젝트 제작.
         StationGen(); // Station 생성.
 
        
@@ -109,9 +113,11 @@ public class MapManager : MonoBehaviour
         int y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
         while (true)
         {
-            if(IsObjectPosValid(x, y) && IsObjectPosValid(x+1,y))
+            if(IsObjectPosValid(x, y) && IsObjectPosValid(x+1,y) && IsObjectPosValid(x,y-1))
             {
                 AddObject(x, y, 5);
+                AddObject(x, y - 1, 4);
+                lastrailpos.transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, (y -1) * BLOCK_SIZE);
                 break;
             }
             else
@@ -736,6 +742,10 @@ public class MapManager : MonoBehaviour
             else if(type == 2) // rock
             {
                 tempObject = Instantiate(rock, new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if(type == 4) // rail
+            {
+                tempObject = Instantiate(rail, new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
             }
             else if(type == 5) // station
             {
