@@ -31,6 +31,8 @@ public class MapManager : MonoBehaviour
     private GameObject rock;
     [SerializeField]
     private GameObject marker;
+    [SerializeField]
+    private GameObject station;
 
     private List<GameObject> blockSet;
     [SerializeField]
@@ -87,12 +89,12 @@ public class MapManager : MonoBehaviour
         //LakeLineTest();
         LakeGroupGen(); // Lake생성.
         HillLineGen(); // Hill Line 생성.
-        HillLineTest();
+        //HillLineTest();
         HillGroupGen(); // Hill Group 생성.
 
         //StationGen(); // 역 생성.
         //DataBasePositionSelection(); // 시드기반 오브젝트 제작.
-        
+        StationGen(); // Station 생성.
 
        
         
@@ -100,6 +102,25 @@ public class MapManager : MonoBehaviour
 
     }
 
+
+    void StationGen()
+    {
+        int x = Random.Range(0, 4);
+        int y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
+        while (true)
+        {
+            if(IsObjectPosValid(x, y) && IsObjectPosValid(x+1,y))
+            {
+                AddObject(x, y, 5);
+                break;
+            }
+            else
+            {
+                x = Random.Range(0, 4);
+                y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
+            }
+        }
+    }
     /// <summary>
     /// 강 지역이 반으로 가르지 않도록 만드는 기능. 양쪽 호수의 최대 범위를 만들어놓음.
     /// 위쪽 Line의 경우는 최대 길이시 가운데에서 3 떨어지고
@@ -171,11 +192,15 @@ public class MapManager : MonoBehaviour
 
     void HillGroupGen()
     {
+
         GenHillFromCenter(10);
         GenHillFromTop(5);
         GenHillFromBottom(15);
         GenHillFromBottom(5);
         GenHillFromTop(15);
+        GenHillFromTop(25);
+        GenHillFromCenter(35);
+        GenHillFromBottom(20);
     }
 
     int GenHillFromCenter(int x)
@@ -202,12 +227,12 @@ public class MapManager : MonoBehaviour
                 AddObject(dx, ytop, 2);
                 AddObject(dx, ybottom, 2);
                 
-                for (int dy = block_VertLength / 2 ; dy < ytop; dy++)
+                for (int dy = block_VertLength / 2 ; dy < ytop - 1; dy++)
                 {
                  
                     AddObject(dx, dy, 2);
                 }
-                for(int dy = block_VertLength / 2; dy > ybottom; dy--)
+                for(int dy = block_VertLength / 2; dy > ybottom + 1; dy--)
                 {
                  
                     AddObject(dx, dy, 2);
@@ -239,12 +264,12 @@ public class MapManager : MonoBehaviour
                 AddObject(dx, ybottom, 2);
 
                 
-                for (int dy = block_VertLength / 2 ; dy < ytop; dy++)
+                for (int dy = block_VertLength / 2 ; dy < ytop - 1; dy++)
                 {
                     
                     AddObject(dx, dy, 2);
                 }
-                for(int dy = block_VertLength / 2; dy > ybottom; dy--)
+                for(int dy = block_VertLength / 2; dy > ybottom + 1; dy--)
                 {
                     
                     AddObject(dx, dy, 2);
@@ -277,6 +302,10 @@ public class MapManager : MonoBehaviour
             {
                 for (int dy = 0; dy < y; dy++)
                 {
+                    if (!IsObjectPosValid(dx, dy))
+                    {
+                        return dx;
+                    }
                     AddObject(dx, dy, 2);
                    
                 }
@@ -284,7 +313,6 @@ public class MapManager : MonoBehaviour
             dx++;
         }
         dx--;
-        print(y + " " + dx);
         while (isReachedLine && dx < block_HorizLength)
         {
             y += Random.Range(-3, 0);
@@ -296,6 +324,10 @@ public class MapManager : MonoBehaviour
             {
                 for (int dy = 0; dy < y; dy++)
                 {
+                    if (!IsObjectPosValid(dx, dy))
+                    {
+                        return dx;
+                    }
                     AddObject(dx, dy, 2);
                 }
             }
@@ -322,7 +354,7 @@ public class MapManager : MonoBehaviour
             }
             else
             {
-                for (int dy = y; dy < block_VertLength; dy++)
+                for (int dy = y + 1; dy < block_VertLength; dy++)
                 {
                     AddObject(dx, dy, 2);
                 }
@@ -330,7 +362,6 @@ public class MapManager : MonoBehaviour
             dx++;
         }
         dx--;
-        print(y + " " + dx);
         while (isReachedLine && dx < block_HorizLength)
         {
             y += Random.Range(0, 3);
@@ -356,16 +387,6 @@ public class MapManager : MonoBehaviour
         {
             AddObject(x, HillLineTop[x], 9);
             AddObject(x, HillLineBottom[x], 9);
-            /*
-            for (int y = 0; y < HillLineTop[x]; y++)
-            {
-                AddObject(x, y, 9);
-            }
-            for (int y = block_VertLength - 1; y > HillLineBottom[x]; y--)
-            {
-                AddObject(x, y, 9);
-            }
-            */
         }
 
     }
@@ -529,7 +550,7 @@ public class MapManager : MonoBehaviour
         int seednum = 0;
         for(int index = 0; index < 8; index++)
         {
-            int c = (int)Seed[index] * (int)Mathf.Pow(index* (int)Seed[index], index);
+            int c = (int)Seed[index] * (int)Mathf.Pow(index * (int)Seed[index], index);
             seednum += c;
         }
         print("Seed is " + Seed);
@@ -715,6 +736,10 @@ public class MapManager : MonoBehaviour
             else if(type == 2) // rock
             {
                 tempObject = Instantiate(rock, new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if(type == 5) // station
+            {
+                tempObject = Instantiate(station, new Vector3(x * BLOCK_SIZE + 0.8f, 1.6f, y * BLOCK_SIZE), Quaternion.identity * Quaternion.Euler(0,180,0), this.transform);
             }
             else if(type == 9) // marker
             {
