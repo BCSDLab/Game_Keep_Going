@@ -8,8 +8,8 @@ public class PlayerMining : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField]
     Image timeImage;
-    GameObject stoneResourceObj;
-    GameObject woodResourceObj;
+    public GameObject stoneResourceObj;
+    public GameObject woodResourceObj;
     Coroutine miningCorutine;
     
     static float mineTime = 3.0f;

@@ -92,8 +92,7 @@ public class MapManager : MonoBehaviour
         //HillLineTest();
         HillGroupGen(); // Hill Group 생성.
 
-        //StationGen(); // 역 생성.
-        //DataBasePositionSelection(); // 시드기반 오브젝트 제작.
+        DataBasePositionSelection(); // 시드기반 오브젝트 제작.
         StationGen(); // Station 생성.
 
        
