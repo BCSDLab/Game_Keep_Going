@@ -19,7 +19,7 @@ public class CanSetZone : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.CompareTag("Rail"))
+		if (other.gameObject.CompareTag("Rail") && other.gameObject.layer == 0)
 		{
             //this.gameObject.SetActive(false);
             isThereRail = true;
