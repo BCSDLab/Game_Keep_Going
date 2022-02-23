@@ -5,15 +5,14 @@ using UnityEngine;
 // 레일 설치 가능 존 표시
 public class LastRail: MonoBehaviour
 {
-    [SerializeField]
     private PickUpPutDown player;
-    [SerializeField]
     private CanSetZone canSetZone;
 
 
     void Start()
     {
-        
+        player = GameObject.Find("player").transform.GetComponent<PickUpPutDown>();
+        canSetZone = this.gameObject.transform.GetChild(0).GetComponent<CanSetZone>();
     }
 
     

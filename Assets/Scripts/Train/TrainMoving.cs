@@ -15,14 +15,12 @@ public class TrainMoving : MonoBehaviour
     private bool hasPos = false;
     public bool isMove = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(Wait());
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!hasPos)
@@ -40,10 +38,6 @@ public class TrainMoving : MonoBehaviour
             //railroad2.Add(player.GetRailRoad()[0]);
             player.GetRailRoad().RemoveAt(0);
 		}
-		//else
-		//{
-  //          isMove = false;
-		//}
 	}
 
     IEnumerator Wait()
@@ -56,7 +50,6 @@ public class TrainMoving : MonoBehaviour
     IEnumerator TrainMove(GameObject rail)
 	{
         hasPos = true;
-        //isMove = true;
 
         Vector3 desPos = rail.transform.position;
         
@@ -72,18 +65,11 @@ public class TrainMoving : MonoBehaviour
 
         else if(rail.layer == 7)
 		{
-            //Quaternion desRot = transform.rotation;
-            //Debug.Log(desRot.y);
-            //desRot.y -= 90;
-            //Debug.Log(desRot.y);
-
             Debug.Log("왼쪽으로 회전");
-            //transform.Rotate(0, -90, 0);
 
-            while ((Vector3.SqrMagnitude(transform.position - desPos) >= 0.001f)/* && (Quaternion.Angle(transform.rotation, desRot) < 0.5f)*/)
+            while ((Vector3.SqrMagnitude(transform.position - desPos) >= 0.001f))
             {
                 transform.position = Vector3.MoveTowards(transform.position, desPos, 0.3f * Time.deltaTime);
-                //transform.rotation = Quaternion.RotateTowards(transform.rotation, desRot, 0.3f * Time.deltaTime);
                 transform.Rotate(new Vector3(0, -17f * Time.deltaTime, 0));
                 yield return null;
             }  
@@ -91,18 +77,11 @@ public class TrainMoving : MonoBehaviour
 
         else if(rail.layer == 8)
 		{
-            //Quaternion desRot = transform.rotation;
-            //Debug.Log(desRot.y);
-            //desRot.y += 90;
-            //Debug.Log(desRot.y);
-
             Debug.Log("오른쪽으로 회전");
-            //transform.Rotate(0, 90, 0);
 
-            while ((Vector3.SqrMagnitude(transform.position - desPos) >= 0.001f)/* && (Quaternion.Angle(transform.rotation, desRot) < 0.5f)*/)
+            while ((Vector3.SqrMagnitude(transform.position - desPos) >= 0.001f))
             {
                 transform.position = Vector3.MoveTowards(transform.position, desPos, 0.3f * Time.deltaTime);
-                //transform.rotation = Quaternion.RotateTowards(transform.rotation, desRot, 0.3f * Time.deltaTime);
                 transform.Rotate(new Vector3(0, 17f * Time.deltaTime, 0));
                 yield return null;
             }
