@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -8469494145858465668, guid: 9d7af0dd6ed62504ca524366e64bdcc1, type: 3}
+  - {fileID: 2100000, guid: 59fc118103a792d4a93c30c3f2422d81, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 8772772502225741078}
   - component: {fileID: 6342999158120012713}
   m_Layer: 0
-  m_Name: stone 1
+  m_Name: stone
   m_TagString: Resources
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
