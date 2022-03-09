@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 public class MapManager : MonoBehaviour
@@ -778,6 +779,7 @@ public class MapManager : MonoBehaviour
     /// <returns></returns>
     GameObject GetBlock(int x, int y)
     {
+<<<<<<< HEAD
         return blockSet[block_VertLength * x + y];
     }
 
@@ -788,6 +790,15 @@ public class MapManager : MonoBehaviour
     /// <param name="y"></param>
     /// <param name="type"></param>
     void AddBlock(int x, int y, int type)
+=======
+        FirstSetup();
+        
+        MapSetUp(40, 1);
+
+    }
+
+    private void FirstSetup() 
+>>>>>>> 6f6e62d... 맵 레이아웃 추가 및 몹 기초 설정
     {
         GameObject tempBlock;
         if(type == 0)
