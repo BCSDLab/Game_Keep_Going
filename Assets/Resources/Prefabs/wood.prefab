@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7324923177837515457}
   - component: {fileID: 5580089192889052043}
   - component: {fileID: 8959295386322128671}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7914916780635251609}
   - component: {fileID: 6407156370609767045}
-  m_Layer: 0
+  - component: {fileID: 2252845137895344995}
+  m_Layer: 8
   m_Name: wood
   m_TagString: Resources
   m_Icon: {fileID: 0}
@@ -126,3 +127,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 3.2, z: 1}
   m_Center: {x: 0, y: 3.2, z: 0}
+--- !u!208 &2252845137895344995
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7393993922302359843}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.25, y: 1.6, z: 0.25}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 3.2, z: 0}
+  m_TimeToStationary: 0.5

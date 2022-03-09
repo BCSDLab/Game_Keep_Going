@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 public class MapManager : MonoBehaviour
@@ -38,12 +39,12 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         FirstSetup();
+        
         MapSetUp(40, 1);
-        Invoke("MapSetUptest", 1f);
-        //MapSetUp(40, 2);
+
     }
 
-    private void FirstSetup()
+    private void FirstSetup() 
     {
         currentStartPos = new Vector3(0, 0, 0);
         nextStartPos = new Vector3(0f, 0, 0);
