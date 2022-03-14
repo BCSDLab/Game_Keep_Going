@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MyPlayer : Player
 {
-	NetworkManager _network;
+	NetworkManager networkManager;
 
     Camera viewCamera;
     public float moveSpeed = 5.0f;
@@ -19,7 +19,8 @@ public class MyPlayer : Player
         controller = GetComponent<PlayerController>();
         myRigidbody = GetComponent<Rigidbody>();
         viewCamera = Camera.main;
-		_network = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+        gunController = GetComponent<GunController>();
 	}
 
     void Update()
@@ -51,7 +52,8 @@ public class MyPlayer : Player
         movePacket.posX = transform.position.x;
         movePacket.posY = transform.position.y;
         movePacket.posZ = transform.position.z;
-        _network.Send(movePacket.Write());
+        movePacket.rotateY = transform.rotation.eulerAngles.y;
+        networkManager.Send(movePacket.Write());
     }
 
     void dash(Vector3 moveInput)

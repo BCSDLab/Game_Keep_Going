@@ -83,7 +83,7 @@ public class Map : MonoBehaviour
         water = Resources.Load("Prefabs/waterBlock") as GameObject;
         dummy = Resources.Load("Prefabs/dummyBlock") as GameObject;
         wood = Resources.Load("Prefabs/wood") as GameObject;
-        stone = Resources.Load("Prefabs/stone 1") as GameObject;
+        stone = Resources.Load("Prefabs/stone") as GameObject;
         rock = Resources.Load("Prefabs/TempRock") as GameObject;
         marker = Resources.Load("Prefabs/Marker") as GameObject;
         station = Resources.Load("Prefabs/station_soviet") as GameObject;
