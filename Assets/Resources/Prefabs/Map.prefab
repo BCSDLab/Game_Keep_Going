@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6806601045315322174
+--- !u!1 &2527065226147694246
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6806601045315322175}
-  - component: {fileID: 1284207873}
+  - component: {fileID: 2527065226147694244}
+  - component: {fileID: 2527065226147694245}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -17,34 +17,50 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6806601045315322175
+--- !u!4 &2527065226147694244
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6806601045315322174}
+  m_GameObject: {fileID: 2527065226147694246}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 23.232258, y: -12.360149, z: 22.733282}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1284207873
+--- !u!114 &2527065226147694245
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6806601045315322174}
+  m_GameObject: {fileID: 2527065226147694246}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7be5b1ed56aedad4599526d5bb66c987, type: 3}
+  m_Script: {fileID: 11500000, guid: 4cd21352b9f503540aee5213f11ed7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentStartPos: {x: 0, y: 0, z: 0}
-  nextStartPos: {x: 0, y: 0, z: 0}
-  MapPrefab: {fileID: 6806601045315322174}
-  stageLevel: 0
-  stageLength: 15
+  stage_generation: 1
+  map_BasedPos: {x: 0, y: 0, z: 0}
+  block_HorizLength: 40
+  block_VertLength: 24
+  Seed: qweasfds
+  dirt: {fileID: 0}
+  water: {fileID: 0}
+  invis: {fileID: 0}
+  dummy: {fileID: 0}
+  wood: {fileID: 0}
+  stone: {fileID: 0}
+  rock: {fileID: 0}
+  marker: {fileID: 0}
+  station: {fileID: 0}
+  rail: {fileID: 0}
+  lastrailpos: {fileID: 0}
+  colliderBlockSet: []
+  LakeLineTop: 
+  LakeLineBottom: 
+  HillLineTop: 
+  HillLineBottom: 

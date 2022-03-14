@@ -21,10 +21,10 @@ public class MapMeshGenerator : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        GenerateNavmesh();
+        //GenerateNavmesh();
     }
 
-    private void GenerateNavmesh()
+    public void GenerateNavmesh()
     {
         //GameObject obj = Instantiate(_mapPrefab, _generatePos, Quaternion.identity, transform);
         _generatePos += new Vector3(50, 0, 50);

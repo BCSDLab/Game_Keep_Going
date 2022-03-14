@@ -115,7 +115,7 @@ public class Map : MonoBehaviour
         RandomNumberGenSetup(); // 시드기반 랜덤 숫자 제너레이팅 설정.
         BaseField(); // 기반이 되는 블럭 설정.
 
-        
+
         LakeLineGen(); // Lake의 기준이 되는 Line생성.
         //LakeLineTest();
         LakeGroupGen(); // Lake생성.
@@ -125,7 +125,7 @@ public class Map : MonoBehaviour
 
         DataBasePositionSelection(); // 시드기반 오브젝트 제작.
         StationGen(); // Station 생성.
-        
+
 
 
 
@@ -834,10 +834,10 @@ public class Map : MonoBehaviour
         }
         else if (type == 2) // water
         {
-            tempBlock = Instantiate(water, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            tempBlock = Instantiate(water, map_BasedPos + new Vector3(x * BLOCK_SIZE, -0.3f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
             colliderBlockSet.Add(new Vector2Int(x, y));
         }
-        else if(type == 9)
+        else if (type == 9)
         {
             tempBlock = Instantiate(invis, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
             colliderBlockSet.Add(new Vector2Int(x, y));
