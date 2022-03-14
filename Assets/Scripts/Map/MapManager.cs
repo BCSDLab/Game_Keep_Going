@@ -70,7 +70,7 @@ public class MapManager : MonoBehaviour
         stageLength = stagelength;
         GameObject newmap = Instantiate(MapPrefab);
         Maps.Add(newmap);
-        nextStartPos = currentStartPos + new Vector3(1.6f * stageLength, 0, 0);
+        nextStartPos = currentStartPos + new Vector3(1.6f * stageLength, 0,  0);
         Debug.Log("next" + nextStartPos);
 
     }

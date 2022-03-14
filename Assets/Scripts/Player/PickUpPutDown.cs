@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
+/* <레일>
  * use gravity는 항상 false
  * is kinematic은 항상 true
  * is trigger는 항상 true
@@ -16,33 +16,28 @@ using UnityEngine;
  */
 
 // space키로 작동하는 행동(레일 집기, 내려놓기, 설치하기 등)
+
 public class PickUpPutDown : MonoBehaviour
 {
-    [SerializeField]
     private GameObject canSetZoneFront;
-    [SerializeField]
     private GameObject canSetZoneLeft;
-    [SerializeField]
     private GameObject canSetZoneRight;
-    [SerializeField]
     private CanSetZone canSetZoneFrontS;
-    [SerializeField]
     private CanSetZone canSetZoneLeftS;
-    [SerializeField]
     private CanSetZone canSetZoneRightS;
-    [SerializeField]
     private GameObject lastRailPos;
-    [SerializeField]
     private GameObject curvedRail;
-    [SerializeField]
     private GameObject lastBeforeRail; // 설치한 레일의 이전 레일
     private GameObject equipPoint;
     private GameObject nearItem;
     private GameObject holdItem;
 
-    public Rail nearRail; 
+    public Rail nearRail;
     public Rail holdRail;
-    
+
+    private List<GameObject> railroad1;
+    private List<GameObject> railroad2;
+    private List<GameObject> railroad3;
 
     // 상태 변수
     private bool isHold = false;
@@ -50,10 +45,25 @@ public class PickUpPutDown : MonoBehaviour
     public bool isHoldRail = false;
 
 
-
     void Start()
     {
+        canSetZoneFront = GameObject.Find("PreCanSetZoneFront").transform.GetChild(0).gameObject;
+        canSetZoneLeft = GameObject.Find("PreCanSetZoneLeft").transform.GetChild(0).gameObject;
+        canSetZoneRight = GameObject.Find("PreCanSetZoneRight").transform.GetChild(0).gameObject;
+        canSetZoneFrontS = GameObject.Find("PreCanSetZoneFront").GetComponent<CanSetZone>();
+        canSetZoneLeftS = GameObject.Find("PreCanSetZoneLeft").GetComponent<CanSetZone>();
+        canSetZoneRightS = GameObject.Find("PreCanSetZoneRight").GetComponent<CanSetZone>();
+        lastRailPos = GameObject.Find("LastRailPos");
+        curvedRail = Resources.Load("Prefabs/rail_curvedbase") as GameObject;
+        lastBeforeRail = GameObject.Find("FIxedRail").transform.GetChild(5).gameObject;
         equipPoint = GameObject.FindGameObjectWithTag("EquipPoint");
+        railroad1 = new List<GameObject>();
+        railroad1.Add(lastBeforeRail);
+        railroad2 = new List<GameObject>();
+        railroad2.Add(lastBeforeRail);
+        railroad3 = new List<GameObject>();
+        railroad3.Add(lastBeforeRail);
+        //Debug.Log(railroad.Peek().position);
     }
 
     void Update()
@@ -65,6 +75,22 @@ public class PickUpPutDown : MonoBehaviour
             else
                 TryItemPutDown();
         }
+
+    }
+
+    public List<GameObject> GetRailRoad()
+	{
+        return railroad1;
+	}
+
+    public List<GameObject> GetRailRoad2()
+    {
+        return railroad2;
+    }
+
+    public List<GameObject> GetRailRoad3()
+    {
+        return railroad3;
     }
 
     // 아이템 줍기 시도
@@ -80,11 +106,23 @@ public class PickUpPutDown : MonoBehaviour
     private void ItemPickUp()
 	{
         nearRail = nearItem.GetComponent("Rail") as Rail; // 충돌한 레일의 Rail스크립트 가져오기
-        //holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
+                                                          //holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
 
         // 레일 줍기
+        /// <summary>
+        /// 바닥에 레일이 3개 쌓여있고 씬에서 바닥과 첫번째로 가까운 레일을 rail, rail위의 레일을 rail1, rail1위의 레일을 rail2라 하면
+        /// rail은 rail1, rail2의 부모 오브젝트가 된다. 그리고 rail의 0번째 자식은 rail의 defalt오브젝트, rail의 1번쨰 자식은 rail1, 2번째 자식은 rail2가 된다.
+        /// 이렇게 한 이유는 맨 아래의 부모 오브젝트만 box collider를 키고 나머지 자식 레일 오브젝트는 box collider를 끄려고 이렇게 했다.
+        /// 
+        /// 쌓여있는 레일이 3개 이하일 때 : 플레이어가 쌓인 레일 쪽으로 갔을 때 rail을 인식할 것이고, space를 누르면 rail은 equipPoint의 자식오브젝트가 되고
+        /// rail의 포지션이 equipPoint의 포지션으로 맞춰진다.
+        /// 쌓여있는 레일이 3개보다 많을 때 : 쌓여있는 레일이 바닥에서부터 rail, rail1, rail2, rail3, rail4 이렇게 있다고 하면
+        /// 플레이어가 rail을 감지했을 때 space를 누르면 rail3이 rail2의 자식 오브젝트가 되고 rail4도 rail2의 자식 오브젝트가 된다.
+        /// 그 뒤 rail2는 equipPoint의 자식오브젝트가 되고 rail2의 포지션이 equipPoint의 포지션으로 맞춰진다.
+        /// </summary>
         if (nearItem.CompareTag("Rail"))
         {
+            // 쌓여있는 레일이 3개 이하일 때
             if (nearRail.getInt() <= 3)
             {
                 holdItem = nearItem;
@@ -103,13 +141,14 @@ public class PickUpPutDown : MonoBehaviour
                 isHold = true;
                 isHoldRail = true;
             }
+            // 쌓여있는 레일이 3개보다 많을 때
             else if (nearRail.getInt() > 3)
             {
-                Debug.Log(nearRail.getInt());
+                //Debug.Log(nearRail.getInt());
                 nearItem.transform.GetChild(nearRail.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.getInt() - 3));
-                Debug.Log(nearRail.getInt());
+                //Debug.Log(nearRail.getInt());
                 nearItem.transform.GetChild(nearRail.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.getInt() - 3));
-                Debug.Log(nearRail.getInt());
+                //Debug.Log(nearRail.getInt());
                 holdItem = nearItem.transform.GetChild(nearRail.getInt() - 3).gameObject;
 
 
@@ -176,8 +215,14 @@ public class PickUpPutDown : MonoBehaviour
             isHoldRail = false;           
         }
 
-		// 레일이 있을 경우 그 위에 쌓기
-		else if (holdItem.CompareTag("Rail") && nearItem != null && nearItem.CompareTag("Rail") && nearItem.layer == 6)
+        // 레일이 있을 경우 그 위에 쌓기
+        /// <summary>
+        /// 바닥에 쌓여있는 레일이 바닥에서부터 rail, rail1, rail2 이렇게 있다고 하자.
+        /// 플레이어가 들고있는 레일 3개를 더 쌓는 과정을 설명하면
+        /// 플레이어가 쌓인 레일 쪽으로 가면 플레이어가 rail을 감지하고, space를 누르면 들고 있는 3개의 레일은 rail의 자식 오브젝트가 된다.
+        /// 들고 있던 레일이 rail의 자식 오브젝트가 되는 순서로는 들고 있던 레일의 첫번쨰 자식 레일 -> 들고 있던 레일의 두번째 자식 레일 -> 들고 있던 레일에서 부모가 되는 레일 순이다.
+        /// </summary>
+        else if (holdItem.CompareTag("Rail") && nearItem != null && nearItem.CompareTag("Rail") && nearItem.layer == 6)
 		{
             nearRail = nearItem.GetComponent("Rail") as Rail; // 충돌한 레일의 Rail스크립트 가져오기
             holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
@@ -229,9 +274,9 @@ public class PickUpPutDown : MonoBehaviour
 
 		// 앞에 레일 설치하기
 		else if (holdItem.CompareTag("Rail") && canSetZoneFront.activeSelf == true)
-		{
+        { 
             holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
-            Debug.Log("레일 설치하기");
+            Debug.Log("앞에 레일 설치하기");
 
             if (holdRail.getInt() == 1) // 들고 있는 레일이 1개일 때
             {
@@ -265,18 +310,31 @@ public class PickUpPutDown : MonoBehaviour
             canSetZoneFrontS.isThereRail = false;
             canSetZoneLeftS.isThereRail = false;
             canSetZoneRightS.isThereRail = false;
+
+            railroad1.Add(lastBeforeRail);
+            railroad2.Add(lastBeforeRail);
+            railroad3.Add(lastBeforeRail);
+            //Debug.Log(railroad.Peek().position);
         }
 
         // 왼쪽에 레일 설치하기
         else if(holdItem.CompareTag("Rail") && canSetZoneLeft.activeSelf == true)
 		{
             holdRail = holdItem.GetComponent("Rail") as Rail;
-            Debug.Log("레일 설치하기");
+            Debug.Log("왼쪽에 레일 설치하기");
 
+            railroad1.Remove(lastBeforeRail);
+            railroad2.Remove(lastBeforeRail);
+            railroad3.Remove(lastBeforeRail);
             Destroy(lastBeforeRail);
             Transform lastBeforeRailT = lastBeforeRail.transform;
             GameObject curvedRailObject = Instantiate(curvedRail);
+            int lastBeforeRailLayer = lastBeforeRail.layer;
             curvedRailObject.transform.position = lastBeforeRailT.position;
+            curvedRailObject.layer = lastBeforeRailLayer;
+            railroad1.Add(curvedRailObject);
+            railroad2.Add(curvedRailObject);
+            railroad3.Add(curvedRailObject);
 
             if (holdRail.getInt() == 1) // 들고 있는 레일이 1개 일 때
             {
@@ -310,23 +368,37 @@ public class PickUpPutDown : MonoBehaviour
             itemColider.enabled = true;
             //itemRigidbody.isKinematic = false;
 
-            lastBeforeRail.layer = 0;
+            //lastBeforeRail.layer = 0;
+            lastBeforeRail.layer = 7;
 
             canSetZoneFrontS.isThereRail = false;
             canSetZoneLeftS.isThereRail = false;
             canSetZoneRightS.isThereRail = false;
+
+            railroad1.Add(lastBeforeRail);
+            railroad2.Add(lastBeforeRail);
+            railroad3.Add(lastBeforeRail);
+            //Debug.Log(railroad.Peek().position);
         }
 
         // 오른쪽에 레일 설치하기
         else if (holdItem.CompareTag("Rail") && canSetZoneRight.activeSelf == true)
         {
             holdRail = holdItem.GetComponent("Rail") as Rail;
-            Debug.Log("레일 설치하기");
+            Debug.Log("오른쪽에 레일 설치하기");
 
+            railroad1.Remove(lastBeforeRail);
+            railroad2.Remove(lastBeforeRail);
+            railroad3.Remove(lastBeforeRail);
             Destroy(lastBeforeRail);
             Transform lastBeforeRailT = lastBeforeRail.transform;
             GameObject curvedRailObject = Instantiate(curvedRail);
+            int lastBeforeRailLayer = lastBeforeRail.layer;
             curvedRailObject.transform.position = lastBeforeRailT.position;
+            curvedRailObject.layer = lastBeforeRailLayer;
+            railroad1.Add(curvedRailObject);
+            railroad2.Add(curvedRailObject);
+            railroad3.Add(curvedRailObject);
 
             if (holdRail.getInt() == 1) // 들고 있는 레일이 1개 일 때
             {
@@ -360,11 +432,17 @@ public class PickUpPutDown : MonoBehaviour
             itemColider.enabled = true;
             //itemRigidbody.isKinematic = false;
 
-            lastBeforeRail.layer = 0;
+            //lastBeforeRail.layer = 0;
+            lastBeforeRail.layer = 8;
 
             canSetZoneFrontS.isThereRail = false;
             canSetZoneLeftS.isThereRail = false;
             canSetZoneRightS.isThereRail = false;
+
+            railroad1.Add(lastBeforeRail);
+            railroad2.Add(lastBeforeRail);
+            railroad3.Add(lastBeforeRail);
+            //Debug.Log(railroad.Peek().position);
         }
 
         // 도끼 내려놓기
@@ -382,7 +460,7 @@ public class PickUpPutDown : MonoBehaviour
         }
     }
 
-	private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
 	{
         if(other.gameObject.layer == LayerMask.NameToLayer("Item"))
 		{
