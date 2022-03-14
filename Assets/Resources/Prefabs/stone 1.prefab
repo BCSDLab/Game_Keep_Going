@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9213042810293891490}
   - component: {fileID: 6272496974221183208}
   - component: {fileID: 7361653534402129020}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 8623119696516186362}
   - component: {fileID: 8772772502225741078}
   - component: {fileID: 6342999158120012713}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: stone 1
   m_TagString: Resources
   m_Icon: {fileID: 0}
