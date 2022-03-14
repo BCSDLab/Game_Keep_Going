@@ -20,7 +20,7 @@ public class Map : MonoBehaviour
     private int block_VertLength = 24;
 
     [SerializeField]
-    private string Seed = "qweasfds"; // ½Ãµå´Â 8´Ü¾îÀÇ StringÀ¸·Î ±¸¼º.
+    private string Seed = "qweasfds"; // ì‹œë“œëŠ” 8ë‹¨ì–´ì˜ Stringìœ¼ë¡œ êµ¬ì„±.
 
     [SerializeField]
     private GameObject dirt;
@@ -65,8 +65,8 @@ public class Map : MonoBehaviour
         stage_generation = MapManager.instance.stageLevel;
         block_HorizLength = MapManager.instance.stageLength;
         map_BasedPos = MapManager.instance.currentStartPos;
-        Debug.Log("Å×½ºÆ® --" + map_BasedPos);
-        // ÇÃ·¹ÀÌ¾îÀÇ ¼ö¿¡ µû¶ó °¡·ÎÃà ¶Ç´Â ¼¼·ÎÃàÀÇ ±æÀÌ°¡ ´Ş¶óÁö°Ô.
+        Debug.Log("í…ŒìŠ¤íŠ¸ --" + map_BasedPos);
+        // í”Œë ˆì´ì–´ì˜ ìˆ˜ì— ë”°ë¼ ê°€ë¡œì¶• ë˜ëŠ” ì„¸ë¡œì¶•ì˜ ê¸¸ì´ê°€ ë‹¬ë¼ì§€ê²Œ.
     }
 
     // Start is called before the first frame update
@@ -92,12 +92,12 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ÃÖÃÊ Setting.
+    /// ìµœì´ˆ Setting.
     /// </summary>
     void FirstSetup()
     {
 
-        // ¸î¸î °´Ã¼¿¡ ÀÎ½ºÅÏ½º ºÎ¿©.
+        // ëª‡ëª‡ ê°ì²´ì— ì¸ìŠ¤í„´ìŠ¤ ë¶€ì—¬.
         block_EndPosition = block_HorizLength;
         objectSet = new List<GameObject>();
         objectPos = new List<Vector2Int>();
@@ -107,20 +107,19 @@ public class Map : MonoBehaviour
         LakeLineBottom = new List<int>();
         HillLineTop = new List<int>();
         HillLineBottom = new List<int>();
-        // ÃÖÃÊ ¾÷µ¥ÀÌÆ®.
+        // ìµœì´ˆ ì—…ë°ì´íŠ¸.
 
-        RandomNumberGenSetup(); // ½Ãµå±â¹İ ·£´ı ¼ıÀÚ Á¦³Ê·¹ÀÌÆÃ ¼³Á¤.
-        BaseField(); // ±â¹İÀÌ µÇ´Â ºí·° ¼³Á¤.
-
-        LakeLineGen(); // LakeÀÇ ±âÁØÀÌ µÇ´Â Line»ı¼º.
+        RandomNumberGenSetup(); // ì‹œë“œê¸°ë°˜ ëœë¤ ìˆ«ì ì œë„ˆë ˆì´íŒ… ì„¤ì •.
+        BaseField(); // ê¸°ë°˜ì´ ë˜ëŠ” ë¸”ëŸ­ ì„¤ì •.
+        LakeLineGen(); // Lakeì˜ ê¸°ì¤€ì´ ë˜ëŠ” Lineìƒì„±.
         //LakeLineTest();
-        LakeGroupGen(); // Lake»ı¼º.
-        HillLineGen(); // Hill Line »ı¼º.
+        LakeGroupGen(); // Lakeìƒì„±.
+        HillLineGen(); // Hill Line ìƒì„±.
         //HillLineTest();
-        HillGroupGen(); // Hill Group »ı¼º.
+        HillGroupGen(); // Hill Group ìƒì„±.
 
-        DataBasePositionSelection(); // ½Ãµå±â¹İ ¿ÀºêÁ§Æ® Á¦ÀÛ.
-        StationGen(); // Station »ı¼º.
+        DataBasePositionSelection(); // ì‹œë“œê¸°ë°˜ ì˜¤ë¸Œì íŠ¸ ì œì‘.
+        StationGen(); // Station ìƒì„±.
 
 
 
@@ -156,9 +155,9 @@ public class Map : MonoBehaviour
         }
     }
     /// <summary>
-    /// °­ Áö¿ªÀÌ ¹İÀ¸·Î °¡¸£Áö ¾Êµµ·Ï ¸¸µå´Â ±â´É. ¾çÂÊ È£¼öÀÇ ÃÖ´ë ¹üÀ§¸¦ ¸¸µé¾î³õÀ½.
-    /// À§ÂÊ LineÀÇ °æ¿ì´Â ÃÖ´ë ±æÀÌ½Ã °¡¿îµ¥¿¡¼­ 3 ¶³¾îÁö°í
-    /// ¾Æ·§ÂÊ LineÀÇ °æ¿ì´Â 4Ä­ ¶³¾îÁö°Ô.
+    /// ê°• ì§€ì—­ì´ ë°˜ìœ¼ë¡œ ê°€ë¥´ì§€ ì•Šë„ë¡ ë§Œë“œëŠ” ê¸°ëŠ¥. ì–‘ìª½ í˜¸ìˆ˜ì˜ ìµœëŒ€ ë²”ìœ„ë¥¼ ë§Œë“¤ì–´ë†“ìŒ.
+    /// ìœ„ìª½ Lineì˜ ê²½ìš°ëŠ” ìµœëŒ€ ê¸¸ì´ì‹œ ê°€ìš´ë°ì—ì„œ 3 ë–¨ì–´ì§€ê³ 
+    /// ì•„ë«ìª½ Lineì˜ ê²½ìš°ëŠ” 4ì¹¸ ë–¨ì–´ì§€ê²Œ.
     /// </summary>
     void LakeLineGen()
     {
@@ -311,7 +310,7 @@ public class Map : MonoBehaviour
 
             }
             dx++;
-            print("¿Ô³Ä?");
+            print("ì™”ëƒ?");
         }
         return dx;
     }
@@ -441,7 +440,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ¾î´À ¸éÀ» ±âÁ¡À¸·Î ÇØ¼­ ¸¸µé¾îÁö´Â Å« È£¼ö Á¦ÀÛ ½ºÅ©¸³Æ®. LakelineÀ» ±âÁØÀ¸·Î ÇØ¼­ ±× ¼±Àº ¸ø³ÑÀ½.
+    /// ì–´ëŠ ë©´ì„ ê¸°ì ìœ¼ë¡œ í•´ì„œ ë§Œë“¤ì–´ì§€ëŠ” í° í˜¸ìˆ˜ ì œì‘ ìŠ¤í¬ë¦½íŠ¸. Lakelineì„ ê¸°ì¤€ìœ¼ë¡œ í•´ì„œ ê·¸ ì„ ì€ ëª»ë„˜ìŒ.
     /// </summary>
     void LakeGroupGen()
     {
@@ -449,20 +448,20 @@ public class Map : MonoBehaviour
 
         while (countermaking != -1)
         {
-            print(countermaking + "¿¡¼­ À§È£¼ö »ı¼º.");
+            print(countermaking + "ì—ì„œ ìœ„í˜¸ìˆ˜ ìƒì„±.");
             countermaking = GenLakeFromTop(countermaking);
             if (countermaking > 4)
             {
                 countermaking -= 4;
             }
-            print(countermaking + "¿¡¼­ ¾Æ·¡È£¼ö »ı¼º.");
+            print(countermaking + "ì—ì„œ ì•„ë˜í˜¸ìˆ˜ ìƒì„±.");
             countermaking = GenLakeFromBottom(countermaking);
         }
     }
 
     /// <summary>
-    /// ¹ŞÀº xÁÂÇ¥¸¦ ½ÃÀÛÀ¸·Î ÁÂÇ¥»ó À§ÂÊ (¹Ù¶óº¸´Â ±âÁØ ¾Æ·¡ÂÊ)ÀÇ È£¼ö »ı¼º.
-    /// È£¼öÀÇ °¡Àå ¸¶Áö¸· ÁÂÇ¥¸¦ return.
+    /// ë°›ì€ xì¢Œí‘œë¥¼ ì‹œì‘ìœ¼ë¡œ ì¢Œí‘œìƒ ìœ„ìª½ (ë°”ë¼ë³´ëŠ” ê¸°ì¤€ ì•„ë˜ìª½)ì˜ í˜¸ìˆ˜ ìƒì„±.
+    /// í˜¸ìˆ˜ì˜ ê°€ì¥ ë§ˆì§€ë§‰ ì¢Œí‘œë¥¼ return.
     /// </summary>
     /// <param name="x"></param>
     /// <returns></returns>
@@ -513,8 +512,8 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ¹ŞÀº xÁÂÇ¥¸¦ ½ÃÀÛÀ¸·Î ÁÂÇ¥»ó Å«ÂÊ (¹Ù¶óº¸´Â ±âÁØ À§ÂÊ)ÀÇ È£¼ö »ı¼º.
-    /// È£¼öÀÇ °¡Àå ¸¶Áö¸· ÁÂÇ¥¸¦ return.
+    /// ë°›ì€ xì¢Œí‘œë¥¼ ì‹œì‘ìœ¼ë¡œ ì¢Œí‘œìƒ í°ìª½ (ë°”ë¼ë³´ëŠ” ê¸°ì¤€ ìœ„ìª½)ì˜ í˜¸ìˆ˜ ìƒì„±.
+    /// í˜¸ìˆ˜ì˜ ê°€ì¥ ë§ˆì§€ë§‰ ì¢Œí‘œë¥¼ return.
     /// </summary>
     /// <param name="x"></param>
     /// <returns></returns>
@@ -564,8 +563,8 @@ public class Map : MonoBehaviour
         return dx;
     }
     /// <summary>
-    /// ±â¹İÀÌ µÇ´Â ¶¥À» »ı¼º. 
-    /// block_StartPosition¿¡¼­ºÎÅÍ block_EndPosition±îÁöÀÇ 16°³ ´ÜÀ§ ºí·°À» »ı¼º.
+    /// ê¸°ë°˜ì´ ë˜ëŠ” ë•…ì„ ìƒì„±. 
+    /// block_StartPositionì—ì„œë¶€í„° block_EndPositionê¹Œì§€ì˜ 16ê°œ ë‹¨ìœ„ ë¸”ëŸ­ì„ ìƒì„±.
     /// </summary>
     void BaseField()
     {
@@ -579,7 +578,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ½Ãµå ±â¹İÀÇ ·£´ıÀÌ °¡´ÉÇÏµµ·Ï ¼³Á¤.
+    /// ì‹œë“œ ê¸°ë°˜ì˜ ëœë¤ì´ ê°€ëŠ¥í•˜ë„ë¡ ì„¤ì •.
     /// </summary>
     void RandomNumberGenSetup()
     {
@@ -596,7 +595,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ·£´ıÇÑ yÁÂÇ¥¸¦ ½Ãµå ±â¹İÀ¸·Î Ãâ·Â.
+    /// ëœë¤í•œ yì¢Œí‘œë¥¼ ì‹œë“œ ê¸°ë°˜ìœ¼ë¡œ ì¶œë ¥.
     /// </summary>
     /// <returns></returns>
     int RandomNumberVert()
@@ -605,7 +604,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ·£´ıÇÑ xÁÂÇ¥¸¦ ½Ãµå ±â¹İÀ¸·Î Ãâ·Â.
+    /// ëœë¤í•œ xì¢Œí‘œë¥¼ ì‹œë“œ ê¸°ë°˜ìœ¼ë¡œ ì¶œë ¥.
     /// </summary>
     /// <returns></returns>
     int RandomNumberHoriz()
@@ -614,7 +613,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ·£´ıÇÑ ¹æÇâÀ» ½Ãµå ±â¹İÀ¸·Î Ãâ·Â.
+    /// ëœë¤í•œ ë°©í–¥ì„ ì‹œë“œ ê¸°ë°˜ìœ¼ë¡œ ì¶œë ¥.
     /// </summary>
     /// <returns></returns>
     int RandomNumberDir()
@@ -623,7 +622,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// Object PileµéÀ» »ı¼º.
+    /// Object Pileë“¤ì„ ìƒì„±.
     /// </summary>
     void DataBasePositionSelection()
     {
@@ -635,7 +634,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇØ´ç ÁöÁ¡¿¡ Object PileÀ» »ı¼ºÇÔ.
+    /// í•´ë‹¹ ì§€ì ì— Object Pileì„ ìƒì„±í•¨.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -659,7 +658,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇØ´ç À§Ä¡¸¦ ±â¹İÀ¸·Î »ó/ÇÏ/ÁÂ/¿ì ÀÌµ¿À» µÎ¾î ÇÑÄ­ ¶³¾îÁø ·£´ıÇÑ Ä­À» ÁöÁ¤ÇØÁÖ´Â ÇÔ¼ö.
+    /// í•´ë‹¹ ìœ„ì¹˜ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ìƒ/í•˜/ì¢Œ/ìš° ì´ë™ì„ ë‘ì–´ í•œì¹¸ ë–¨ì–´ì§„ ëœë¤í•œ ì¹¸ì„ ì§€ì •í•´ì£¼ëŠ” í•¨ìˆ˜.
     /// </summary>
     /// <param name="x_setpos"></param>
     /// <param name="y_setpos"></param>
@@ -668,25 +667,25 @@ public class Map : MonoBehaviour
     {
         switch (RandomNumberDir())
         {
-            case 0: //À§ÂÊ
+            case 0: //ìœ„ìª½
                 if (y_setpos < block_VertLength - 1)
                 {
                     y_setpos++;
                 }
                 break;
-            case 1: // ¿À¸¥ÂÊ
+            case 1: // ì˜¤ë¥¸ìª½
                 if (x_setpos < block_HorizLength - 1)
                 {
                     x_setpos++;
                 }
                 break;
-            case 2: //¿ŞÂÊ
+            case 2: //ì™¼ìª½
                 if (x_setpos > 0)
                 {
                     x_setpos--;
                 }
                 break;
-            case 3: //¾Æ·¡ÂÊ
+            case 3: //ì•„ë˜ìª½
                 if (y_setpos > 0)
                 {
                     y_setpos--;
@@ -698,7 +697,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇØ´ç ÁÂÇ¥ÀÇ Æ÷Áö¼Ç¿¡ object¸¦ ³õ´Â°ÍÀÌ °¡´ÉÇÑÁö ¿©ºÎ¸¦ ¾Ë·ÁÁÖ´Â ÇÔ¼ö.
+    /// í•´ë‹¹ ì¢Œí‘œì˜ í¬ì§€ì…˜ì— objectë¥¼ ë†“ëŠ”ê²ƒì´ ê°€ëŠ¥í•œì§€ ì—¬ë¶€ë¥¼ ì•Œë ¤ì£¼ëŠ” í•¨ìˆ˜.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -709,7 +708,7 @@ public class Map : MonoBehaviour
         {
             if (vec.x == x && vec.y == y)
             {
-                print("¿ÀºêÁ§Æ®¿Í ¹° ºí·° °ãÄ§ È®ÀÎ");
+                print("ì˜¤ë¸Œì íŠ¸ì™€ ë¬¼ ë¸”ëŸ­ ê²¹ì¹¨ í™•ì¸");
                 return false;
             }
         }
@@ -718,7 +717,7 @@ public class Map : MonoBehaviour
         {
             if (vec2.x == x && vec2.y == y)
             {
-                print("¿ÀºêÁ§Æ®¿Í ¿ÀºêÁ§Æ® °ãÄ§ È®ÀÎ");
+                print("ì˜¤ë¸Œì íŠ¸ì™€ ì˜¤ë¸Œì íŠ¸ ê²¹ì¹¨ í™•ì¸");
                 return false;
             }
         }
@@ -726,8 +725,8 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇØ´ç ÁÂÇ¥¿¡ ¸¸¾à collider blockÀÌ ÀÖ´Ù¸é (¹°, ¿ë¾Ï) ÇØ´ç ¼Ó¼ºÀ» Á¦°Å.
-    /// replaceblock°ú ÇÔ²² »ç¿ëÇÒ ¿¹Á¤.
+    /// í•´ë‹¹ ì¢Œí‘œì— ë§Œì•½ collider blockì´ ìˆë‹¤ë©´ (ë¬¼, ìš©ì•”) í•´ë‹¹ ì†ì„±ì„ ì œê±°.
+    /// replaceblockê³¼ í•¨ê»˜ ì‚¬ìš©í•  ì˜ˆì •.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -750,7 +749,7 @@ public class Map : MonoBehaviour
 
 
     /// <summary>
-    /// ÇØ´ç ÁÂÇ¥Ãà¿¡ Å¸ÀÔ¿¡ ÇØ´çÇÏ´Â ¿ÀºêÁ§Æ®¸¦ Ãß°¡ÇÏ°í, ±× ¿ÀºêÁ§Æ®¿Í À§Ä¡¸¦ ¸®½ºÆ®¿¡ ÀúÀå.
+    /// í•´ë‹¹ ì¢Œí‘œì¶•ì— íƒ€ì…ì— í•´ë‹¹í•˜ëŠ” ì˜¤ë¸Œì íŠ¸ë¥¼ ì¶”ê°€í•˜ê³ , ê·¸ ì˜¤ë¸Œì íŠ¸ì™€ ìœ„ì¹˜ë¥¼ ë¦¬ìŠ¤íŠ¸ì— ì €ì¥.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -788,20 +787,20 @@ public class Map : MonoBehaviour
             else
             {
                 tempObject = new GameObject();
-                print("Á¤ÇØÁöÁö ¾ÊÀº Å¸ÀÔÀÇ ¿ÀºêÁ§Æ®¸¦ ¼³Ä¡ÇÏ·Á Çß½À´Ï´Ù.");
+                print("ì •í•´ì§€ì§€ ì•Šì€ íƒ€ì…ì˜ ì˜¤ë¸Œì íŠ¸ë¥¼ ì„¤ì¹˜í•˜ë ¤ í–ˆìŠµë‹ˆë‹¤.");
             }
             objectSet.Add(tempObject);
             objectPos.Add(new Vector2Int(x, y));
         }
         else
         {
-            print("(" + x + "," + y + ") ÁöÁ¡ÀÇ (" + type + " )¿ÀºêÁ§Æ® Ãß°¡°¡ ¿ÀºêÁ§Æ® °ãÄ§À¸·Î Ãë¼ÒµÇ¾ú½À´Ï´Ù.");
+            print("(" + x + "," + y + ") ì§€ì ì˜ (" + type + " )ì˜¤ë¸Œì íŠ¸ ì¶”ê°€ê°€ ì˜¤ë¸Œì íŠ¸ ê²¹ì¹¨ìœ¼ë¡œ ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.");
 
         }
     }
 
     /// <summary>
-    /// ÇØ´ç ÁÂÇ¥Ãà¿¡ Á¸ÀçÇÏ´Â ºí·°À» ¸®ÅÏ.
+    /// í•´ë‹¹ ì¢Œí‘œì¶•ì— ì¡´ì¬í•˜ëŠ” ë¸”ëŸ­ì„ ë¦¬í„´.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -812,7 +811,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ºí·°À» ÇØ´ç ÁÂÇ¥¿¡ Ãß°¡ÇÔ. ÄÚµå ´õ·¯¿ò ¼öÁ¤ ÇÊ¿ä.
+    /// ë¸”ëŸ­ì„ í•´ë‹¹ ì¢Œí‘œì— ì¶”ê°€í•¨. ì½”ë“œ ë”ëŸ¬ì›€ ìˆ˜ì • í•„ìš”.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -830,7 +829,7 @@ public class Map : MonoBehaviour
         }
         else if (type == 2) // water
         {
-            tempBlock = Instantiate(water, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            tempBlock = Instantiate(water, map_BasedPos + new Vector3(x * BLOCK_SIZE, -0.3f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
             colliderBlockSet.Add(new Vector2Int(x, y));
         }
         else
@@ -841,9 +840,9 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// x,y,zÀÇ ÇÔ¼ö¸¦ ReplaceÇÏ´Â ÇÔ¼ö. 
-    /// 0Àº ºó°Å, 1Àº Èë, 2´Â ¹°
-    /// ÇöÀç ÄÚµå ´õ·¯¿ò.
+    /// x,y,zì˜ í•¨ìˆ˜ë¥¼ Replaceí•˜ëŠ” í•¨ìˆ˜. 
+    /// 0ì€ ë¹ˆê±°, 1ì€ í™, 2ëŠ” ë¬¼
+    /// í˜„ì¬ ì½”ë“œ ë”ëŸ¬ì›€.
     /// </summary>
     void ReplaceBlock(int x, int y, int type)
     {
@@ -855,7 +854,7 @@ public class Map : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇöÀç BlockSetÀÇ »óÅÂ°¡ ValidÇÏ´ÂÁö È®ÀÎÇÏ´Â ÇÔ¼ö.
+    /// í˜„ì¬ BlockSetì˜ ìƒíƒœê°€ Validí•˜ëŠ”ì§€ í™•ì¸í•˜ëŠ” í•¨ìˆ˜.
     /// </summary>
     /// <returns></returns>
     bool IsBlockSetValid()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 public class MapManager : MonoBehaviour
@@ -16,7 +17,7 @@ public class MapManager : MonoBehaviour
     private GameObject MapPrefab;
 
     public int stageLevel = 0;
-    public int stageLength = 15;
+    public int stageLength = 40;
 
     List<GameObject> Maps = new List<GameObject>();
 
@@ -38,9 +39,16 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         FirstSetup();
+
         MapSetUp(40, 1);
-        Invoke("MapSetUptest", 1f);
-        //MapSetUp(40, 2);
+
+        Invoke("InvokeMapMeshgen", 0.1f);
+
+    }
+
+    private void InvokeMapMeshgen()
+    {
+        MapMeshGenerator.instance.GenerateNavmesh();
     }
 
     private void FirstSetup()
@@ -54,7 +62,7 @@ public class MapManager : MonoBehaviour
         MapSetUp(40, 2);
     }
 
-    private void MapSetUp(int stagelength , int difficulty)
+    private void MapSetUp(int stagelength, int difficulty)
     {
         currentStartPos = nextStartPos;
         Debug.Log("current" + currentStartPos);
