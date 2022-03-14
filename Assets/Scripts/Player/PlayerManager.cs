@@ -46,6 +46,7 @@ public class PlayerManager
             if (_players.TryGetValue(packet.playerId, out player))
             {
                 player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
+                player.transform.rotation = Quaternion.Euler(0, packet.rotateY * 180, 0);
             }
         }
     }
@@ -55,7 +56,7 @@ public class PlayerManager
         if (packet.playerId == _myPlayer.PlayerId)
             return;
 
-        Object obj = Resources.Load("Prefabs/player test");
+        Object obj = Resources.Load("Prefabs/player_test");
         GameObject go = Object.Instantiate(obj) as GameObject;
 
 		Player player = go.AddComponent<Player>();
