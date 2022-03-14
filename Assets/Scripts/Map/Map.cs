@@ -832,11 +832,6 @@ public class Map : MonoBehaviour
             tempBlock = Instantiate(water, map_BasedPos + new Vector3(x * BLOCK_SIZE, -0.3f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
             colliderBlockSet.Add(new Vector2Int(x, y));
         }
-        else if (type == 9)
-        {
-            tempBlock = Instantiate(invis, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
-            colliderBlockSet.Add(new Vector2Int(x, y));
-        }
         else
         {
             tempBlock = new GameObject();
