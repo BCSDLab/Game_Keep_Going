@@ -45,8 +45,8 @@ public class PlayerManager
             Player player = null;
             if (_players.TryGetValue(packet.playerId, out player))
             {
+                player.move(packet.dirH, packet.dirV, packet.rotateY);
                 player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
-                player.transform.rotation = Quaternion.Euler(0, packet.rotateY * 180, 0);
             }
         }
     }

@@ -224,6 +224,8 @@ public class C_Move : IPacket
 	public float posX;
 	public float posY;
 	public float posZ;
+	public float dirH;
+	public float dirV;
 	public float rotateY;
 
 	public ushort Protocol { get { return (ushort)PacketID.C_Move; } }
@@ -238,6 +240,10 @@ public class C_Move : IPacket
 		posY = BitConverter.ToSingle(segment.Array, segment.Offset + count);
 		count += sizeof(float);
 		posZ = BitConverter.ToSingle(segment.Array, segment.Offset + count);
+		count += sizeof(float);
+		dirH = BitConverter.ToSingle(segment.Array, segment.Offset + count);
+		count += sizeof(float);
+		dirV = BitConverter.ToSingle(segment.Array, segment.Offset + count);
 		count += sizeof(float);
 		rotateY = BitConverter.ToSingle(segment.Array, segment.Offset + count);
 		count += sizeof(float);
@@ -257,6 +263,10 @@ public class C_Move : IPacket
 		count += sizeof(float);
 		Array.Copy(BitConverter.GetBytes(posZ), 0, segment.Array, segment.Offset + count, sizeof(float));
 		count += sizeof(float);
+		Array.Copy(BitConverter.GetBytes(dirH), 0, segment.Array, segment.Offset + count, sizeof(float));
+		count += sizeof(float);
+		Array.Copy(BitConverter.GetBytes(dirV), 0, segment.Array, segment.Offset + count, sizeof(float));
+		count += sizeof(float);
 		Array.Copy(BitConverter.GetBytes(rotateY), 0, segment.Array, segment.Offset + count, sizeof(float));
 		count += sizeof(float);
 
@@ -275,6 +285,8 @@ public class S_BroadcastMove : IPacket
 	public float posX;
 	public float posY;
 	public float posZ;
+	public float dirH;
+	public float dirV;
 	public float rotateY;
 
 	public ushort Protocol { get { return (ushort)PacketID.S_BroadcastMove; } }
@@ -291,6 +303,10 @@ public class S_BroadcastMove : IPacket
 		posY = BitConverter.ToSingle(segment.Array, segment.Offset + count);
 		count += sizeof(float);
 		posZ = BitConverter.ToSingle(segment.Array, segment.Offset + count);
+		count += sizeof(float);
+		dirH = BitConverter.ToSingle(segment.Array, segment.Offset + count);
+		count += sizeof(float);
+		dirV = BitConverter.ToSingle(segment.Array, segment.Offset + count);
 		count += sizeof(float);
 		rotateY = BitConverter.ToSingle(segment.Array, segment.Offset + count);
 		count += sizeof(float);
@@ -311,6 +327,10 @@ public class S_BroadcastMove : IPacket
 		Array.Copy(BitConverter.GetBytes(posY), 0, segment.Array, segment.Offset + count, sizeof(float));
 		count += sizeof(float);
 		Array.Copy(BitConverter.GetBytes(posZ), 0, segment.Array, segment.Offset + count, sizeof(float));
+		count += sizeof(float);
+		Array.Copy(BitConverter.GetBytes(dirH), 0, segment.Array, segment.Offset + count, sizeof(float));
+		count += sizeof(float);
+		Array.Copy(BitConverter.GetBytes(dirV), 0, segment.Array, segment.Offset + count, sizeof(float));
 		count += sizeof(float);
 		Array.Copy(BitConverter.GetBytes(rotateY), 0, segment.Array, segment.Offset + count, sizeof(float));
 		count += sizeof(float);
