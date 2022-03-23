@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8930050320219500691}
   - component: {fileID: 5997323761918527961}
   - component: {fileID: 7070506342360477005}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8331058158517010891}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: station_soviet
   m_TagString: Untagged
   m_Icon: {fileID: 0}

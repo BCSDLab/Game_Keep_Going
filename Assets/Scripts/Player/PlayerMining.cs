@@ -6,28 +6,31 @@ using UnityEngine.UI;
 public class PlayerMining : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField]
     Image timeImage;
-    public GameObject stoneResourceObj;
-    public GameObject woodResourceObj;
+    GameObject stoneResourceObj;
+    GameObject woodResourceObj;
     Coroutine miningCorutine;
     
     static float mineTime = 3.0f;
 
     void Start()
     {
+        timeImage = GameObject.Find("timeImage").GetComponent<Image>();
         stoneResourceObj = Resources.Load("Prefabs/rock_stack") as GameObject;
         woodResourceObj =  Resources.Load("Prefabs/wood_stack") as GameObject;
         miningCorutine = null;
     }
 
-    void OnTriggerEnter(Collider collider)
+    void OnTriggerStay(Collider collider)
     {
         if (collider.gameObject.tag == "Resources")
         {
-            GameObject resourceObject = collider.gameObject;
-            Debug.Log(collider.gameObject.name);
-            StartMining(resourceObject);
+            if (miningCorutine == null)
+            {
+                GameObject resourceObject = collider.gameObject;
+                Debug.Log(collider.gameObject.name);
+                StartMining(resourceObject);
+            }
         }
         else
         {
@@ -57,18 +60,20 @@ public class PlayerMining : MonoBehaviour
     public void StopMining()
     {
         StopCoroutine(miningCorutine);
+        miningCorutine = null;
         timeImage.enabled = false;
     }
     public void Mining(GameObject collObj)
     {
         Vector3 resourcesPos = collObj.transform.position;
         resourcesPos.y = 1.6f;
-        if(collObj.name == "stone")
+        if(collObj.name == "stone(Clone)")
             Instantiate(stoneResourceObj, resourcesPos, collObj.transform.rotation);
-        else if(collObj.name == "wood")
+        else if(collObj.name == "wood(Clone)")
             Instantiate(woodResourceObj, resourcesPos, collObj.transform.rotation);
         
         Destroy(collObj);
+        miningCorutine = null;
         timeImage.enabled = false;
     }
 
