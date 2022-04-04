@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     Rigidbody playerRigid;
     private float dirH;
     private float dirV;
-    float moveSpeed = 4f;
+    float moveSpeed = 5f;
     void Start()
     {
         playerRigid = GetComponent<Rigidbody>();

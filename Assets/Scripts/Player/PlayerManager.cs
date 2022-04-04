@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager
+public class PlayerManager : MonoBehaviour
 {
     MyPlayer _myPlayer;
     Dictionary<int, Player> _players = new Dictionary<int, Player>();
-
+    private PhysicsScene physicsScene;
+    private float deltaTime;
+    public NetworkManager NetworkManager;
     public static PlayerManager Instance { get; } = new PlayerManager();
 
     public void Add(S_PlayerList packet)
@@ -33,12 +35,17 @@ public class PlayerManager
             }
         }
     }
+    private IEnumerator PacketDelay(float delay, System.Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action();
+    }
 
     public void Move(S_BroadcastMove packet)
     {
         if (_myPlayer.PlayerId == packet.playerId)
         {
-            _myPlayer.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
+            //_myPlayer.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
         }
         else
         {
@@ -46,7 +53,18 @@ public class PlayerManager
             if (_players.TryGetValue(packet.playerId, out player))
             {
                 player.move(packet.dirH, packet.dirV, packet.rotateY);
-                player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
+                StartCoroutine(PacketDelay((float)NetworkManager.ping_time / 1000, () =>
+                {
+                    player.transform.rotation = Quaternion.Euler(0, packet.rotateY,0);
+                    player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
+
+                    deltaTime += (float)NetworkManager.ping_time / 1000;
+                    while (deltaTime >= Time.fixedDeltaTime)
+                    {
+                        deltaTime -= Time.fixedDeltaTime;
+                        physicsScene.Simulate(Time.fixedDeltaTime);
+                    }
+                }));
             }
         }
     }

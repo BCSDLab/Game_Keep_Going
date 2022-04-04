@@ -23,6 +23,5 @@ public class TrainManager
     {
         train.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
         train.transform.rotation = Quaternion.Euler(0, packet.rotateY * 180, 0);
-        Debug.Log(train.transform);
     }
 }
