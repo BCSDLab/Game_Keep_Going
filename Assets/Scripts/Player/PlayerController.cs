@@ -16,19 +16,5 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void LookAt(Vector3 lookPoint)
-    {
-        Vector3 heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
-        transform.LookAt(heightCorrectedPoint);
-    }
-    // Update is called once per frame
-    public void Move(Vector3 _velocity)
-    {
-        velocity = _velocity;
-    }
-
-    public void FixedUpdate()
-    {
-        myRigidbody.MovePosition(myRigidbody.position + velocity * Time.fixedDeltaTime);
-    }
+    
 }

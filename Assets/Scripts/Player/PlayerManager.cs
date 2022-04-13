@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager
+public class PlayerManager : MonoBehaviour
 {
     MyPlayer _myPlayer;
     Dictionary<int, Player> _players = new Dictionary<int, Player>();
-
+    private PhysicsScene physicsScene;
+    private float deltaTime;
+    public NetworkManager NetworkManager;
     public static PlayerManager Instance { get; } = new PlayerManager();
 
     public void Add(S_PlayerList packet)
@@ -26,27 +28,34 @@ public class PlayerManager
             }
             else
             {
-                Player player = go.AddComponent<Player>();
+                OtherPlayer player = go.AddComponent<OtherPlayer>();
                 player.PlayerId = p.playerId;
                 player.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
                 _players.Add(p.playerId, player);
             }
         }
     }
+    private IEnumerator PacketDelay(float delay, System.Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action();
+    }
 
     public void Move(S_BroadcastMove packet)
     {
         if (_myPlayer.PlayerId == packet.playerId)
         {
-            _myPlayer.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
+            //_myPlayer.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
         }
         else
         {
             Player player = null;
             if (_players.TryGetValue(packet.playerId, out player))
             {
-                player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
-                player.transform.rotation = Quaternion.Euler(0, packet.rotateY * 180, 0);
+                Vector3 targetPos = new Vector3(packet.posX, 1.6f, packet.posZ);
+                player.gameObject.GetComponent<OtherPlayer>().SetTargetPos(targetPos);
+                player.transform.rotation = Quaternion.Euler(0, packet.rotateY, 0);
+                
             }
         }
     }
@@ -59,7 +68,7 @@ public class PlayerManager
         Object obj = Resources.Load("Prefabs/player_test");
         GameObject go = Object.Instantiate(obj) as GameObject;
 
-		Player player = go.AddComponent<Player>();
+        Player player = go.AddComponent<OtherPlayer>();
 		player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
 		_players.Add(packet.playerId, player);
 	}

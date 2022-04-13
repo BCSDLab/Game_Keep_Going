@@ -13,9 +13,13 @@ public class MyPlayer : Player
     private float dashForce = 10f;
     [SerializeField]
     GunController gunController;
+    float dirH;
+    float dirV;
 
     void Start()
     {
+        gameObject.AddComponent<PickUpPutDown>();
+        gameObject.AddComponent<PlayerMining>();
         controller = GetComponent<PlayerController>();
         myRigidbody = GetComponent<Rigidbody>();
         viewCamera = Camera.main;
@@ -25,10 +29,6 @@ public class MyPlayer : Player
 
     void Update()
     {
-        Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        Vector3 moveVelocity = moveInput.normalized * moveSpeed;
-        myRigidbody.MovePosition(myRigidbody.position + moveVelocity * Time.deltaTime);
-
         Plane groundPlane = new Plane(Vector3.up, -1.6f);
         float rayDistance;
         Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);
@@ -36,12 +36,13 @@ public class MyPlayer : Player
         {
             Vector3 point = ray.GetPoint(rayDistance);
             point = new Vector3(point.x, point.y, point.z);
-            controller.LookAt(point);
+            LookAt(point);
         }
+
         if (Input.GetKeyDown("f"))
         {
             Debug.Log("Dash");
-            dash(moveInput);
+            //dash(moveInput);
         }
         if (Input.GetKeyDown("g"))
         {
@@ -52,8 +53,26 @@ public class MyPlayer : Player
         movePacket.posX = transform.position.x;
         movePacket.posY = transform.position.y;
         movePacket.posZ = transform.position.z;
+        movePacket.dirH = dirH;
+        movePacket.dirV = dirV;
         movePacket.rotateY = transform.rotation.eulerAngles.y;
         networkManager.Send(movePacket.Write());
+    }
+
+    void FixedUpdate()
+    {
+        dirH = Input.GetAxisRaw("Horizontal");
+        dirV = Input.GetAxisRaw("Vertical");
+        Vector3 moveInput = new Vector3(dirH, 0, dirV);
+        Vector3 moveVelocity = moveInput.normalized * moveSpeed;
+        myRigidbody.MovePosition(myRigidbody.position + moveVelocity * Time.deltaTime);
+
+
+    }
+    public void LookAt(Vector3 lookPoint)
+    {
+        Vector3 heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
+        transform.LookAt(heightCorrectedPoint);
     }
 
     void dash(Vector3 moveInput)
