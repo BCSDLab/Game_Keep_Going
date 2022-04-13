@@ -18,6 +18,8 @@ public class MyPlayer : Player
 
     void Start()
     {
+        gameObject.AddComponent<PickUpPutDown>();
+        gameObject.AddComponent<PlayerMining>();
         controller = GetComponent<PlayerController>();
         myRigidbody = GetComponent<Rigidbody>();
         viewCamera = Camera.main;
@@ -34,7 +36,7 @@ public class MyPlayer : Player
         {
             Vector3 point = ray.GetPoint(rayDistance);
             point = new Vector3(point.x, point.y, point.z);
-            controller.LookAt(point);
+            LookAt(point);
         }
 
         if (Input.GetKeyDown("f"))
@@ -67,6 +69,12 @@ public class MyPlayer : Player
 
 
     }
+    public void LookAt(Vector3 lookPoint)
+    {
+        Vector3 heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
+        transform.LookAt(heightCorrectedPoint);
+    }
+
     void dash(Vector3 moveInput)
     {
         myRigidbody.AddForce(moveInput * dashForce, ForceMode.Impulse);

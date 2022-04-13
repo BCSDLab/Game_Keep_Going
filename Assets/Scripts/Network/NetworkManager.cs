@@ -11,7 +11,7 @@ public class NetworkManager : MonoBehaviour
 	ServerSession _session = new ServerSession();
 	private Connector connector;
 	private IPEndPoint endPoint;
-	private Ping ping;
+	private Ping ping = null;
 	public int ping_time { get; private set; }
 
 	public void Send(ArraySegment<byte> sendBuff)
@@ -32,10 +32,11 @@ public class NetworkManager : MonoBehaviour
 		connector.Connect(endPoint,
 			() => { return _session; },
 			1);
+		ping_time = 10;
 	}
 	void Ping()
 	{
-		if (null == ping)
+		if (ping == null)
 		{
 			// ping time 측정 시작
 			ping = new Ping(endPoint.Address.ToString());
@@ -56,6 +57,5 @@ public class NetworkManager : MonoBehaviour
 		foreach (IPacket packet in list)
 			PacketManager.Instance.HandlePacket(_session, packet);
 		Ping();
-		Debug.Log(ping_time);
 	}
 }

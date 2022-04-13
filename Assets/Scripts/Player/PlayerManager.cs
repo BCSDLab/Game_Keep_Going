@@ -28,7 +28,7 @@ public class PlayerManager : MonoBehaviour
             }
             else
             {
-                Player player = go.AddComponent<Player>();
+                OtherPlayer player = go.AddComponent<OtherPlayer>();
                 player.PlayerId = p.playerId;
                 player.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
                 _players.Add(p.playerId, player);
@@ -52,19 +52,10 @@ public class PlayerManager : MonoBehaviour
             Player player = null;
             if (_players.TryGetValue(packet.playerId, out player))
             {
-                player.move(packet.dirH, packet.dirV, packet.rotateY);
-                StartCoroutine(PacketDelay((float)NetworkManager.ping_time / 1000, () =>
-                {
-                    player.transform.rotation = Quaternion.Euler(0, packet.rotateY,0);
-                    player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
-
-                    deltaTime += (float)NetworkManager.ping_time / 1000;
-                    while (deltaTime >= Time.fixedDeltaTime)
-                    {
-                        deltaTime -= Time.fixedDeltaTime;
-                        physicsScene.Simulate(Time.fixedDeltaTime);
-                    }
-                }));
+                Vector3 targetPos = new Vector3(packet.posX, 1.6f, packet.posZ);
+                player.gameObject.GetComponent<OtherPlayer>().SetTargetPos(targetPos);
+                player.transform.rotation = Quaternion.Euler(0, packet.rotateY, 0);
+                
             }
         }
     }
@@ -77,7 +68,7 @@ public class PlayerManager : MonoBehaviour
         Object obj = Resources.Load("Prefabs/player_test");
         GameObject go = Object.Instantiate(obj) as GameObject;
 
-		Player player = go.AddComponent<Player>();
+        Player player = go.AddComponent<OtherPlayer>();
 		player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
 		_players.Add(packet.playerId, player);
 	}
