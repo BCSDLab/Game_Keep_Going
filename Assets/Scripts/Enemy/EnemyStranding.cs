@@ -5,8 +5,27 @@ using UnityEngine.AI;
 
 public class EnemyStranding : EnemyScript
 {
+    public int strandingCount = 0;
+    public int strandingInterval = 300;
+    public float range = 3.0f;
+    public float speed = 1.0f;
 
-    public float range = 10.0f;
+    private void Start()
+    {
+        FirstSetup(300, 1.0f, 5.0f);
+    }
+
+    /// <summary>
+    /// 움직이는 주기, 속도, 최대 이동 반응 범위 등을 설정.
+    /// 현재는 그냥 기본값으로만 되어있음.
+    /// </summary>
+    public void FirstSetup(int Interval, float m_speed, float m_range)
+    {
+        speed = m_speed;
+        this.gameObject.GetComponent<NavMeshAgent>().speed = speed;
+        strandingInterval = Interval;
+        range = m_range;
+    }
 
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
@@ -26,11 +45,18 @@ public class EnemyStranding : EnemyScript
 
     void Update()
     {
-        Vector3 point;
-        if (RandomPoint(transform.position, range, out point))
+        if(strandingCount > strandingInterval)
         {
-            Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f);
+            Vector3 point;
+            if (RandomPoint(transform.position, range, out point))
+            {
+                Enemy.SetDestination(point);
+            }
+            strandingCount = 0;
         }
+        strandingCount++;
     }
 
+
+    
 }

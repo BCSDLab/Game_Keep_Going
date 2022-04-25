@@ -10,6 +10,7 @@ public class Map : MonoBehaviour
     [SerializeField]
     private Vector3 map_BasedPos;
 
+
     private const float BLOCK_SIZE = 1.6f;
 
     private int block_StartPosition = 0;
@@ -37,11 +38,17 @@ public class Map : MonoBehaviour
     [SerializeField]
     private GameObject marker;
     [SerializeField]
-    private GameObject station;
+    private GameObject snow;
+    [SerializeField]
+    private GameObject start_station;
+    [SerializeField]
+    private GameObject end_station;
     [SerializeField]
     public GameObject rail;
     [SerializeField]
     public GameObject lastrailpos;
+    [SerializeField]
+    private GameObject MobCamp;
 
 
     private List<GameObject> blockSet;
@@ -49,6 +56,7 @@ public class Map : MonoBehaviour
     private List<Vector2Int> colliderBlockSet;
     private List<GameObject> objectSet;
     private List<Vector2Int> objectPos;
+    private List<List<int>> snowTimingArray;
 
     [SerializeField]
     private List<int> LakeLineTop;
@@ -59,6 +67,7 @@ public class Map : MonoBehaviour
     [SerializeField]
     private List<int> HillLineBottom;
 
+    private int MobCampCount = 3;
 
     public void SetStageLevel()
     {
@@ -69,26 +78,13 @@ public class Map : MonoBehaviour
         // 플레이어의 수에 따라 가로축 또는 세로축의 길이가 달라지게.
     }
 
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         ResourceLoad();
         SetStageLevel();
         FirstSetup();
-    }
-
-    void ResourceLoad()
-    {
-        dirt = Resources.Load("Prefabs/dirtBlock") as GameObject;
-        water = Resources.Load("Prefabs/waterBlock") as GameObject;
-        dummy = Resources.Load("Prefabs/dummyBlock") as GameObject;
-        wood = Resources.Load("Prefabs/wood") as GameObject;
-        stone = Resources.Load("Prefabs/stone 1") as GameObject;
-        rock = Resources.Load("Prefabs/TempRock") as GameObject;
-        marker = Resources.Load("Prefabs/Marker") as GameObject;
-        station = Resources.Load("Prefabs/station_soviet") as GameObject;
-        rail = Resources.Load("Prefabs/rail") as GameObject;
-        lastrailpos = GameObject.Find("LastRailPos");
     }
 
     /// <summary>
@@ -120,12 +116,73 @@ public class Map : MonoBehaviour
 
         DataBasePositionSelection(); // 시드기반 오브젝트 제작.
         StationGen(); // Station 생성.
+        MobCampGen(); // 몹 캠프 생성.
+        SnowLayerSetup(); // 눈 레이어 설정. 모든 오브젝트가 설정된 다음에 만들어져야 함.
+    }
 
 
 
+    void ResourceLoad()
+    {
+        dirt = Resources.Load("Prefabs/dirtBlock") as GameObject;
+        water = Resources.Load("Prefabs/waterBlock") as GameObject;
+        dummy = Resources.Load("Prefabs/dummyBlock") as GameObject;
+        wood = Resources.Load("Prefabs/wood") as GameObject;
+        stone = Resources.Load("Prefabs/stone") as GameObject;
+        rock = Resources.Load("Prefabs/TempRock") as GameObject;
+        marker = Resources.Load("Prefabs/Marker") as GameObject;
+        snow = Resources.Load("Prefabs/Snow") as GameObject;
+        start_station = Resources.Load("Prefabs/Station_Start") as GameObject;
+        rail = Resources.Load("Prefabs/rail") as GameObject;
+        lastrailpos = GameObject.Find("LastRailPos");
+        MobCamp = Resources.Load("Prefabs/MobCamp") as GameObject;
+        end_station = Resources.Load("Prefabs/Station_End") as GameObject;
+    }
 
+    void MobCampGen()
+    {
+        for(int i = 0; i < MobCampCount; i++)
+        {
+            int x; 
+            int y;
+            for(int j = 0; j < 100; j++)
+            {
+                x = Random.Range(1, block_HorizLength - 1);
+                y = Random.Range(1, block_VertLength - 1);
+                if (IsObjectPosValid(x, y) &&
+                    IsObjectPosValid(x + 1, y + 1) && IsObjectPosValid(x - 1, y - 1) &&
+                    IsObjectPosValid(x - 1, y) && IsObjectPosValid(x + 1, y) &&
+                    IsObjectPosValid(x, y + 1) && IsObjectPosValid(x, y - 1) &&
+                    IsObjectPosValid(x + 1, y - 1) && IsObjectPosValid(x - 1, y + 1)) // 만약 x,y주변 1칸이 모두 비어있다면
+                {
+                    AddObject(x, y, 7);
+                    Debug.Log("몹 캠프 소환됨!!1" + x + "," + y);
+                    break;
+                }
+            }
+        }
+    }
 
+    /// <summary>
+    /// 오브젝트 레이어상에 겹치지 않는 블럭 위치에 눈을 생성.
+    /// </summary>
+    void SnowLayerSetup()
+    {
+        for(int x = 0; x < block_HorizLength; x++)
+        {
+            for(int y = 0; y < block_VertLength; y++)
+            {
+                if (IsObjectPosValid(x, y))
+                {
+                    AddObject(x, y, 6);
+                }
+            }
+        }
+    }
 
+    bool AddNewSnowLayerAdd(int x, int y)
+    {
+        return false;
     }
 
     void secondSetupTest()
@@ -150,6 +207,24 @@ public class Map : MonoBehaviour
             else
             {
                 x = Random.Range(0, 4);
+                y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
+            }
+        }
+
+        x = Random.Range(block_HorizLength - 4, block_HorizLength);
+        y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
+        while (true)
+        {
+            if (IsObjectPosValid(x, y) && IsObjectPosValid(x + 1, y) && IsObjectPosValid(x, y - 1))
+            {
+                AddObject(x, y, 8);
+                AddObject(x, y - 1, 4);
+                lastrailpos.transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, (y - 1) * BLOCK_SIZE);
+                break;
+            }
+            else
+            {
+                x = Random.Range(block_HorizLength - 4, block_HorizLength);
                 y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
             }
         }
@@ -227,13 +302,13 @@ public class Map : MonoBehaviour
     {
 
         GenHillFromCenter(10);
-        GenHillFromTop(5);
-        GenHillFromBottom(15);
         GenHillFromBottom(5);
         GenHillFromTop(15);
-        GenHillFromTop(25);
+        GenHillFromTop(5);
+        GenHillFromBottom(15);
+        GenHillFromBottom(25);
         GenHillFromCenter(35);
-        GenHillFromBottom(20);
+        GenHillFromTop(20);
     }
 
     int GenHillFromCenter(int x)
@@ -257,18 +332,18 @@ public class Map : MonoBehaviour
             }
             else
             {
-                AddObject(dx, ytop, 2);
-                AddObject(dx, ybottom, 2);
+                AddObject(dx, ytop, 2, new Vector3(1,0.3f,1));
+                AddObject(dx, ybottom, 2, new Vector3(1, 0.3f, 1));
 
                 for (int dy = block_VertLength / 2; dy < ytop - 1; dy++)
                 {
 
-                    AddObject(dx, dy, 2);
+                    AddObject(dx, dy, 2, new Vector3(1, 0.3f, 1));
                 }
                 for (int dy = block_VertLength / 2; dy > ybottom + 1; dy--)
                 {
 
-                    AddObject(dx, dy, 2);
+                    AddObject(dx, dy, 2, new Vector3(1, 0.3f, 1));
                 }
 
             }
@@ -293,19 +368,19 @@ public class Map : MonoBehaviour
                 {
                     break;
                 }
-                AddObject(dx, ytop, 2);
-                AddObject(dx, ybottom, 2);
+                AddObject(dx, ytop, 2, new Vector3(1, 0.3f, 1));
+                AddObject(dx, ybottom, 2, new Vector3(1, 0.3f, 1));
 
 
                 for (int dy = block_VertLength / 2; dy < ytop - 1; dy++)
                 {
 
-                    AddObject(dx, dy, 2);
+                    AddObject(dx, dy, 2, new Vector3(1, 0.3f, 1));
                 }
                 for (int dy = block_VertLength / 2; dy > ybottom + 1; dy--)
                 {
 
-                    AddObject(dx, dy, 2);
+                    AddObject(dx, dy, 2, new Vector3(1, 0.3f, 1));
                 }
 
             }
@@ -315,7 +390,7 @@ public class Map : MonoBehaviour
         return dx;
     }
 
-    int GenHillFromTop(int x)
+    int GenHillFromBottom(int x)
     {
         if (x + 3 >= block_HorizLength || x == -1)
         {
@@ -339,7 +414,7 @@ public class Map : MonoBehaviour
                     {
                         return dx;
                     }
-                    AddObject(dx, dy, 2);
+                    AddObject(dx, dy, 2, new Vector3(1, 0.5f + (((y + 1)- dy) * 0.1f), 1));
 
                 }
             }
@@ -361,7 +436,7 @@ public class Map : MonoBehaviour
                     {
                         return dx;
                     }
-                    AddObject(dx, dy, 2);
+                    AddObject(dx, dy, 2, new Vector3(1, 0.5f + (((y + 1) - dy) * 0.1f), 1));
                 }
             }
             dx++;
@@ -369,7 +444,7 @@ public class Map : MonoBehaviour
         return dx;
     }
 
-    int GenHillFromBottom(int x)
+    int GenHillFromTop(int x)
     {
         if (x + 3 >= block_HorizLength || x == -1)
         {
@@ -389,7 +464,7 @@ public class Map : MonoBehaviour
             {
                 for (int dy = y + 1; dy < block_VertLength; dy++)
                 {
-                    AddObject(dx, dy, 2);
+                    AddObject(dx, dy, 2, new Vector3(1, 0.5f + ((dy - (y + 1)) * 0.1f), 1));
                 }
             }
             dx++;
@@ -406,7 +481,7 @@ public class Map : MonoBehaviour
             {
                 for (int dy = y; dy < block_VertLength; dy++)
                 {
-                    AddObject(dx, dy, 2);
+                    AddObject(dx, dy, 2, new Vector3(1, 0.5f + ((dy - (y + 1)) * 0.1f), 1));
                 }
             }
             dx++;
@@ -760,6 +835,7 @@ public class Map : MonoBehaviour
         if (IsObjectPosValid(x, y))
         {
             GameObject tempObject;
+
             if (type == 0) //wood
             {
                 tempObject = Instantiate(wood, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0.0f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
@@ -776,9 +852,76 @@ public class Map : MonoBehaviour
             {
                 tempObject = Instantiate(rail, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
             }
-            else if (type == 5) // station
+            else if (type == 5) // start_station
             {
-                tempObject = Instantiate(station, map_BasedPos + new Vector3(x * BLOCK_SIZE + 0.8f, 1.6f, y * BLOCK_SIZE), Quaternion.identity * Quaternion.Euler(0, 180, 0), this.transform);
+                tempObject = Instantiate(start_station, map_BasedPos + new Vector3(x * BLOCK_SIZE + 0.8f, 1.6f, y * BLOCK_SIZE), Quaternion.identity * Quaternion.Euler(0, 180, 0), this.transform);
+            }
+            else if(type == 6) // snow
+            {
+                tempObject = Instantiate(snow, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+                tempObject.GetComponent<SnowBlock>().SetData(Random.Range(0, MapManager.instance.snowingLevel), 0,x,y);
+            }
+            else if(type == 7) // MobCamp
+            {
+                tempObject = Instantiate(MobCamp, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+                tempObject.GetComponent<MobCamp>().Mobkind = Mobs.Stranding;
+            }
+            else if(type == 8) // endstation
+            {
+                tempObject = Instantiate(end_station, map_BasedPos + new Vector3(x * BLOCK_SIZE + 0.8f, 1.6f, y * BLOCK_SIZE), Quaternion.identity * Quaternion.Euler(0, 180, 0), this.transform);
+            }
+            else if (type == 9) // marker
+            {
+                tempObject = Instantiate(marker, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else
+            {
+                tempObject = new GameObject();
+                print("정해지지 않은 타입의 오브젝트를 설치하려 했습니다.");
+            }
+
+            objectSet.Add(tempObject);
+            objectPos.Add(new Vector2Int(x, y));
+        }
+        else
+        {
+            print("(" + x + "," + y + ") 지점의 (" + type + " )오브젝트 추가가 오브젝트 겹침으로 취소되었습니다.");
+
+        }
+    }
+
+    /// <summary>
+    /// 해당 좌표축에 타입에 해당하는 오브젝트를 추가하고, 그 오브젝트와 위치를 리스트에 저장.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="type"></param>
+    void AddObject(int x, int y, int type, Vector3 scale)
+    {
+
+        if (IsObjectPosValid(x, y))
+        {
+            GameObject tempObject;
+            if (type == 0) //wood
+            {
+                tempObject = Instantiate(wood, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0.0f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if (type == 1) // stone
+            {
+                tempObject = Instantiate(stone, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if (type == 2) // rock
+            {
+                tempObject = Instantiate(rock, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+                tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x * scale.x , tempObject.transform.localScale.y * scale.y, tempObject.transform.localScale.z * scale.z);
+            }
+            else if (type == 4) // rail
+            {
+                tempObject = Instantiate(rail, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if (type == 5) // start_station
+            {
+                tempObject = Instantiate(start_station, map_BasedPos + new Vector3(x * BLOCK_SIZE + 0.8f, 1.6f, y * BLOCK_SIZE), Quaternion.identity * Quaternion.Euler(0, 180, 0), this.transform);
             }
             else if (type == 9) // marker
             {
@@ -862,9 +1005,5 @@ public class Map : MonoBehaviour
         return true;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
 }
