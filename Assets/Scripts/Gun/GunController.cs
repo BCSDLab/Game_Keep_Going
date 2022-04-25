@@ -7,6 +7,7 @@ public class GunController : MonoBehaviour
     public Transform weaponHold;
     public Gun startingGun;
     Gun equipedGun;
+    NetworkManager networkManager;
 
     void Start()
     {
@@ -14,6 +15,7 @@ public class GunController : MonoBehaviour
         {
             EquipGun(startingGun);
         }
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
     }
 
     public void EquipGun(Gun gunToEquip)
@@ -29,6 +31,12 @@ public class GunController : MonoBehaviour
     {
         if(equipedGun != null)
         {
+            C_Shot shotPacket = new C_Shot();
+            shotPacket.posX = equipedGun.transform.position.x;
+            shotPacket.posY = equipedGun.transform.position.y;
+            shotPacket.posZ = equipedGun.transform.position.z;
+            shotPacket.rotateY = equipedGun.transform.rotation.eulerAngles.y;
+            networkManager.Send(shotPacket.Write());
             equipedGun.Shoot();
         }
     }

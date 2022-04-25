@@ -1,6 +1,7 @@
 using ServerCore;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PacketManager
 {
@@ -27,7 +28,17 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.S_PlayerList, PacketHandler.S_PlayerListHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadcastMove, MakePacket<S_BroadcastMove>);
 		_handler.Add((ushort)PacketID.S_BroadcastMove, PacketHandler.S_BroadcastMoveHandler);
-
+		_makeFunc.Add((ushort)PacketID.S_BroadcastTrainMove, MakePacket<S_BroadcastTrainMove>);
+		_handler.Add((ushort)PacketID.S_BroadcastTrainMove, PacketHandler.S_BroadcastTrainMoveHandler);
+		_makeFunc.Add((ushort)PacketID.S_BroadcastShot, MakePacket<S_BroadcastShot>);
+		_handler.Add((ushort)PacketID.S_BroadcastShot, PacketHandler.S_BroadcastShotHandler);
+		/*		_makeFunc.Add((ushort)PacketID.S_BroadcastResource, MakePacket <S_BroadcastResource>);
+				_handler.Add((ushort)PacketID.S_BroadcastResource, PacketHandler.S_BroadcastResourceHandler);
+		*/
+		/*
+		 * _makeFunc.Add((ushort)PacketID.???, MakePacket<???>);
+		 * _handler.Add((ushort)PacketID.???, PacketHandler.???);
+		 */
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer, Action<PacketSession, IPacket> onRecvCallback = null)

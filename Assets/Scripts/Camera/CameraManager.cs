@@ -9,14 +9,18 @@ public class CameraManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.Find("player_test(Clone)");
+        //player = GameObject.Find("player_test(Clone)");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(player == null)
-            player = GameObject.Find("player_test(Clone)");
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.Find("player_test(Clone)");
+            if (playerObj.GetComponents<MyPlayer>() != null)
+                player = playerObj;
+        }
         transform.position = player.transform.position + new Vector3(0, 14f, -8f);
     }
 }

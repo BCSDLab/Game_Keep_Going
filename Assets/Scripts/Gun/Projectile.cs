@@ -5,20 +5,22 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    float speed = 10;
+    [SerializeField]
+    float projectilesSpeed = 20;
     public LayerMask collisonMask;
-    float damage = 1.0f;
+    float projectileDamage = 1.0f;
+    float projectileLifeTime = 3.0f;
 
-    public void SetSpeed(float newSpeed)
+    
+    void Start()
     {
-        speed = newSpeed;
+        Destroy(gameObject, projectileLifeTime);
     }
     void Update()
     {
-        float moveDistance = speed * Time.deltaTime;
+        float moveDistance = projectilesSpeed * Time.deltaTime;
         CheckCollisons(moveDistance);
-        transform.Translate(Vector3.forward * Time.deltaTime * speed);
-
+        transform.Translate(Vector3.forward * Time.deltaTime * projectilesSpeed);
     }
     void CheckCollisons(float moveDistance)
     {
@@ -35,9 +37,9 @@ public class Projectile : MonoBehaviour
         IDamageable damageableObject = hit.collider.GetComponent<IDamageable>();
         if(damageableObject != null)
         {
-            damageableObject.TakeHit(damage, hit);
+            damageableObject.TakeHit(projectilesSpeed, hit);
         }
         print(hit.collider.gameObject.name);
-        GameObject.Destroy(gameObject);
+        Destroy(gameObject);
     }
 }

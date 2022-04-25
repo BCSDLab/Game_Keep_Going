@@ -16,7 +16,6 @@ public class PlayerController : MonoBehaviour
         myRigidbody = GetComponent<Rigidbody>();   
     }
 
-
     public void LookAt(Vector3 lookPoint)
     {
         Vector3 heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
@@ -57,4 +56,5 @@ public class PlayerController : MonoBehaviour
             isOnSnow = false;
         }
     }
+
 }

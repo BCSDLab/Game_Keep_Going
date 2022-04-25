@@ -37,7 +37,6 @@ public class PickUpPutDown : MonoBehaviour
 
     private List<GameObject> railroad1;
     private List<GameObject> railroad2;
-    private List<GameObject> railroad3;
 
     // 상태 변수
     private bool isHold = false;
@@ -55,15 +54,11 @@ public class PickUpPutDown : MonoBehaviour
         canSetZoneRightS = GameObject.Find("PreCanSetZoneRight").GetComponent<CanSetZone>();
         lastRailPos = GameObject.Find("LastRailPos");
         curvedRail = Resources.Load("Prefabs/rail_curvedbase") as GameObject;
-        lastBeforeRail = GameObject.Find("FIxedRail").transform.GetChild(5).gameObject;
+        lastBeforeRail = GameObject.Find("FIxedRail").transform.GetChild(7).gameObject;
         equipPoint = GameObject.FindGameObjectWithTag("EquipPoint");
         railroad1 = new List<GameObject>();
-        railroad1.Add(lastBeforeRail);
         railroad2 = new List<GameObject>();
-        railroad2.Add(lastBeforeRail);
-        railroad3 = new List<GameObject>();
-        railroad3.Add(lastBeforeRail);
-        //Debug.Log(railroad.Peek().position);
+        AddRailToList(lastBeforeRail);
     }
 
     void Update()
@@ -78,6 +73,18 @@ public class PickUpPutDown : MonoBehaviour
 
     }
 
+    private void AddRailToList(GameObject rail)
+	{
+        railroad1.Add(rail);
+        railroad2.Add(rail);
+    }
+
+    private void RemoveRailToList(GameObject rail)
+	{
+        railroad1.Remove(rail);
+        railroad2.Remove(rail);
+    }
+
     public List<GameObject> GetRailRoad()
 	{
         return railroad1;
@@ -88,10 +95,6 @@ public class PickUpPutDown : MonoBehaviour
         return railroad2;
     }
 
-    public List<GameObject> GetRailRoad3()
-    {
-        return railroad3;
-    }
 
     // 아이템 줍기 시도
     private void TryItemPickUp()
@@ -127,7 +130,6 @@ public class PickUpPutDown : MonoBehaviour
             {
                 holdItem = nearItem;
                 nearItem = null;
-                Debug.Log("레일 획득");
                 holdItem.transform.SetParent(equipPoint.transform);
                 holdItem.transform.localPosition = Vector3.zero;
                 holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
@@ -153,7 +155,6 @@ public class PickUpPutDown : MonoBehaviour
 
 
                 nearItem = null;
-                Debug.Log("레일 획득");
                 holdItem.transform.SetParent(equipPoint.transform);
                 holdItem.transform.localPosition = Vector3.zero;
                 holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
@@ -201,7 +202,6 @@ public class PickUpPutDown : MonoBehaviour
         // 레일 바닥에 내려놓기
         if (holdItem.CompareTag("Rail") && nearItem == null && canSetZoneFront.activeSelf == false && canSetZoneLeft.activeSelf == false && canSetZoneRight.activeSelf == false)
         {
-            Debug.Log("레일 내려놓기");
 
             equipPoint.transform.DetachChildren();
             holdItem.transform.position = equipPoint.transform.position - new Vector3(0, 1.2f, 0);
@@ -226,7 +226,6 @@ public class PickUpPutDown : MonoBehaviour
 		{
             nearRail = nearItem.GetComponent("Rail") as Rail; // 충돌한 레일의 Rail스크립트 가져오기
             holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
-            Debug.Log("레일 쌓기");
 
             // 맨 아래의 레일을 설치 위치로 설정
             equipPoint.transform.DetachChildren();
@@ -240,8 +239,6 @@ public class PickUpPutDown : MonoBehaviour
                 holdItem.transform.rotation = nearItem.transform.rotation;
 
                 //holdItem.GetComponent<Rigidbody>().isKinematic = true;
-
-                Debug.Log("레일이 1개 쌓임");
             }
             // 들고 있는 레일이 2개 이상일 때
             else if (holdRail.getInt() >= 2)
@@ -264,7 +261,6 @@ public class PickUpPutDown : MonoBehaviour
 
                 //holdItem.GetComponent<Rigidbody>().isKinematic = true;
                 //holdItem.transform.DetachChildren();
-                Debug.Log("레일이 2개 이상 쌓임");
             }
 
             isHold = false;
@@ -276,7 +272,6 @@ public class PickUpPutDown : MonoBehaviour
 		else if (holdItem.CompareTag("Rail") && canSetZoneFront.activeSelf == true)
         { 
             holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
-            Debug.Log("앞에 레일 설치하기");
 
             if (holdRail.getInt() == 1) // 들고 있는 레일이 1개일 때
             {
@@ -311,9 +306,10 @@ public class PickUpPutDown : MonoBehaviour
             canSetZoneLeftS.isThereRail = false;
             canSetZoneRightS.isThereRail = false;
 
-            railroad1.Add(lastBeforeRail);
-            railroad2.Add(lastBeforeRail);
-            railroad3.Add(lastBeforeRail);
+            AddRailToList(lastBeforeRail);
+            //railroad1.Add(lastBeforeRail);
+            //railroad2.Add(lastBeforeRail);
+            //railroad3.Add(lastBeforeRail);
             //Debug.Log(railroad.Peek().position);
         }
 
@@ -321,20 +317,21 @@ public class PickUpPutDown : MonoBehaviour
         else if(holdItem.CompareTag("Rail") && canSetZoneLeft.activeSelf == true)
 		{
             holdRail = holdItem.GetComponent("Rail") as Rail;
-            Debug.Log("왼쪽에 레일 설치하기");
 
-            railroad1.Remove(lastBeforeRail);
-            railroad2.Remove(lastBeforeRail);
-            railroad3.Remove(lastBeforeRail);
+            RemoveRailToList(lastBeforeRail);
+            //railroad1.Remove(lastBeforeRail);
+            //railroad2.Remove(lastBeforeRail);
+            //railroad3.Remove(lastBeforeRail);
             Destroy(lastBeforeRail);
             Transform lastBeforeRailT = lastBeforeRail.transform;
             GameObject curvedRailObject = Instantiate(curvedRail);
             int lastBeforeRailLayer = lastBeforeRail.layer;
             curvedRailObject.transform.position = lastBeforeRailT.position;
             curvedRailObject.layer = lastBeforeRailLayer;
-            railroad1.Add(curvedRailObject);
-            railroad2.Add(curvedRailObject);
-            railroad3.Add(curvedRailObject);
+            AddRailToList(curvedRailObject);
+            //railroad1.Add(curvedRailObject);
+            //railroad2.Add(curvedRailObject);
+            //railroad3.Add(curvedRailObject);
 
             if (holdRail.getInt() == 1) // 들고 있는 레일이 1개 일 때
             {
@@ -375,9 +372,10 @@ public class PickUpPutDown : MonoBehaviour
             canSetZoneLeftS.isThereRail = false;
             canSetZoneRightS.isThereRail = false;
 
-            railroad1.Add(lastBeforeRail);
-            railroad2.Add(lastBeforeRail);
-            railroad3.Add(lastBeforeRail);
+            AddRailToList(lastBeforeRail);
+            //railroad1.Add(lastBeforeRail);
+            //railroad2.Add(lastBeforeRail);
+            //railroad3.Add(lastBeforeRail);
             //Debug.Log(railroad.Peek().position);
         }
 
@@ -385,20 +383,21 @@ public class PickUpPutDown : MonoBehaviour
         else if (holdItem.CompareTag("Rail") && canSetZoneRight.activeSelf == true)
         {
             holdRail = holdItem.GetComponent("Rail") as Rail;
-            Debug.Log("오른쪽에 레일 설치하기");
 
-            railroad1.Remove(lastBeforeRail);
-            railroad2.Remove(lastBeforeRail);
-            railroad3.Remove(lastBeforeRail);
+            RemoveRailToList(lastBeforeRail);
+            //railroad1.Remove(lastBeforeRail);
+            //railroad2.Remove(lastBeforeRail);
+            //railroad3.Remove(lastBeforeRail);
             Destroy(lastBeforeRail);
             Transform lastBeforeRailT = lastBeforeRail.transform;
             GameObject curvedRailObject = Instantiate(curvedRail);
             int lastBeforeRailLayer = lastBeforeRail.layer;
             curvedRailObject.transform.position = lastBeforeRailT.position;
             curvedRailObject.layer = lastBeforeRailLayer;
-            railroad1.Add(curvedRailObject);
-            railroad2.Add(curvedRailObject);
-            railroad3.Add(curvedRailObject);
+            AddRailToList(curvedRailObject);
+            //railroad1.Add(curvedRailObject);
+            //railroad2.Add(curvedRailObject);
+            //railroad3.Add(curvedRailObject);
 
             if (holdRail.getInt() == 1) // 들고 있는 레일이 1개 일 때
             {
@@ -439,9 +438,10 @@ public class PickUpPutDown : MonoBehaviour
             canSetZoneLeftS.isThereRail = false;
             canSetZoneRightS.isThereRail = false;
 
-            railroad1.Add(lastBeforeRail);
-            railroad2.Add(lastBeforeRail);
-            railroad3.Add(lastBeforeRail);
+            AddRailToList(lastBeforeRail);
+            //railroad1.Add(lastBeforeRail);
+            //railroad2.Add(lastBeforeRail);
+            //railroad3.Add(lastBeforeRail);
             //Debug.Log(railroad.Peek().position);
         }
 
