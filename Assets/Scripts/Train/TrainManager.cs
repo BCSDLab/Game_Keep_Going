@@ -14,7 +14,7 @@ public class TrainManager
         Object obj = Resources.Load("Prefabs/train_mainmodule");
         GameObject go = Object.Instantiate(obj) as GameObject;
         train = go.AddComponent<Train>();
-        go.AddComponent<TrainMoving>();
+        go.AddComponent<TrainMainMoving>();
         train.transform.position = new Vector3(5, 1.6f, 5);
         
     }

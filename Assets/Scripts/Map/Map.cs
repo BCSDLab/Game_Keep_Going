@@ -92,7 +92,6 @@ public class Map : MonoBehaviour
     /// </summary>
     void FirstSetup()
     {
-
         // 몇몇 객체에 인스턴스 부여.
         block_EndPosition = block_HorizLength;
         objectSet = new List<GameObject>();
@@ -116,7 +115,7 @@ public class Map : MonoBehaviour
 
         DataBasePositionSelection(); // 시드기반 오브젝트 제작.
         StationGen(); // Station 생성.
-        MobCampGen(); // 몹 캠프 생성.
+        //MobCampGen(); // 몹 캠프 생성.
         SnowLayerSetup(); // 눈 레이어 설정. 모든 오브젝트가 설정된 다음에 만들어져야 함.
     }
 
