@@ -50,15 +50,17 @@ MonoBehaviour:
   Seed: qweasfds
   dirt: {fileID: 0}
   water: {fileID: 0}
-  invis: {fileID: 0}
   dummy: {fileID: 0}
   wood: {fileID: 0}
   stone: {fileID: 0}
   rock: {fileID: 0}
   marker: {fileID: 0}
-  station: {fileID: 0}
+  snow: {fileID: 4904736201255851481, guid: b38a39278af492b4da7a69da6ca675f0, type: 3}
+  start_station: {fileID: 0}
+  end_station: {fileID: 0}
   rail: {fileID: 0}
   lastrailpos: {fileID: 0}
+  MobCamp: {fileID: 0}
   colliderBlockSet: []
   LakeLineTop: 
   LakeLineBottom: 

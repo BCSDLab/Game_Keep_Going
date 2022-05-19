@@ -69,7 +69,9 @@ public class PlayerStat : MonoBehaviour
 
     private void Update()
     {
-        //Vector3 hpBarPos = this.transform.position;
-        //hpBar.transform.position = Camera.main.WorldToScreenPoint(hpBarPos);
+        Vector3 hpBarPos = this.transform.GetChild(2).transform.position;
+        hpBar.transform.position = Camera.main.WorldToScreenPoint(hpBarPos);
+
     }
+
 }
