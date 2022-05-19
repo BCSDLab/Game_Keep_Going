@@ -20,7 +20,7 @@ public class LastRail: MonoBehaviour
     {
         if(player == null)
         {
-            GameObject playerObj = GameObject.Find("player_test(Clone)");
+            GameObject playerObj = GameObject.Find("player");
             if (playerObj.GetComponents<MyPlayer>() != null)
                 player = playerObj.transform.GetComponent<PickUpPutDown>();
         }

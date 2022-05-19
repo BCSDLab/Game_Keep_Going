@@ -23,31 +23,19 @@ public class Map : MonoBehaviour
     [SerializeField]
     private string Seed = "qweasfds"; // 시드는 8단어의 String으로 구성.
 
-    [SerializeField]
+    
     private GameObject dirt;
-    [SerializeField]
     private GameObject water;
-    [SerializeField]
     private GameObject dummy;
-    [SerializeField]
     private GameObject wood;
-    [SerializeField]
     private GameObject stone;
-    [SerializeField]
     private GameObject rock;
-    [SerializeField]
     private GameObject marker;
-    [SerializeField]
     private GameObject snow;
-    [SerializeField]
     private GameObject start_station;
-    [SerializeField]
     private GameObject end_station;
-    [SerializeField]
     public GameObject rail;
-    [SerializeField]
     public GameObject lastrailpos;
-    [SerializeField]
     private GameObject MobCamp;
 
 
@@ -92,7 +80,6 @@ public class Map : MonoBehaviour
     /// </summary>
     void FirstSetup()
     {
-
         // 몇몇 객체에 인스턴스 부여.
         block_EndPosition = block_HorizLength;
         objectSet = new List<GameObject>();
@@ -116,7 +103,7 @@ public class Map : MonoBehaviour
 
         DataBasePositionSelection(); // 시드기반 오브젝트 제작.
         StationGen(); // Station 생성.
-        MobCampGen(); // 몹 캠프 생성.
+        //MobCampGen(); // 몹 캠프 생성.
         SnowLayerSetup(); // 눈 레이어 설정. 모든 오브젝트가 설정된 다음에 만들어져야 함.
     }
 

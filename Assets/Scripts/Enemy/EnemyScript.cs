@@ -5,22 +5,17 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour
 {
-    public GameObject target;
+
     public NavMeshAgent Enemy;
+    [SerializeField]
     public EnemyState State = EnemyState.Idle;
 
-    [SerializeField]
-    private float LockRange = 12f;
-    [SerializeField]
-    private float AttackRange = 3f;
+    private int hp;
+    private int maxhp;
     
-    /*
-        Idle -> Locked
-        Locked -> Move, Attack
-        Move -> Attack, Idle
-        Attack -> Move, Idle
-        * -> Death
-    */
+
+    
+
     public enum EnemyState
     {
         Idle,
@@ -30,93 +25,64 @@ public class EnemyScript : MonoBehaviour
         Death
     }
 
-    bool SetTarget(GameObject m_target)
-    {
-        // 혹시 안되는 조건이 있다면
-        if (false)
-        {
-            return false;
-        }
-        target = m_target;
-        return true;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-       
-    }
-
-    private float GetDistance()
-    {
-        return Vector3.Distance(target.transform.position, this.transform.position);
-    }
-
     private void FixedUpdate()
     {
         UpdateState();
         DoAction();
     }
 
-    private void UpdateState()
+    public virtual void UpdateState()
     {
-        // idle -> Locked
-        if (State == EnemyState.Idle && target != null)
-        {
-            State = EnemyState.Locked;
-        }
 
-        // locked -> move, attack
-        // move-> attack , attack -> move
-        if (target != null)
-        {
-            float distance = GetDistance();
-            if ((State == EnemyState.Locked || State == EnemyState.Move) && distance <= AttackRange)
-            {
-                State = EnemyState.Attack;
-            }
-            else if ((State == EnemyState.Locked || State == EnemyState.Attack) && distance > AttackRange)
-            {
-                State = EnemyState.Move;
-            }
-        }
-
-
-        // Move, Attack -> Idle
-        if ((State == EnemyState.Move || State == EnemyState.Attack) && target == null)
-        {
-            State = EnemyState.Idle;
-        }
     }
 
-    private void DoAction()
+
+    public virtual void DoAction()
     {
-        if(State == EnemyState.Move)
+    }
+
+    private void Start()
+    {
+        FirstSet();
+    }
+
+    private void FirstSet()
+    {
+        hp = 10;
+        maxhp = 10;
+    }
+
+    /// <summary>
+    /// 체력에 데미지를 줌. 만약에 적이 쓰러질 경우에는 true값을 반환함.
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <returns></returns>
+    public bool TakeDamage(int damage)
+    {
+        hp -= damage;
+        if(hp < 0)
         {
-            Enemy.isStopped = false;
-            Enemy.SetDestination(target.transform.position);
-        }
-        else if(State == EnemyState.Attack)
-        {
-            Enemy.isStopped = true;
-            //Debug.Log("Enemy Attacking");
+            SetState(EnemyState.Death);
+            return true;
 
         }
-        else if(State == EnemyState.Death)
+        return false;
+    }
+    
+    /// <summary>
+    /// 체력을 회복시킴. 만약에 최대 체력 이상으로 회복한다면 해당 값을 반환함.
+    /// </summary>
+    /// <param name="healamount"></param>
+    /// <returns></returns>
+    public int TakeHeal(int healamount)
+    {
+        if(hp + healamount > maxhp)
         {
-            //Debug.Log("Enemy Death");
+            int overamount = hp - maxhp;
+            hp = maxhp;
+            return overamount;
         }
-        else if(State == EnemyState.Locked)
-        {
-            
-            //Debug.Log("Enemy Locked");
-            // 타겟 방향을 계속 쳐다봄.
-        }
+        return 0;
     }
 
     public void SetState(EnemyState data)
@@ -124,19 +90,13 @@ public class EnemyScript : MonoBehaviour
         State = data;
     }
 
-    private void OnTriggerEnter(Collider other)
+    /// <summary>
+    /// 정상적으로 죽었을 경우에 true값 생성. 문제가 생길 경우에 추가적으로 이야기해야할거리 이야기하기.
+    /// </summary>
+    /// <returns></returns>
+    public virtual bool DeathControl() 
     {
-        if(other.tag == "Player")
-        {
-            target = other.gameObject;
-        }
+        return true;
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            target = null;
-        }
-    }
 }

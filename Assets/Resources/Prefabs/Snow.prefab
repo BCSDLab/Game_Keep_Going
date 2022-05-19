@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3033667219593020291, guid: 445840032d01ab84f8aa52f4507d6825, type: 3}
+  - {fileID: 2100000, guid: 337826c2452de984ebbcd41dc6f3547f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -158,3 +158,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 0
   y: 0
+  currentSnowLevel: 0
+  Transparent:
+  - {fileID: 2100000, guid: 577547e36928984418de73b11c6573a9, type: 2}
+  NonTrans:
+  - {fileID: 2100000, guid: 337826c2452de984ebbcd41dc6f3547f, type: 2}
