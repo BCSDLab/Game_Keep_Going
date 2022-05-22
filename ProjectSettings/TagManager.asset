@@ -9,6 +9,7 @@ TagManager:
   - Resources
   - Axe
   - Pickaxe
+  - Train
   layers:
   - Default
   - TransparentFX
