@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1479525896}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ItemEquipPoint
   m_TagString: EquipPoint
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 7576603864162745327}
   - component: {fileID: 4752052207873393317}
   - component: {fileID: 8130990119932175921}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 945617657}
   - component: {fileID: 945617658}
   - component: {fileID: 945617659}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -255,3 +255,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeImage: {fileID: 0}
+  stoneResourceObj: {fileID: 0}
+  woodResourceObj: {fileID: 0}

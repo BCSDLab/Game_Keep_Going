@@ -11,14 +11,19 @@ public class LastRail: MonoBehaviour
 
     void Start()
     {
-        player = GameObject.Find("player").transform.GetComponent<PickUpPutDown>();
+        //player = GameObject.Find("player").transform.GetComponent<PickUpPutDown>();
         canSetZone = this.gameObject.transform.GetChild(0).GetComponent<CanSetZone>();
     }
 
     
     void Update()
     {
-        
+        if(player == null)
+        {
+            GameObject playerObj = GameObject.Find("player_test(Clone)");
+            if (playerObj.GetComponents<MyPlayer>() != null)
+                player = playerObj.transform.GetComponent<PickUpPutDown>();
+        }
     }
 
 	private void OnTriggerEnter(Collider other)
