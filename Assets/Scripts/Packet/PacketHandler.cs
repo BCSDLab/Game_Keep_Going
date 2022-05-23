@@ -76,6 +76,21 @@ class PacketHandler
 
 		MapManager.instance.BlockBreak(pkt);
 	}
+	public static void S_BroadcastHealthHandler(PacketSession session, IPacket packet)
+	{
+		S_BroadcastHealth pkt = packet as S_BroadcastHealth;
+		ServerSession serverSession = session as ServerSession;
+
+		PlayerManager.Instance.ChangeHp(pkt);
+	}
+	public static void S_BroadcastEnemyMoveHandler(PacketSession session, IPacket packet)
+	{
+		S_BroadcastEnemyMove pkt = packet as S_BroadcastEnemyMove;
+		ServerSession serverSession = session as ServerSession;
+
+		EnemyManager.Instance.MoveEnemy(pkt);
+	}
+	
 	/*
 	public static void Handler(PacketSession session, IPacket packet)
 	{
