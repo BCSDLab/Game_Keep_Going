@@ -28,13 +28,15 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.S_PlayerList, PacketHandler.S_PlayerListHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadcastMove, MakePacket<S_BroadcastMove>);
 		_handler.Add((ushort)PacketID.S_BroadcastMove, PacketHandler.S_BroadcastMoveHandler);
-		_makeFunc.Add((ushort)PacketID.S_BroadcastTrainMove, MakePacket<S_BroadcastTrainMove>);
+		_makeFunc.Add((ushort)PacketID.S_BroadcastTrainMove, MakePacket<S_BroadcastTrainMove>); 
 		_handler.Add((ushort)PacketID.S_BroadcastTrainMove, PacketHandler.S_BroadcastTrainMoveHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadcastShot, MakePacket<S_BroadcastShot>);
 		_handler.Add((ushort)PacketID.S_BroadcastShot, PacketHandler.S_BroadcastShotHandler);
-		/*		_makeFunc.Add((ushort)PacketID.S_BroadcastResource, MakePacket <S_BroadcastResource>);
-				_handler.Add((ushort)PacketID.S_BroadcastResource, PacketHandler.S_BroadcastResourceHandler);
-		*/
+		_makeFunc.Add((ushort)PacketID.S_BroadcastMapSeed, MakePacket<S_BroadcastMapSeed>);
+		_handler.Add((ushort)PacketID.S_BroadcastMapSeed, PacketHandler.S_BroadcastMapSeedHandler);
+		_makeFunc.Add((ushort)PacketID.S_BroadcastEnterRoom, MakePacket<S_BroadcastEnterRoom>);
+		_handler.Add((ushort)PacketID.S_BroadcastEnterRoom, PacketHandler.S_BroadcastEnterRoomHandler);
+
 		/*
 		 * _makeFunc.Add((ushort)PacketID.???, MakePacket<???>);
 		 * _handler.Add((ushort)PacketID.???, PacketHandler.???);

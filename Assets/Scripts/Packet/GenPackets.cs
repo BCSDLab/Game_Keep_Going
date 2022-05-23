@@ -16,6 +16,12 @@ public enum PacketID
 	S_BroadcastTrainMove = 8,
 	C_Shot = 9,
 	S_BroadcastShot = 10,
+	C_MapSeed = 11,
+	S_BroadcastMapSeed = 12,
+	C_EnterRoom = 13,
+	S_BroadcastEnterRoom = 14,
+	C_Resource = 15,
+	S_BroadcastResource = 16,
 }
 
 public interface IPacket
@@ -24,6 +30,7 @@ public interface IPacket
 	void Read(ArraySegment<byte> segment);
 	ArraySegment<byte> Write();
 }
+
 
 
 public class S_BroadcastEnterGame : IPacket
@@ -75,7 +82,6 @@ public class S_BroadcastEnterGame : IPacket
 
 public class C_LeaveGame : IPacket
 {
-
 
 	public ushort Protocol { get { return (ushort)PacketID.C_LeaveGame; } }
 
@@ -534,6 +540,228 @@ public class S_BroadcastShot : IPacket
 		count += sizeof(float);
 		Array.Copy(BitConverter.GetBytes(rotateY), 0, segment.Array, segment.Offset + count, sizeof(float));
 		count += sizeof(float);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+/// <summary>
+/// Map Seed Packet
+/// </summary>
+public class C_MapSeed : IPacket
+{
+	public int mapSeed;
+
+	public ushort Protocol { get { return (ushort)PacketID.C_MapSeed; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		mapSeed = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_Shot), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes(mapSeed), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+/// <summary>
+/// Server Map Seed Packet
+/// </summary>
+public class S_BroadcastMapSeed : IPacket
+{
+	public int mapSeed;
+
+	public ushort Protocol { get { return (ushort)PacketID.S_BroadcastMapSeed; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		mapSeed = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.S_BroadcastMapSeed), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes(mapSeed), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+/// <summary>
+/// Enter Room Client
+/// </summary>
+public class C_EnterRoom : IPacket
+{
+	public int playerId;
+	public int roomNum;
+
+	public ushort Protocol { get { return (ushort)PacketID.C_EnterRoom; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		playerId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		roomNum = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_EnterRoom), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes(playerId), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		Array.Copy(BitConverter.GetBytes(roomNum), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+
+/// <summary>
+/// Enter Room Broadcast Server
+/// </summary>
+public class S_BroadcastEnterRoom : IPacket
+{
+	public int playerId;
+	public int roomNum;
+
+	public ushort Protocol { get { return (ushort)PacketID.S_BroadcastEnterRoom; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		playerId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		roomNum = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_EnterRoom), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes(playerId), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		Array.Copy(BitConverter.GetBytes(roomNum), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+
+/// <summary>
+/// Resource Client
+/// </summary>
+public class C_Resource : IPacket
+{
+	public int resourceIdx;
+
+	public ushort Protocol { get { return (ushort)PacketID.C_Resource; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		resourceIdx = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_EnterRoom), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes(resourceIdx), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+
+/// <summary>
+/// ResourceBroadcast
+/// </summary>
+public class S_BroadcastResource : IPacket
+{
+	public int resourceIdx;
+
+	public ushort Protocol { get { return (ushort)PacketID.S_BroadcastResource; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		resourceIdx = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_EnterRoom), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes(resourceIdx), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
 
