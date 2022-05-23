@@ -109,7 +109,13 @@ public class Map : MonoBehaviour
         HillLineBottom = new List<int>();
         // 최초 업데이트.
 
-        RandomNumberGenSetup(); // 시드기반 랜덤 숫자 제너레이팅 설정.
+        if (NetworkManager.Instance.isHost)
+        {
+            RandomNumberGenSetup(); // 시드기반 랜덤 숫자 제너레이팅 설정.
+            Debug.Log("Host");
+        }
+        else
+            Random.seed = MapManager.instance.seed;
         BaseField(); // 기반이 되는 블럭 설정.
         LakeLineGen(); // Lake의 기준이 되는 Line생성.
         //LakeLineTest();
@@ -866,5 +872,19 @@ public class Map : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public int GetResourceIndex(GameObject gameObject)
+    {
+        Vector2Int vec2 = new Vector2Int(((int)gameObject.transform.position.x), (int)gameObject.transform.position.z);
+        int resourceIdx;
+        resourceIdx = objectPos.IndexOf(vec2);
+        return resourceIdx;
+    }
+
+    public GameObject GetResourceObject(int resourceIdx)
+    {
+        GameObject gameObject = objectSet[resourceIdx];
+        return gameObject;
     }
 }

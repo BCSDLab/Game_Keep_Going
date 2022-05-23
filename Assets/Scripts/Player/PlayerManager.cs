@@ -6,10 +6,8 @@ public class PlayerManager : MonoBehaviour
 {
     MyPlayer _myPlayer;
     Dictionary<int, Player> _players = new Dictionary<int, Player>();
-    private PhysicsScene physicsScene;
-    private float deltaTime;
-    public NetworkManager NetworkManager;
     public static PlayerManager Instance { get; } = new PlayerManager();
+    bool isCreated = false;
 
     public void Add(S_PlayerList packet)
     {
@@ -17,17 +15,23 @@ public class PlayerManager : MonoBehaviour
 
         foreach (S_PlayerList.Player p in packet.players)
         {
-            GameObject go = Object.Instantiate(obj) as GameObject;
-
+            GameObject go = Instantiate(obj) as GameObject;
             if (p.isSelf)
             {
                 MyPlayer myPlayer = go.AddComponent<MyPlayer>();
                 myPlayer.PlayerId = p.playerId;
                 myPlayer.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
                 _myPlayer = myPlayer;
+                isCreated = true;
             }
             else
             {
+                /*if (_players.ContainsKey(_myPlayer.PlayerId))
+                {
+                    Destroy(go);
+                    return;
+                }
+                */
                 OtherPlayer player = go.AddComponent<OtherPlayer>();
                 player.PlayerId = p.playerId;
                 player.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
@@ -55,7 +59,7 @@ public class PlayerManager : MonoBehaviour
                 Vector3 targetPos = new Vector3(packet.posX, 1.6f, packet.posZ);
                 player.gameObject.GetComponent<OtherPlayer>().SetTargetPos(targetPos);
                 player.transform.rotation = Quaternion.Euler(0, packet.rotateY, 0);
-                
+                player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
             }
         }
     }
@@ -64,10 +68,15 @@ public class PlayerManager : MonoBehaviour
     {
         if (packet.playerId == _myPlayer.PlayerId)
             return;
-
+        
         Object obj = Resources.Load("Prefabs/player_test");
         GameObject go = Object.Instantiate(obj) as GameObject;
-
+        /*if (_players.ContainsKey(_myPlayer.PlayerId))
+        {
+            Destroy(go);
+            return;
+        }
+        */
         Player player = go.AddComponent<OtherPlayer>();
 		player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
 		_players.Add(packet.playerId, player);
@@ -89,5 +98,33 @@ public class PlayerManager : MonoBehaviour
                 _players.Remove(packet.playerId);
             }
         }
+    }
+    public void LeaveRoom(S_BroadcastEnterRoom packet)
+    {
+        LeaveAll();
+        if (_myPlayer.PlayerId == packet.playerId)
+        {
+            Debug.Log("EnterRoom Delete");
+            GameObject.Destroy(_myPlayer.gameObject);
+            _myPlayer = null;
+        }
+        else
+        {
+            Player player1 = null;
+            if (_players.TryGetValue(packet.playerId, out player1))
+            {
+                GameObject.Destroy(player1.gameObject);
+                _players.Remove(packet.playerId);
+            }
+        }
+    }
+    public void LeaveAll()
+    {
+        foreach (KeyValuePair<int, Player> player in _players)
+        {
+            Destroy(player.Value.gameObject);
+            _players.Remove(player.Key);
+        }
+        _players.Clear();
     }
 }
