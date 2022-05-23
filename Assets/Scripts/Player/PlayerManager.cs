@@ -6,8 +6,8 @@ public class PlayerManager : MonoBehaviour
 {
     MyPlayer _myPlayer;
     Dictionary<int, Player> _players = new Dictionary<int, Player>();
+    GameObject[] playerList;
     public static PlayerManager Instance { get; } = new PlayerManager();
-    bool isCreated = false;
 
     public void Add(S_PlayerList packet)
     {
@@ -22,7 +22,6 @@ public class PlayerManager : MonoBehaviour
                 myPlayer.PlayerId = p.playerId;
                 myPlayer.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
                 _myPlayer = myPlayer;
-                isCreated = true;
             }
             else
             {
@@ -126,5 +125,20 @@ public class PlayerManager : MonoBehaviour
             _players.Remove(player.Key);
         }
         _players.Clear();
+    }
+
+    public void ReloadPlayerList()
+    {
+        playerList = GameObject.FindGameObjectsWithTag("Player");
+    }
+    public void ChangeHp(S_BroadcastHealth packet)
+    {
+        if (_myPlayer.PlayerId == packet.playerId)
+            return;
+         foreach (GameObject player in playerList)
+        {
+            if (player.GetComponent<OtherPlayer>().PlayerId == packet.playerId)
+                player.GetComponent<PlayerStat>().TakeDamage(packet.health);
+        }
     }
 }
