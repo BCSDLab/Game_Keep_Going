@@ -9,6 +9,7 @@ TagManager:
   - Resources
   - Axe
   - Pickaxe
+  - Snow
   layers:
   - Default
   - TransparentFX

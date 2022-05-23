@@ -23,6 +23,13 @@ public class MapManager : MonoBehaviour
     List<GameObject> Maps = new List<GameObject>();
 
     public int seed;
+    
+    [SerializeField]
+    public int snowingLevel = 6000; // 눈이 내리는 프레임 기준.
+    [SerializeField]
+    public bool isSnowing = true;
+    public int snowTiming = 0; // get함수로 가져올수도 있는데, 속도가 뭐가 더 빠른지 모름.
+
 
     private void Awake()
     {
@@ -49,6 +56,17 @@ public class MapManager : MonoBehaviour
 
     }
 
+    void FixedUpdate()
+    {
+        if (isSnowing)
+        {
+            SnowsnowTimingUpdate();
+        }
+    }
+
+    /// <summary>
+    /// 맵매쉬를 만들어내는 함수.
+    /// </summary>
     private void InvokeMapMeshgen()
     {
         MapMeshGenerator.instance.GenerateNavmesh();
@@ -100,5 +118,23 @@ public class MapManager : MonoBehaviour
             Instantiate(woodResourceObj, resourcesPos, collObj.transform.rotation);
         }
         Destroy(collObj);
+    }
+
+    void SnowsnowTimingUpdate()
+    {
+        // 눈 쌓이는 부분.
+        if (snowTiming > snowingLevel)
+        {
+            snowTiming = 0;
+        }
+        else
+        {
+            snowTiming++;
+        }
+    }
+
+    int GetSnowLevel()
+    {
+        return snowTiming;
     }
 }
