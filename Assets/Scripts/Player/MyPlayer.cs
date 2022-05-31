@@ -19,7 +19,7 @@ public class MyPlayer : Player
     void Start()
     {
         gameObject.AddComponent<PickUpPutDown>();
-        gameObject.AddComponent<PlayerMining>();
+//        gameObject.AddComponent<PlayerMining>();
         controller = GetComponent<PlayerController>();
         myRigidbody = GetComponent<Rigidbody>();
         viewCamera = Camera.main;

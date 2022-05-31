@@ -9,10 +9,13 @@ using UnityEngine;
 public class NetworkManager : MonoBehaviour
 {
 	ServerSession _session = new ServerSession();
+	private IPAddress ipAddr;
 	private Connector connector;
 	private IPEndPoint endPoint;
 	private Ping ping = null;
 	public int ping_time { get; private set; }
+	public bool isHost { get; private set; } = false;
+	public static NetworkManager Instance { get; } = new NetworkManager();
 
 	public void Send(ArraySegment<byte> sendBuff)
 	{
@@ -29,11 +32,26 @@ public class NetworkManager : MonoBehaviour
 
 		connector = new Connector();
 
+		Connect();
+		ping_time = 10;
+	}
+
+	public void Connect()
+    {
 		connector.Connect(endPoint,
 			() => { return _session; },
 			1);
-		ping_time = 10;
 	}
+
+	public void ConnectRoom(int roomNum)
+	{
+		C_EnterRoom packet = new C_EnterRoom();
+		//if(packet.roomNum != roomNum)
+		packet.roomNum = roomNum;
+		PlayerManager.Instance.LeaveAll();
+		Send(packet.Write());
+	}
+
 	void Ping()
 	{
 		if (ping == null)
@@ -51,11 +69,16 @@ public class NetworkManager : MonoBehaviour
 			}
 		}
 	}
+
+	public void SetHost()
+    {
+		isHost = true;
+    }
 	void Update()
     {
 		List<IPacket> list = PacketQueue.Instance.PopAll();
 		foreach (IPacket packet in list)
 			PacketManager.Instance.HandlePacket(_session, packet);
-		Ping();
+		//Ping();
 	}
 }
