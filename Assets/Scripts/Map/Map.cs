@@ -10,6 +10,7 @@ public class Map : MonoBehaviour
     [SerializeField]
     private Vector3 map_BasedPos;
 
+    NetworkManager networkManager;
 
     private const float BLOCK_SIZE = 1.6f;
 
@@ -96,6 +97,9 @@ public class Map : MonoBehaviour
         {
             RandomNumberGenSetup(); // 시드기반 랜덤 숫자 제너레이팅 설정.
             Debug.Log("Host");
+            S_BroadcastMapSeed packet = new S_BroadcastMapSeed();
+            packet.mapSeed = Random.seed;
+            NetworkManager.Instance.Send(packet.Write());
         }
         else
             Random.seed = MapManager.instance.seed;
@@ -109,7 +113,7 @@ public class Map : MonoBehaviour
 
         DataBasePositionSelection(); // 시드기반 오브젝트 제작.
         StationGen(); // Station 생성.
-        //MobCampGen(); // 몹 캠프 생성.
+        MobCampGen(); // 몹 캠프 생성.
         SnowLayerSetup(); // 눈 레이어 설정. 모든 오브젝트가 설정된 다음에 만들어져야 함.
     }
 

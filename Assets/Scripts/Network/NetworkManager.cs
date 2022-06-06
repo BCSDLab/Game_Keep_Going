@@ -22,6 +22,11 @@ public class NetworkManager : MonoBehaviour
 		_session.Send(sendBuff);
 	}
 
+    private void Awake()
+    {
+		DontDestroyOnLoad(gameObject);
+	}
+
     void Start()
     {
 		// DNS (Domain Name System)
