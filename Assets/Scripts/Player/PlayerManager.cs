@@ -12,7 +12,9 @@ public class PlayerManager : MonoBehaviour
     public void Add(S_PlayerList packet)
     {
         Object obj = Resources.Load("Prefabs/player_test");
-
+        Debug.Log(packet.players.Count);
+        if (packet.players.Count == 1)
+            NetworkManager.Instance.SetHost();
         foreach (S_PlayerList.Player p in packet.players)
         {
             GameObject go = Instantiate(obj) as GameObject;
