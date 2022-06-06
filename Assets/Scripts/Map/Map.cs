@@ -73,7 +73,22 @@ public class Map : MonoBehaviour
     {
         ResourceLoad();
         SetStageLevel();
+        if (Application.isEditor)
+        {
+            Debug.Log("에디터에서 현재 작업중입니다.");
+            ModifierForEditorMode();
+        }
+        else
+        {
+            Debug.Log("현재 실제 게임 플레이를 진행중입니다.");
+        }
         FirstSetup();
+    }
+
+    private void ModifierForEditorMode()
+    {
+        block_HorizLength = 20;
+
     }
 
     /// <summary>

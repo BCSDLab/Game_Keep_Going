@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyScript : MonoBehaviour
+public class EnemyScript : MonoBehaviour, IDamageable
 {
 
     public NavMeshAgent Enemy;
     [SerializeField]
     public EnemyState State = EnemyState.Idle;
 
-    private int hp;
+    private float hp;
     private int maxhp;
     
 
@@ -37,6 +37,37 @@ public class EnemyScript : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// 양수의 데미지를 입을 경우 데미지로 처리, 음수의 데미지의 경우 힐로 처리함.
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <returns></returns>
+    /// 
+    public bool TakeHit(float damage, RaycastHit hit)
+    {
+        if(damage >= 0)
+        {
+            hp -= damage;
+            if (hp < 0)
+            {
+                SetState(EnemyState.Death);
+                return true;
+
+            }
+            return false;
+        }
+        else
+        {
+            if (hp - damage > maxhp)
+            {
+                float overamount = hp - maxhp;
+                hp = maxhp;
+                return true;
+            }
+            return false;
+        }
+    }
+
     public virtual void DoAction()
     {
     }
@@ -50,39 +81,6 @@ public class EnemyScript : MonoBehaviour
     {
         hp = 10;
         maxhp = 10;
-    }
-
-    /// <summary>
-    /// 체력에 데미지를 줌. 만약에 적이 쓰러질 경우에는 true값을 반환함.
-    /// </summary>
-    /// <param name="damage"></param>
-    /// <returns></returns>
-    public bool TakeDamage(int damage)
-    {
-        hp -= damage;
-        if(hp < 0)
-        {
-            SetState(EnemyState.Death);
-            return true;
-
-        }
-        return false;
-    }
-    
-    /// <summary>
-    /// 체력을 회복시킴. 만약에 최대 체력 이상으로 회복한다면 해당 값을 반환함.
-    /// </summary>
-    /// <param name="healamount"></param>
-    /// <returns></returns>
-    public int TakeHeal(int healamount)
-    {
-        if(hp + healamount > maxhp)
-        {
-            int overamount = hp - maxhp;
-            hp = maxhp;
-            return overamount;
-        }
-        return 0;
     }
 
     public void SetState(EnemyState data)
