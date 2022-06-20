@@ -13,9 +13,10 @@ public class TrainMainMoving : MonoBehaviour
 	private PickUpPutDown player;
 
 	private bool hasPos = false;
-	public bool isMove = false;
-	[SerializeField]
-	private bool woodPut = false; // 브레이크 모듈에 사용되는 변수
+	public bool isMove = false; // 레일 끝에 도착했을 때 메인 기차가 멈추면 뒤의 기차도 멈추게 하기 위한 변수
+
+	private int location = 0;
+
 
 	void Start()
 	{
@@ -25,41 +26,39 @@ public class TrainMainMoving : MonoBehaviour
 
 	void Update()
 	{
-		if (woodPut)
-			TrainBrake();
+		if (GameObject.Find("train_breakingmodule_parent").transform.GetChild(0).gameObject.activeSelf == true)
+		{
+			if (GameObject.Find("train_breakingmodule_parent").transform.GetChild(0).GetComponent<TrainBrake>().getWoodPut())
+			{
+				StopAllCoroutines();
+				StartCoroutine(trainBrake());
+			}
+		}
+
 		if (!hasPos)
 			RailRoad();
 
 	}
 
-	private void TrainBrake()
+	IEnumerator trainBrake()
 	{
-		StartCoroutine(Brake());
-	}
-
-	IEnumerator Brake()
-	{
-		//Debug.Log("기차 멈추기");
-		hasPos = true;
 		yield return new WaitForSeconds(5f);
-		woodPut = false;
+
 		hasPos = false;
+		Debug.Log("hasPos " + hasPos);
 	}
 
 	private void RailRoad()
 	{
-		if (player.GetRailRoad().Count != 0)
+		//if (player.GetRailRoad().Count != 0)
+		if(player.GetRailRoad().Count - location > 0)
 		{
 			isMove = true;
 			//Debug.Log(player.GetRailRoad().Count);
-			Debug.Log(player.GetRailRoad()[0]);
-			StartCoroutine(TrainMove(player.GetRailRoad()[0]));
-			player.GetRailRoad().RemoveAt(0);
+			//Debug.Log(player.GetRailRoad()[0]);
+			StartCoroutine(TrainMove(player.GetRailRoad()[location]));
+			//player.GetRailRoad().RemoveAt(0);
 		}
-		//else
-		//{
-		//	isMove = false;
-		//}
 	}
 
 	IEnumerator Wait()
@@ -109,8 +108,8 @@ public class TrainMainMoving : MonoBehaviour
 		//Debug.Log("한칸 이동 완료");
 		transform.position = desPos;
 		hasPos = false;
+		location++;
 
-		//if(player.GetRailRoad().Count == 0)
-		//	isMove = false;
+		isMove = false;
 	}
 }

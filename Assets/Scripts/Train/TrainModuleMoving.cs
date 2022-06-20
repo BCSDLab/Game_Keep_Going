@@ -20,30 +20,35 @@ public class TrainModuleMoving : MonoBehaviour
 
 	void Update()
 	{
+		if (GameObject.Find("train_breakingmodule_parent").transform.GetChild(0).gameObject.activeSelf == true)
+		{
+			if (GameObject.Find("train_breakingmodule_parent").transform.GetChild(0).GetComponent<TrainBrake>().getWoodPut())
+			{
+				StopAllCoroutines();
+				StartCoroutine(trainBrake());
+			}
+		}
+
 		if (!hasPos)
 		{
 			if (trainMain.transform.GetComponent<TrainMainMoving>().isMove)
 				RailRoad();
-			else
-				StopAllCoroutines();
 		}
 	}
 
-	private void RailRoad()
+	IEnumerator trainBrake()
 	{
-		//if (player.GetRailRoad2().Count > 1)
-		//{
-		
+		yield return new WaitForSeconds(5f);
+
+		hasPos = false;
+		Debug.Log("hasPos " + hasPos);
+	}
+
+	private void RailRoad()
+	{	
 		if (player.GetRailRoad2().Count - (location+1) > 0)
 		{
-			//Debug.Log(player.getRailQueue().Count);
-			//Debug.Log(location);
-			//Debug.Log(player.GetRailRoad2()[location]);
 			StartCoroutine(TrainMove(player.GetRailRoad2()[location]));
-			//StartCoroutine(TrainMove(player.GetRailRoad2()[0]));
-			//railroad2.Add(player.GetRailRoad()[0]);
-			//player.GetRailRoad2().RemoveAt(0);
-		//}
 		}
 	}
 
