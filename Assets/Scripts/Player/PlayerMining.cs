@@ -6,19 +6,26 @@ using UnityEngine.UI;
 public class PlayerMining : MonoBehaviour
 {
     // Start is called before the first frame update
+    GameObject timeObj;
     Image timeImage;
     GameObject stoneResourceObj;
     GameObject woodResourceObj;
     Coroutine miningCorutine;
+    Map map;
     
     static float mineTime = 3.0f;
 
     void Start()
     {
-        timeImage = GameObject.Find("timeImage").GetComponent<Image>();
+        //timeImage = GameObject.Find("timeImage").GetComponent<Image>();
         stoneResourceObj = Resources.Load("Prefabs/rock_stack") as GameObject;
         woodResourceObj =  Resources.Load("Prefabs/wood_stack") as GameObject;
         miningCorutine = null;
+        map = GameObject.Find("Map").GetComponent<Map>();
+        timeObj = Resources.Load("Prefabs/timeImage") as GameObject;
+        timeObj = Instantiate(timeObj, Vector2.zero, Quaternion.identity, GameObject.Find("Canvas").transform); 
+        timeImage = timeObj.GetComponent<Image>();
+        
     }
 
     void OnTriggerStay(Collider collider)
@@ -67,11 +74,19 @@ public class PlayerMining : MonoBehaviour
     {
         Vector3 resourcesPos = collObj.transform.position;
         resourcesPos.y = 1.6f;
-        if(collObj.name == "stone(Clone)")
+        if (collObj.name == "stone(Clone)")
+        {
             Instantiate(stoneResourceObj, resourcesPos, collObj.transform.rotation);
-        else if(collObj.name == "wood(Clone)")
+        }
+        else if (collObj.name == "wood(Clone)")
+        {
             Instantiate(woodResourceObj, resourcesPos, collObj.transform.rotation);
+        }
         
+        C_Resource resource = new C_Resource();
+        resource.resourceIdx = map.GetResourceIndex(collObj);
+        resource.Write();
+
         Destroy(collObj);
         miningCorutine = null;
         timeImage.enabled = false;

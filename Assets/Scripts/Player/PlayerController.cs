@@ -8,13 +8,13 @@ public class PlayerController : MonoBehaviour
 {
     Vector3 velocity;
     Rigidbody myRigidbody;
+    bool isOnSnow = false;
 
     // Start is called before the first frame update
     void Start()
     {
         myRigidbody = GetComponent<Rigidbody>();   
     }
-
 
     public void LookAt(Vector3 lookPoint)
     {
@@ -29,6 +29,32 @@ public class PlayerController : MonoBehaviour
 
     public void FixedUpdate()
     {
-        myRigidbody.MovePosition(myRigidbody.position + velocity * Time.fixedDeltaTime);
+        // 눈에 있고 없고의 이동속도 차이
+        if (isOnSnow)
+        {
+            myRigidbody.MovePosition(myRigidbody.position + velocity * Time.fixedDeltaTime);
+        }
+        else
+        {
+            myRigidbody.MovePosition(myRigidbody.position + velocity * 0.8f * Time.fixedDeltaTime);
+        }
+        
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Snow")
+        {
+            isOnSnow = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Snow")
+        {
+            isOnSnow = false;
+        }
+    }
+
 }

@@ -3,23 +3,98 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyScript : MonoBehaviour
+public class EnemyScript : MonoBehaviour, IDamageable
 {
 
-    [SerializeField]
-    GameObject Player;
-
     public NavMeshAgent Enemy;
+    [SerializeField]
+    public EnemyState State = EnemyState.Idle;
 
-    // Start is called before the first frame update
-    void Start()
+    private float hp;
+    private int maxhp;
+    
+
+    
+
+    public enum EnemyState
     {
-        
+        Idle,
+        Locked,
+        Move,
+        Attack,
+        Death
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        Enemy.SetDestination(Player.transform.position);
+        UpdateState();
+        DoAction();
     }
+
+    public virtual void UpdateState()
+    {
+
+    }
+
+
+    /// <summary>
+    /// 양수의 데미지를 입을 경우 데미지로 처리, 음수의 데미지의 경우 힐로 처리함.
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <returns></returns>
+    /// 
+    public bool TakeHit(float damage, RaycastHit hit)
+    {
+        if(damage >= 0)
+        {
+            hp -= damage;
+            if (hp < 0)
+            {
+                SetState(EnemyState.Death);
+                return true;
+
+            }
+            return false;
+        }
+        else
+        {
+            if (hp - damage > maxhp)
+            {
+                float overamount = hp - maxhp;
+                hp = maxhp;
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public virtual void DoAction()
+    {
+    }
+
+    private void Start()
+    {
+        FirstSet();
+    }
+
+    private void FirstSet()
+    {
+        hp = 10;
+        maxhp = 10;
+    }
+
+    public void SetState(EnemyState data)
+    {
+        State = data;
+    }
+
+    /// <summary>
+    /// 정상적으로 죽었을 경우에 true값 생성. 문제가 생길 경우에 추가적으로 이야기해야할거리 이야기하기.
+    /// </summary>
+    /// <returns></returns>
+    public virtual bool DeathControl() 
+    {
+        return true;
+    }
+
 }
