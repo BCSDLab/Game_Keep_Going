@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7948360360255523990}
   m_Layer: 0
   m_Name: EnemyStranding
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,11 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c11e98a9696d6b743b8fd53d5bb788bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   Enemy: {fileID: 7948360360255523991}
   State: 0
-  LockRange: 12
-  AttackRange: 3
   strandingCount: 0
   strandingInterval: 150
   range: 10
