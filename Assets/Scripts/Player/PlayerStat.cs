@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerStat : MonoBehaviour
 {
+    [SerializeField]
     Image hpBar;
 
 
@@ -12,12 +13,30 @@ public class PlayerStat : MonoBehaviour
     private int hp;
     [SerializeField]
     private int maxhp;
-    
+    NetworkManager networkManager;
+
+    [SerializeField]
+    GameObject hpObj;
     // Start is called before the first frame update
     void Start()
     {
+        hpObj = Resources.Load("Prefabs/hpBar") as GameObject;
+        maxhp = 20;
         hp = 20;
-        hpBar = GameObject.Find("hpBar").GetComponent<Image>();
+        hpBar = GameObject.Instantiate(hpObj, Vector2.zero, Quaternion.identity, GameObject.Find("Canvas").transform).GetComponent<Image>();
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+    }
+
+    public void SendHp()
+    {
+        C_Health healthPacket = new C_Health();
+        healthPacket.health = hp;
+        networkManager.Send(healthPacket.Write());
+    }
+
+    public void SetHealth(int packetHp)
+    {
+        hp = packetHp;
     }
 
     /// <summary>
@@ -37,6 +56,7 @@ public class PlayerStat : MonoBehaviour
         {
             HPBarUpdate();
         }
+        SendHp();
         return false;
     }
 
@@ -71,7 +91,12 @@ public class PlayerStat : MonoBehaviour
     {
         Vector3 hpBarPos = this.transform.GetChild(2).transform.position;
         hpBar.transform.position = Camera.main.WorldToScreenPoint(hpBarPos);
+        HPBarUpdate();
+    }
 
+    public int GetHP()
+    {
+        return hp;
     }
 
 }

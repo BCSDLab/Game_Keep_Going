@@ -7,6 +7,7 @@ public class EnemyMelee : EnemyFollowing
     protected float attackPreDelay;
     protected float attackDelay;
     protected float attackPostDelay;
+    protected int attackDamege = 5;
 
     [SerializeField]
     protected bool isAttackFinished = false;
@@ -124,6 +125,6 @@ public class EnemyMelee : EnemyFollowing
 
     public virtual void GiveDamageToTarget(int attackmode)
     {
-       
+        target.GetComponent<PlayerStat>().TakeDamage(attackDamege);
     }
 }

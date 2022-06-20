@@ -137,10 +137,14 @@ public class PlayerManager : MonoBehaviour
     {
         if (_myPlayer.PlayerId == packet.playerId)
             return;
-         foreach (GameObject player in playerList)
+        else
         {
-            if (player.GetComponent<OtherPlayer>().PlayerId == packet.playerId)
-                player.GetComponent<PlayerStat>().TakeDamage(packet.health);
+            Player player = null;
+            if (_players.TryGetValue(packet.playerId, out player))
+            {
+                //if (player.GetComponent<OtherPlayer>().PlayerId == packet.playerId)
+                player.GetComponent<PlayerStat>().SetHealth(packet.health);
+            }
         }
     }
 }
