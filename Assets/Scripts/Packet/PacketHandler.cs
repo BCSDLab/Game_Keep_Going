@@ -54,6 +54,7 @@ class PacketHandler
 		ServerSession serverSession = session as ServerSession;
 
 		BulletManager.Instance.Add(pkt);
+		EnemyManager.Instance.EnemyMove();
 	}
 	public static void S_BroadcastMapSeedHandler(PacketSession session, IPacket packet)
 	{

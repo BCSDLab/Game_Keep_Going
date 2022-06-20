@@ -5,16 +5,14 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour, IDamageable
 {
-
     public NavMeshAgent Enemy;
     [SerializeField]
     public EnemyState State = EnemyState.Idle;
 
     private float hp;
     private int maxhp;
-    
+    protected int enemyIdx;
 
-    
 
     public enum EnemyState
     {
@@ -25,10 +23,12 @@ public class EnemyScript : MonoBehaviour, IDamageable
         Death
     }
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         UpdateState();
         DoAction();
+        /*if (networkManager != null)
+            SendEnemyList();*/
     }
 
     public virtual void UpdateState()
@@ -72,7 +72,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
     {
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         FirstSet();
     }

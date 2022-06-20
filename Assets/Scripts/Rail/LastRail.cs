@@ -18,12 +18,12 @@ public class LastRail: MonoBehaviour
     
     void Update()
     {
-        if(player == null)
+        /*if(player == null)
         {
             GameObject playerObj = GameObject.Find("player");
             if (playerObj.GetComponents<MyPlayer>() != null)
                 player = playerObj.transform.GetComponent<PickUpPutDown>();
-        }
+        }*/
     }
 
 	private void OnTriggerEnter(Collider other)
