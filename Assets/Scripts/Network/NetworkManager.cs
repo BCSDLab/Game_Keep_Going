@@ -9,15 +9,38 @@ using UnityEngine;
 public class NetworkManager : MonoBehaviour
 {
 	ServerSession _session = new ServerSession();
+	private IPAddress ipAddr;
 	private Connector connector;
 	private IPEndPoint endPoint;
 	private Ping ping = null;
 	public int ping_time { get; private set; }
-
-	public void Send(ArraySegment<byte> sendBuff)
+	public bool isHost { get; private set; } = false;
+	private static NetworkManager instance;
+	public static NetworkManager Instance
 	{
-		_session.Send(sendBuff);
+		get
+		{
+			if (!instance)
+			{
+				instance = FindObjectOfType(typeof(NetworkManager)) as NetworkManager;
+			}
+			return instance;
+		}
 	}
+
+	private void Awake()
+	{
+		if (instance == null)
+		{
+			instance = this;
+		}
+		else if (instance != this)
+		{
+			Destroy(gameObject);
+		}
+		DontDestroyOnLoad(gameObject);
+	}
+
 
     void Start()
     {
@@ -29,11 +52,31 @@ public class NetworkManager : MonoBehaviour
 
 		connector = new Connector();
 
+		Connect();
+		ping_time = 10;
+	}
+
+	public void Send(ArraySegment<byte> sendBuff)
+	{
+		_session.Send(sendBuff);
+	}
+
+	public void Connect()
+    {
 		connector.Connect(endPoint,
 			() => { return _session; },
 			1);
-		ping_time = 10;
 	}
+
+	public void ConnectRoom(int roomNum)
+	{
+		C_EnterRoom packet = new C_EnterRoom();
+		//if(packet.roomNum != roomNum)
+		packet.roomNum = roomNum;
+		PlayerManager.Instance.LeaveAll();
+		Send(packet.Write());
+	}
+
 	void Ping()
 	{
 		if (ping == null)
@@ -51,11 +94,16 @@ public class NetworkManager : MonoBehaviour
 			}
 		}
 	}
+
+	public void SetHost()
+    {
+		isHost = true;
+    }
 	void Update()
     {
 		List<IPacket> list = PacketQueue.Instance.PopAll();
 		foreach (IPacket packet in list)
 			PacketManager.Instance.HandlePacket(_session, packet);
-		Ping();
+		//Ping();
 	}
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ·¹ÀÏ ¼³Ä¡ °¡´É Á¸ Ç¥½Ã
+// Â·Â¹Ã€Ã Â¼Â³Ã„Â¡ Â°Â¡Â´Ã‰ ÃÂ¸ Ã‡Â¥Â½Ãƒ
 public class LastRail: MonoBehaviour
 {
     private PickUpPutDown player;
@@ -18,12 +18,12 @@ public class LastRail: MonoBehaviour
     
     void Update()
     {
-        if(player == null)
+        /*if(player == null)
         {
             GameObject playerObj = GameObject.Find("player");
             if (playerObj.GetComponents<MyPlayer>() != null)
                 player = playerObj.transform.GetComponent<PickUpPutDown>();
-        }
+        }*/
     }
 
 	private void OnTriggerEnter(Collider other)

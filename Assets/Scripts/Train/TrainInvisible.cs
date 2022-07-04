@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class TrainInvisible : MonoBehaviour
 {
-    private BoxCollider train_mainmodule;
-    private BoxCollider train_railmakingmodule;
-    private BoxCollider train_savemodule;
-    private BoxCollider boxCollider;
+    private GameObject[] train;
 
     [SerializeField]
     private bool isInvisible = false;
@@ -15,10 +12,7 @@ public class TrainInvisible : MonoBehaviour
 
     void Start()
     {
-        train_mainmodule = GameObject.Find("train_mainmodule").GetComponent<BoxCollider>();
-        train_railmakingmodule = GameObject.Find("train_railmakingmodule").GetComponent<BoxCollider>();
-        train_savemodule = GameObject.Find("train_savemodule").GetComponent<BoxCollider>();
-        boxCollider = GetComponent<BoxCollider>();
+        train = GameObject.FindGameObjectsWithTag("Train");
     }
 
     
@@ -30,18 +24,28 @@ public class TrainInvisible : MonoBehaviour
 
     IEnumerator Invisible()
 	{
+        isInvisible = false;
         SetCollider();
         yield return new WaitForSeconds(5f);
         SetCollider();
-        isInvisible = false;
 	}
 
 
     private void SetCollider()
 	{
-        train_mainmodule.enabled = !train_mainmodule.enabled;
-        train_railmakingmodule.enabled = !train_railmakingmodule.enabled;
-        train_savemodule.enabled = !train_savemodule.enabled;
-        boxCollider.enabled = !boxCollider.enabled;
+        for(int i = 0; i < train.Length; i++)
+		{
+            train[i].GetComponent<BoxCollider>().enabled = !train[i].GetComponent<BoxCollider>().enabled;
+        }
 	}
+
+ //   private void SetColor()
+	//{
+ //       for(int i = 0; i < train.Length; i++)
+	//	{
+ //           Debug.Log(train[i].transform.GetChild(0));
+ //           Color originalColor = train[i].transform.GetChild(0).GetComponent<MeshRenderer>().materials[0].color;
+ //           train[i].GetComponent<MeshRenderer>().materials[0].color = new Color(0, 0, 0);
+	//	}
+	//}
 }

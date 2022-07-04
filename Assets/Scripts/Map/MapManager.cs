@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,12 +22,13 @@ public class MapManager : MonoBehaviour
 
     List<GameObject> Maps = new List<GameObject>();
 
+    public int seed;
+    
     [SerializeField]
-    public int snowingLevel = 6000; // ´«ÀÌ ³»¸®´Â ÇÁ·¹ÀÓ ±âÁØ.
+    public int snowingLevel = 6000; // ëˆˆì´ ë‚´ë¦¬ëŠ” í”„ë ˆì„ ê¸°ì¤€.
     [SerializeField]
     public bool isSnowing = true;
-    public int snowTiming = 0; // getÇÔ¼ö·Î °¡Á®¿Ã¼öµµ ÀÖ´Âµ¥, ¼Óµµ°¡ ¹¹°¡ ´õ ºü¸¥Áö ¸ğ¸§.
-
+    public int snowTiming = 0; // getí•¨ìˆ˜ë¡œ ê°€ì ¸ì˜¬ìˆ˜ë„ ìˆëŠ”ë°, ì†ë„ê°€ ë­ê°€ ë” ë¹ ë¥¸ì§€ ëª¨ë¦„.
 
 
     private void Awake()
@@ -62,7 +64,7 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ¸Ê¸Å½¬¸¦ ¸¸µé¾î³»´Â ÇÔ¼ö.
+    /// ë§µë§¤ì‰¬ë¥¼ ë§Œë“¤ì–´ë‚´ëŠ” í•¨ìˆ˜.
     /// </summary>
     private void InvokeMapMeshgen()
     {
@@ -90,10 +92,33 @@ public class MapManager : MonoBehaviour
         stageLevel++;
     }
 
+    public void BlockBreak(S_BroadcastResource pkt)
+    {
+        Map map = MapPrefab.GetComponent<Map>();
+        GameObject resObj = map.GetResourceObject(pkt.resourceIdx);
+        Mining(resObj);
+    }
+    public void Mining(GameObject collObj)
+    {
+        Vector3 resourcesPos = collObj.transform.position;
+        GameObject stoneResourceObj = Resources.Load("Prefabs/rock_stack") as GameObject;
+        GameObject woodResourceObj = Resources.Load("Prefabs/wood_stack") as GameObject;
+
+        resourcesPos.y = 1.6f;
+        if (collObj.name == "stone(Clone)")
+        {
+            Instantiate(stoneResourceObj, resourcesPos, collObj.transform.rotation);
+        }
+        else if (collObj.name == "wood(Clone)")
+        {
+            Instantiate(woodResourceObj, resourcesPos, collObj.transform.rotation);
+        }
+        Destroy(collObj);
+    }
 
     void SnowsnowTimingUpdate()
     {
-        // ´« ½×ÀÌ´Â ºÎºĞ.
+        // ëˆˆ ìŒ“ì´ëŠ” ë¶€ë¶„.
         if (snowTiming > snowingLevel)
         {
             snowTiming = 0;
@@ -108,5 +133,4 @@ public class MapManager : MonoBehaviour
     {
         return snowTiming;
     }
-
 }
