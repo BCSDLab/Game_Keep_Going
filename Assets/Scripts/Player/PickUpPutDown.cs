@@ -35,6 +35,11 @@ public class PickUpPutDown : MonoBehaviour
     public Rail nearRail;
     public Rail holdRail;
 
+    private WoodStack nearWood;
+    private WoodStack holdWood;
+    private RockStack nearRock;
+    private RockStack holdRock;
+
     private List<GameObject> railroad1;
     private List<GameObject> railroad2;
 
@@ -110,6 +115,9 @@ public class PickUpPutDown : MonoBehaviour
 	{
         nearRail = nearItem.GetComponent("Rail") as Rail; // 충돌한 레일의 Rail스크립트 가져오기
                                                           //holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
+        nearWood = nearItem.GetComponent("WoodStack") as WoodStack;
+        nearRock = nearItem.GetComponent("RockStack") as RockStack;
+
 
         // 레일 줍기
         /// <summary>
@@ -168,7 +176,7 @@ public class PickUpPutDown : MonoBehaviour
             }
         }
 
-        // 도끼 들기
+        // 도끼 들기, 곡괭이 들기
         else if (nearItem.CompareTag("Axe") || nearItem.CompareTag("Pickaxe"))
         {
             holdItem = nearItem;
@@ -187,7 +195,80 @@ public class PickUpPutDown : MonoBehaviour
             isHold = true;
         }
 
-	}
+        // 나무 블럭 들기
+        else if (nearItem.CompareTag("WoodStack"))
+        {
+            // 쌓여있는 나무블럭이 3개 이하일 때
+            if (nearWood.getInt() <= 3)
+            {
+                holdItem = nearItem;
+                nearItem = null;
+                holdItem.transform.SetParent(equipPoint.transform);
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+                holdItem.transform.Rotate(new Vector3(0, 90, 0));
+
+                holdItem.GetComponent<Collider>().enabled = false;
+
+                isHold = true;
+            }
+            // 쌓여있는 나무블럭이 3개보다 많을 때
+            else if (nearWood.getInt() > 3)
+            {
+                nearItem.transform.GetChild(nearWood.getInt() - 2).SetParent(nearItem.transform.GetChild(nearWood.getInt() - 3));
+                nearItem.transform.GetChild(nearWood.getInt() - 2).SetParent(nearItem.transform.GetChild(nearWood.getInt() - 3));
+                holdItem = nearItem.transform.GetChild(nearWood.getInt() - 3).gameObject;
+
+
+                nearItem = null;
+                holdItem.transform.SetParent(equipPoint.transform);
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+                holdItem.transform.Rotate(new Vector3(0, 90, 0));
+
+                holdItem.GetComponent<Collider>().enabled = false;
+
+                isHold = true;
+            }
+        }
+
+        // 돌 블럭 들기
+        else if (nearItem.CompareTag("RockStack"))
+        {
+            // 쌓여있는 돌 블럭이 3개 이하일 때
+            if (nearRock.getInt() <= 3)
+            {
+                holdItem = nearItem;
+                nearItem = null;
+                holdItem.transform.SetParent(equipPoint.transform);
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+                holdItem.transform.Rotate(new Vector3(0, 90, 0));
+
+                holdItem.GetComponent<Collider>().enabled = false;
+
+                isHold = true;
+            }
+            // 쌓여있는 돌 블럭이 3개보다 많을 때
+            else if (nearRock.getInt() > 3)
+            {
+                nearItem.transform.GetChild(nearRock.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRock.getInt() - 3));
+                nearItem.transform.GetChild(nearRock.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRock.getInt() - 3));
+                holdItem = nearItem.transform.GetChild(nearRock.getInt() - 3).gameObject;
+
+
+                nearItem = null;
+                holdItem.transform.SetParent(equipPoint.transform);
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+                holdItem.transform.Rotate(new Vector3(0, 90, 0));
+
+                holdItem.GetComponent<Collider>().enabled = false;
+
+                isHold = true;
+            }
+        }
+    }
 
     // 아이템 내려놓기 시도
     private void TryItemPutDown()
@@ -445,8 +526,8 @@ public class PickUpPutDown : MonoBehaviour
             //Debug.Log(railroad.Peek().position);
         }
 
-        // 도끼 내려놓기
-        else if (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe"))
+        // 도끼 내려놓기, 곡괭이 내려놓기, 나무 블럭 내려놓기, 돌 블럭 내려놓기
+        else if (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe") || holdItem.CompareTag("WoodStack")  || holdItem.CompareTag("RockStack") && nearItem == null)
 		{
             Debug.Log("도끼 내려놓기");
 
@@ -456,6 +537,82 @@ public class PickUpPutDown : MonoBehaviour
             holdItem.GetComponent<Collider>().enabled = true;
             //holdItem.GetComponent<Rigidbody>().isKinematic = false;
 
+            isHold = false;
+        }
+
+        // 나무 블럭이 있을 경우 그 위에 쌓기
+        else if (holdItem.CompareTag("WoodStack") && nearItem != null && nearItem.CompareTag("WoodStack") && nearItem.layer == 6)
+        {
+            nearWood = nearItem.GetComponent("WoodStack") as WoodStack; // 충돌한 나무 블럭의 WoodStack스크립트 가져오기
+            holdWood = holdItem.GetComponent("WoodStack") as WoodStack; // 들고있는 나무 블럭의 WoodStack스크립트 가져오기
+
+            // 맨 아래의 나무 블럭을 설치 위치로 설정
+            equipPoint.transform.DetachChildren();
+
+            // 들고 있는 나무 블럭이 1개 일 때
+            if (holdWood.getInt() == 1)
+            {
+                holdItem.transform.SetParent(nearItem.transform);
+
+                holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * nearWood.getInt();
+                holdItem.transform.rotation = nearItem.transform.rotation;
+            }
+
+            // 들고 있는 나무 블럭이 2개 이상일 때
+            else if (holdWood.getInt() >= 2)
+            {
+                int i;
+                for (i = 1; i < holdWood.getInt(); i++)
+                {
+                    Debug.Log(i);
+                    holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearWood.getInt() + i - 1);
+                    holdItem.transform.GetChild(1).transform.rotation = nearItem.transform.rotation;
+                    holdItem.transform.GetChild(1).transform.SetParent(nearItem.transform);
+                }
+
+                holdItem.transform.SetParent(nearItem.transform);
+
+                holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearWood.getInt() + i - 1);
+                holdItem.transform.rotation = nearItem.transform.rotation;
+            }
+            isHold = false;
+        }
+
+        // 돌 블럭이 있을 경우 그 위에 쌓기
+        else if (holdItem.CompareTag("RockStack") && nearItem != null && nearItem.CompareTag("RockStack") && nearItem.layer == 6)
+        {
+            nearRock = nearItem.GetComponent("RockStack") as RockStack; // 충돌한 돌 블럭의 RockStack스크립트 가져오기
+            holdRock = holdItem.GetComponent("RockStack") as RockStack; // 들고있는 돌 블럭의 RockStack스크립트 가져오기
+
+            // 맨 아래의 돌 블럭을 설치 위치로 설정
+            equipPoint.transform.DetachChildren();
+
+            // 들고 있는 돌 블럭이 1개 일 때
+            if (holdRock.getInt() == 1)
+            {
+                holdItem.transform.SetParent(nearItem.transform);
+
+                holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * nearRock.getInt();
+                holdItem.transform.rotation = nearItem.transform.rotation;
+            }
+
+            // 들고 있는 나무 블럭이 2개 이상일 때
+            else if (holdRock.getInt() >= 2)
+            {
+                int i;
+                for (i = 1; i < holdRock.getInt(); i++)
+                {
+                    Debug.Log(i);
+                    holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRock.getInt() + i - 1);
+                    holdItem.transform.GetChild(1).transform.rotation = nearItem.transform.rotation;
+                    holdItem.transform.GetChild(1).transform.SetParent(nearItem.transform);
+                }
+
+                holdItem.transform.SetParent(nearItem.transform);
+
+                holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRock.getInt() + i - 1);
+                holdItem.transform.rotation = nearItem.transform.rotation;
+            }
             isHold = false;
         }
     }
