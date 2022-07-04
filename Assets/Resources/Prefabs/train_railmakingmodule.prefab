@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4904736201136290618
+--- !u!1 &4431735239197931453
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,45 +8,45 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4904736201136290565}
-  - component: {fileID: 4904736201136290567}
-  - component: {fileID: 4904736201136290564}
-  m_Layer: 10
+  - component: {fileID: 4843200038704718982}
+  - component: {fileID: 7773687507778346444}
+  - component: {fileID: 6540376452131862872}
+  m_Layer: 0
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4904736201136290565
+--- !u!4 &4843200038704718982
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4904736201136290618}
+  m_GameObject: {fileID: 4431735239197931453}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: -4.2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4904736201255851480}
+  m_Father: {fileID: 5424221765266707934}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4904736201136290567
+--- !u!33 &7773687507778346444
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4904736201136290618}
-  m_Mesh: {fileID: -2432090755550338912, guid: 2a169a27908d0e44d96ea0c6df783e16, type: 3}
---- !u!23 &4904736201136290564
+  m_GameObject: {fileID: 4431735239197931453}
+  m_Mesh: {fileID: -2432090755550338912, guid: 05daef57dbe079547a658124cd0f676d, type: 3}
+--- !u!23 &6540376452131862872
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4904736201136290618}
+  m_GameObject: {fileID: 4431735239197931453}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3033667219593020291, guid: 445840032d01ab84f8aa52f4507d6825, type: 3}
+  - {fileID: -8469494145858465668, guid: 05daef57dbe079547a658124cd0f676d, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -81,7 +81,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &4904736201255851481
+--- !u!1 &4615455524242739044
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,74 +89,68 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4904736201255851480}
-  - component: {fileID: 4904736201255851557}
-  - component: {fileID: 4904736201255851482}
-  - component: {fileID: 4904736201255851483}
-  m_Layer: 10
-  m_Name: TempRock
+  - component: {fileID: 5424221765266707934}
+  - component: {fileID: 5533812928221165180}
+  - component: {fileID: 5533812928221165181}
+  - component: {fileID: 5533812928221165178}
+  m_Layer: 0
+  m_Name: train_railmakingmodule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4904736201255851480
+--- !u!4 &5424221765266707934
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4904736201255851481}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28.51, y: 0.5, z: 9.67}
-  m_LocalScale: {x: 1, y: 3, z: 1}
+  m_GameObject: {fileID: 4615455524242739044}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 8, y: 1.6, z: 14.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4904736201136290565}
+  - {fileID: 4843200038704718982}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4904736201255851557
+--- !u!65 &5533812928221165180
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4904736201255851481}
+  m_GameObject: {fileID: 4615455524242739044}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.6, y: 1.6, z: 1.6}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &4904736201255851482
-Rigidbody:
+  m_Size: {x: 2.2195506, y: 1, z: 1.0656214}
+  m_Center: {x: -0.906307, y: 0, z: 0.032810688}
+--- !u!114 &5533812928221165181
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4904736201255851481}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!208 &4904736201255851483
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4904736201255851481}
+  m_GameObject: {fileID: 4615455524242739044}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.8, y: 0.8, z: 0.8}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
-  m_TimeToStationary: 0.5
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 974dff94a0da8554e924ef2518340e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stoneNum: 0
+  woodNum: 0
+--- !u!114 &5533812928221165178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4615455524242739044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcc1e04977009704aa502d0838d68c44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

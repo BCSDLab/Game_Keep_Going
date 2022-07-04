@@ -16,7 +16,7 @@ public class MapManager : MonoBehaviour
     [SerializeField]
     private GameObject MapPrefab;
 
-    public int stageLevel = 0;
+    public int stageLevel = 1;
     public int stageLength = 40;
 
     List<GameObject> Maps = new List<GameObject>();
@@ -48,9 +48,8 @@ public class MapManager : MonoBehaviour
     {
         FirstSetup();
 
-        MapSetUp(40, 1);
-
-        Invoke("InvokeMapMeshgen", 0.1f);
+        MapSetUp(40, stageLevel);
+        
 
     }
 
@@ -76,22 +75,19 @@ public class MapManager : MonoBehaviour
         nextStartPos = new Vector3(0f, 0, 0);
     }
 
-    private void MapSetUptest()
-    {
-        MapSetUp(40, 2);
-    }
 
-    private void MapSetUp(int stagelength, int difficulty)
+    public void MapSetUp(int stagelength, int difficulty)
     {
         currentStartPos = nextStartPos;
         Debug.Log("current" + currentStartPos);
-        stageLevel++;
+
         stageLength = stagelength;
         GameObject newmap = Instantiate(MapPrefab);
         Maps.Add(newmap);
         nextStartPos = currentStartPos + new Vector3(1.6f * stageLength, 0,  0);
         Debug.Log("next" + nextStartPos);
-
+        Invoke("InvokeMapMeshgen", 0.1f);
+        stageLevel++;
     }
 
 

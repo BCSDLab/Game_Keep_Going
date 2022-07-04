@@ -20,7 +20,7 @@ public class LastRail: MonoBehaviour
     {
         if(player == null)
         {
-            GameObject playerObj = GameObject.Find("player_test(Clone)");
+            GameObject playerObj = GameObject.Find("player");
             if (playerObj.GetComponents<MyPlayer>() != null)
                 player = playerObj.transform.GetComponent<PickUpPutDown>();
         }
@@ -28,7 +28,7 @@ public class LastRail: MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.CompareTag("Player") && player.isHoldRail && !canSetZone.isThereRail)
+		if (other.gameObject.CompareTag("Player") && player.IsHoldRail() && !canSetZone.isThereRail)
 		{
             Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
             trChild.gameObject.SetActive(true);

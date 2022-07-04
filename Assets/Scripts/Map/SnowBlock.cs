@@ -7,6 +7,14 @@ public class SnowBlock : Block
     int snowGenTiming = 0;
     [SerializeField]
     private int currentSnowLevel = 0;
+    [SerializeField]
+    private Material[] Transparent;
+    [SerializeField]
+    private Material[] NonTrans;
+
+    bool isPlayerInBlock = false;
+    float playerStandTime = 0.0f;
+    float snowGradeDownTime = 0.5f;
 
     public void SetData(int Timing, int snowLevel, int d_x, int d_y)
     {
@@ -19,7 +27,7 @@ public class SnowBlock : Block
     // Start is called before the first frame update
     void Start()
     {
-        
+        SnowBlockUpdate();
     }
 
 
@@ -33,6 +41,19 @@ public class SnowBlock : Block
                 currentSnowLevel++;
                 SnowBlockUpdate();
             }
+        }
+        if (isPlayerInBlock)
+        {
+            playerStandTime += Time.deltaTime;
+            if(playerStandTime > snowGradeDownTime)
+            {
+                DigSnow();
+                playerStandTime = 0.0f;
+            }
+        }
+        else
+        {
+            playerStandTime = 0.0f;
         }
 
         
@@ -53,6 +74,30 @@ public class SnowBlock : Block
     }
     public void SnowBlockUpdate()
     {
-        this.transform.localScale = new Vector3(1, 0.2f * currentSnowLevel, 1);
+        if (currentSnowLevel == 0)
+        {
+            transform.GetChild(0).GetComponent<MeshRenderer>().materials = Transparent;
+        }
+        else
+        {
+            transform.GetChild(0).GetComponent<MeshRenderer>().materials = NonTrans;
+        }
+        this.transform.localScale = new Vector3(1, 0.1f * currentSnowLevel, 1);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Player")
+        {
+            isPlayerInBlock = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.tag == "Player")
+        {
+            isPlayerInBlock = false;
+        }
     }
 }
