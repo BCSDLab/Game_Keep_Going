@@ -82,7 +82,23 @@ public class SnowBlock : Block
         {
             transform.GetChild(0).GetComponent<MeshRenderer>().materials = NonTrans;
         }
-        this.transform.localScale = new Vector3(1, 0.2f * currentSnowLevel, 1);
+        this.transform.localScale = new Vector3(1, 0.1f * currentSnowLevel, 1);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Player")
+        {
+            isPlayerInBlock = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.tag == "Player")
+        {
+            isPlayerInBlock = false;
+        }
     }
 
     private void OnTriggerEnter(Collider other)

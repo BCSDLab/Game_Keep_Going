@@ -77,7 +77,7 @@ GameObject:
   - component: {fileID: 4511121954251726649}
   m_Layer: 0
   m_Name: Wolf
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -214,5 +214,3 @@ MonoBehaviour:
   target: {fileID: 0}
   LockRange: 12
   AttackRange: 3
-  isAttackFinished: 0
-  isAttackStarted: 0

@@ -18,12 +18,12 @@ public class MyPlayer : Player
 
     void Start()
     {
-        gameObject.AddComponent<PickUpPutDown>();
-//        gameObject.AddComponent<PlayerMining>();
+        gameObject.AddComponent<PlayerMining>();
         controller = GetComponent<PlayerController>();
         myRigidbody = GetComponent<Rigidbody>();
         viewCamera = Camera.main;
-        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+        /// 지웠음...
+        //networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
         gunController = GetComponent<GunController>();
 	}
 
@@ -56,7 +56,7 @@ public class MyPlayer : Player
         movePacket.dirH = dirH;
         movePacket.dirV = dirV;
         movePacket.rotateY = transform.rotation.eulerAngles.y;
-        networkManager.Send(movePacket.Write());
+        //networkManager.Send(movePacket.Write());
     }
 
     void FixedUpdate()
