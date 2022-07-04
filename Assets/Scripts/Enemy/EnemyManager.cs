@@ -46,7 +46,7 @@ public class EnemyManager : MonoBehaviour
     {
         Transform enemy = enemyParant.GetChild(packet.enemyIdx - 1);
         Vector3 targetPos = new Vector3(packet.posX, packet.posY, packet.posZ);
-        enemy.position = Vector3.MoveTowards(enemy.position, targetPos, 1f * Time.deltaTime);
+        enemy.position = Vector3.MoveTowards(enemy.position, targetPos, 10 * Time.deltaTime);
         Debug.Log("Enemy Move!!!!   " + targetPos);
     }
 

@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class EnemyParent : MonoBehaviour
 {
+    [SerializeField]
     NetworkManager networkManager;
     // Start is called before the first frame update
     void Start()
     {
 
-        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+        //networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
     }
 
     private void SendEnemyList()
@@ -30,7 +31,7 @@ public class EnemyParent : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(networkManager)
+        if(networkManager.isHost)
             SendEnemyList();
 
     }

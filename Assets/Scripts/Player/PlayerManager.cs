@@ -20,6 +20,7 @@ public class PlayerManager : MonoBehaviour
             GameObject go = Instantiate(obj) as GameObject;
             if (p.isSelf)
             {
+                go.AddComponent<PlayerStat>();
                 MyPlayer myPlayer = go.AddComponent<MyPlayer>();
                 myPlayer.PlayerId = p.playerId;
                 myPlayer.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
