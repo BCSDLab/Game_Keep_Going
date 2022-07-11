@@ -34,11 +34,15 @@ public class PickUpPutDown : MonoBehaviour
 
     public Rail nearRail;
     public Rail holdRail;
-
     private WoodStack nearWood;
     private WoodStack holdWood;
     private RockStack nearRock;
     private RockStack holdRock;
+
+    private TrainBrake canWoodPut;
+    private TrainConversion canBlockPut;
+    private TrainInvisible canRockPut;
+
 
     private List<GameObject> railroad1;
     private List<GameObject> railroad2;
@@ -64,18 +68,92 @@ public class PickUpPutDown : MonoBehaviour
         railroad1 = new List<GameObject>();
         railroad2 = new List<GameObject>();
         AddRailToList(lastBeforeRail);
+
+        if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeInHierarchy)
+            canWoodPut = GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>();
     }
 
     void Update()
 	{
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if(!isHold)
+            if (!isHold)
+            {
                 TryItemPickUp();
+            }
             else
+            {
                 TryItemPutDown();
-        }
 
+				if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+				{
+					WoodPutToBrake();
+				}
+				if (GameObject.Find("Train").transform.Find("train_conversionmodule").gameObject.activeSelf == true)
+				{			
+					BlockPutToConvert();
+				}
+                if(GameObject.Find("Train").transform.Find("train_platformmodule").gameObject.activeSelf == true)
+				{
+                    RockPutForPlatform();
+                }
+			}
+        }
+    }
+
+    private void RockPutForPlatform()
+	{
+        canRockPut = GameObject.Find("train_platformmodule").transform.GetComponent<TrainInvisible>();
+		if (canRockPut.GetCanRockPut())
+		{
+            GameObject.Find("train_platformmodule").transform.GetComponent<TrainInvisible>().SetRockPut(true);
+            Object.Destroy(holdItem);
+            holdItem = null;
+            Debug.Log("isHold " + isHold);
+		}
+	}
+
+	// 플레이어가 블럭 넣으면 rockPut이런거 true로 해주기, holdItem은 destroy
+	private void BlockPutToConvert()
+	{
+        // 플레이어가 변환 모듈과 충돌한 상태이고, holdItem이 null이 아니고, holdItem이 WoodStack이거나 RockStack이면 true
+        canBlockPut = GameObject.Find("train_conversionmodule").transform.GetComponent<TrainConversion>();
+		if (canBlockPut.getCanBlockPut())
+		{
+            if (holdItem.CompareTag("RockStack"))
+            {
+                GameObject.Find("train_conversionmodule").transform.GetComponent<TrainConversion>().setRockPut(true);
+            }
+            else if (holdItem.CompareTag("WoodStack"))
+			{
+                GameObject.Find("train_conversionmodule").transform.GetComponent<TrainConversion>().setWoodPut(true);
+            }
+			Object.Destroy(holdItem);
+            canBlockPut.setCanBlockPut(false);
+            holdItem = null;
+		}
+	}
+
+	private void WoodPutToBrake()
+	{
+        canWoodPut = GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>();
+		if (canWoodPut.GetCanWoodPut())
+		{
+            // 들고 있던 나무 블럭 destroy하기
+            // woodPut = true로 하기
+            GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>().setWoodPut(true); 
+            Object.Destroy(holdItem);
+            holdItem = null;
+            
+
+            Debug.Log("나무 블럭이 적용됨!!!!!");
+		}
+    }
+
+
+    public GameObject GetHoldItem()
+	{
+        return holdItem;
     }
 
     private void AddRailToList(GameObject rail)
@@ -527,9 +605,10 @@ public class PickUpPutDown : MonoBehaviour
         }
 
         // 도끼 내려놓기, 곡괭이 내려놓기, 나무 블럭 내려놓기, 돌 블럭 내려놓기
-        else if (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe") || holdItem.CompareTag("WoodStack")  || holdItem.CompareTag("RockStack") && nearItem == null)
+        else if (nearItem == null && (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe") || holdItem.CompareTag("WoodStack")  || holdItem.CompareTag("RockStack")))
 		{
             Debug.Log("도끼 내려놓기");
+            Debug.Log(nearItem);
 
             equipPoint.transform.DetachChildren();
             holdItem.transform.position = equipPoint.transform.position - new Vector3(0, 1.2f, 0);
@@ -543,6 +622,8 @@ public class PickUpPutDown : MonoBehaviour
         // 나무 블럭이 있을 경우 그 위에 쌓기
         else if (holdItem.CompareTag("WoodStack") && nearItem != null && nearItem.CompareTag("WoodStack") && nearItem.layer == 6)
         {
+            Debug.Log("나무블럭 위에 쌓기");
+
             nearWood = nearItem.GetComponent("WoodStack") as WoodStack; // 충돌한 나무 블럭의 WoodStack스크립트 가져오기
             holdWood = holdItem.GetComponent("WoodStack") as WoodStack; // 들고있는 나무 블럭의 WoodStack스크립트 가져오기
 
@@ -596,7 +677,7 @@ public class PickUpPutDown : MonoBehaviour
                 holdItem.transform.rotation = nearItem.transform.rotation;
             }
 
-            // 들고 있는 나무 블럭이 2개 이상일 때
+            // 들고 있는 돌 블럭이 2개 이상일 때
             else if (holdRock.getInt() >= 2)
             {
                 int i;
@@ -621,7 +702,7 @@ public class PickUpPutDown : MonoBehaviour
 	{
         if(other.gameObject.layer == LayerMask.NameToLayer("Item"))
 		{
-            Debug.Log("아이템 감지(반투명)");
+            //Debug.Log("아이템 감지(반투명)");
             isItemNear = true;
             nearItem = other.gameObject;
 		}
@@ -631,7 +712,7 @@ public class PickUpPutDown : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Item"))
         {
-            Debug.Log("아이템과 멀어짐");
+            //Debug.Log("아이템과 멀어짐");
             isItemNear = false;
             nearItem = null;
         }
