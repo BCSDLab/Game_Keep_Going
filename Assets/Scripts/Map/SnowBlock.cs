@@ -101,19 +101,4 @@ public class SnowBlock : Block
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.tag == "Player")
-        {
-            isPlayerInBlock = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if(other.tag == "Player")
-        {
-            isPlayerInBlock = false;
-        }
-    }
 }

@@ -21,6 +21,7 @@ public class MapManager : MonoBehaviour
     public int stageLength = 40;
 
     List<GameObject> Maps = new List<GameObject>();
+    public Map currentMap;
 
     public int seed;
     
@@ -86,6 +87,7 @@ public class MapManager : MonoBehaviour
         stageLength = stagelength;
         GameObject newmap = Instantiate(MapPrefab);
         Maps.Add(newmap);
+        //currentMap = newmap.GetComponent<Map>();
         nextStartPos = currentStartPos + new Vector3(1.6f * stageLength, 0,  0);
         Debug.Log("next" + nextStartPos);
         Invoke("InvokeMapMeshgen", 0.1f);
@@ -98,6 +100,7 @@ public class MapManager : MonoBehaviour
         GameObject resObj = map.GetResourceObject(pkt.resourceIdx);
         Mining(resObj);
     }
+
     public void Mining(GameObject collObj)
     {
         Vector3 resourcesPos = collObj.transform.position;

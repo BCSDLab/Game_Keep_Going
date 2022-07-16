@@ -11,7 +11,7 @@ public class LastRail: MonoBehaviour
 
     void Start()
     {
-        //player = GameObject.Find("player").transform.GetComponent<PickUpPutDown>();
+        player = GameObject.Find("player").transform.GetComponent<PickUpPutDown>();
         canSetZone = this.gameObject.transform.GetChild(0).GetComponent<CanSetZone>();
     }
 
