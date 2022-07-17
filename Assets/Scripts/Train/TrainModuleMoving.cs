@@ -20,12 +20,15 @@ public class TrainModuleMoving : MonoBehaviour
 
 	void Update()
 	{
-		if(GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+		if (GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
 		{
-			if (GameObject.Find("Train").transform.Find("train_breakingmodule").GetComponent<TrainBrake>().getWoodPut())
+			if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
 			{
-				StopAllCoroutines();
-				StartCoroutine(trainBrake());
+				if (GameObject.Find("Train").transform.Find("train_breakingmodule").GetComponent<TrainBrake>().getWoodPut())
+				{
+					StopAllCoroutines();
+					StartCoroutine(trainBrake());
+				}
 			}
 		}
 

@@ -51,6 +51,7 @@ public class PickUpPutDown : MonoBehaviour
     private bool isHold = false;
 	private bool isItemNear = false;
     public bool isHoldRail = false;
+    private bool isTrainNear = false;
 
 
     void Start()
@@ -63,14 +64,22 @@ public class PickUpPutDown : MonoBehaviour
         canSetZoneRightS = GameObject.Find("PreCanSetZoneRight").GetComponent<CanSetZone>();
         lastRailPos = GameObject.Find("LastRailPos");
         curvedRail = Resources.Load("Prefabs/rail_curvedbase") as GameObject;
-        lastBeforeRail = GameObject.Find("FIxedRail").transform.GetChild(7).gameObject;
         equipPoint = GameObject.FindGameObjectWithTag("EquipPoint");
-        railroad1 = new List<GameObject>();
-        railroad2 = new List<GameObject>();
-        AddRailToList(lastBeforeRail);
+        if (GameObject.Find("FIxedRail") != null)
+        {
+            lastBeforeRail = GameObject.Find("FIxedRail").transform.GetChild(7).gameObject;
+            railroad1 = new List<GameObject>();
+            railroad2 = new List<GameObject>();
+            AddRailToList(lastBeforeRail);
+        }
 
-        if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeInHierarchy)
-            canWoodPut = GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>();
+        if(GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
+		{
+            if(GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+			{
+                canWoodPut = GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>();
+            }
+		}
     }
 
     void Update()
@@ -84,18 +93,26 @@ public class PickUpPutDown : MonoBehaviour
             else
             {
                 TryItemPutDown();
-
-				if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
-				{
-					WoodPutToBrake();
-				}
-				if (GameObject.Find("Train").transform.Find("train_conversionmodule").gameObject.activeSelf == true)
-				{			
-					BlockPutToConvert();
-				}
-                if(GameObject.Find("Train").transform.Find("train_platformmodule").gameObject.activeSelf == true)
-				{
-                    RockPutForPlatform();
+                if (GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
+                {
+                    if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+                    {
+                        WoodPutToBrake();
+                    }
+                }
+                if (GameObject.Find("Train").transform.Find("train_conversionmodule") != null)
+                {
+                    if (GameObject.Find("Train").transform.Find("train_conversionmodule").gameObject.activeSelf == true)
+                    {
+                        BlockPutToConvert();
+                    }
+                }
+                if (GameObject.Find("Train").transform.Find("train_platformmodule") != null)
+                {
+                    if (GameObject.Find("Train").transform.Find("train_platformmodule").gameObject.activeSelf == true)
+                    {
+                        RockPutForPlatform();
+                    }
                 }
 			}
         }
@@ -346,6 +363,22 @@ public class PickUpPutDown : MonoBehaviour
                 isHold = true;
             }
         }
+
+        // 모듈 들기
+        else if(nearItem.CompareTag("Train"))
+		{
+            holdItem = nearItem;
+            nearItem = null;
+            Debug.Log("모듈 주움!");
+            holdItem.transform.SetParent(equipPoint.transform);
+            holdItem.transform.localPosition = Vector3.zero;
+            holdItem.transform.localPosition = Vector3.right + Vector3.up * -0.7f + Vector3.forward * 0.1f;
+			holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+
+            holdItem.GetComponent<Collider>().enabled = false;
+
+            isHold = true;
+        }
     }
 
     // 아이템 내려놓기 시도
@@ -371,7 +404,8 @@ public class PickUpPutDown : MonoBehaviour
             //itemRigidbody.isKinematic = false;
 
             isHold = false;
-            isHoldRail = false;           
+            isHoldRail = false;
+            holdItem = null;
         }
 
         // 레일이 있을 경우 그 위에 쌓기
@@ -382,7 +416,7 @@ public class PickUpPutDown : MonoBehaviour
         /// 들고 있던 레일이 rail의 자식 오브젝트가 되는 순서로는 들고 있던 레일의 첫번쨰 자식 레일 -> 들고 있던 레일의 두번째 자식 레일 -> 들고 있던 레일에서 부모가 되는 레일 순이다.
         /// </summary>
         else if (holdItem.CompareTag("Rail") && nearItem != null && nearItem.CompareTag("Rail") && nearItem.layer == 6)
-		{
+        {
             nearRail = nearItem.GetComponent("Rail") as Rail; // 충돌한 레일의 Rail스크립트 가져오기
             holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
 
@@ -404,7 +438,7 @@ public class PickUpPutDown : MonoBehaviour
             {
                 int i;
                 for (i = 1; i < holdRail.getInt(); i++)
-				{
+                {
                     // 첫번째 자식rail을 setparent로 위치 바꿨으니까 그 뒤 2,3번째 자식 레일 인식이 문제가 되는것임. i를 1로 수정
                     Debug.Log(i);
                     holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRail.getInt() + i - 1);
@@ -424,12 +458,13 @@ public class PickUpPutDown : MonoBehaviour
 
             isHold = false;
             isHoldRail = false;
+            holdItem = null;
 
         }
 
-		// 앞에 레일 설치하기
-		else if (holdItem.CompareTag("Rail") && canSetZoneFront.activeSelf == true)
-        { 
+        // 앞에 레일 설치하기
+        else if (holdItem.CompareTag("Rail") && canSetZoneFront.activeSelf == true)
+        {
             holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
 
             if (holdRail.getInt() == 1) // 들고 있는 레일이 1개일 때
@@ -437,13 +472,14 @@ public class PickUpPutDown : MonoBehaviour
                 equipPoint.transform.DetachChildren();
                 lastBeforeRail = holdItem;
 
-				isHold = false;
-				isHoldRail = false;
+                isHold = false;
+                isHoldRail = false;
+                holdItem = null;
 
                 canSetZoneFront.SetActive(false);
             }
-            else if(holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
-			{
+            else if (holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
+            {
                 lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
                 holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
             }
@@ -473,8 +509,8 @@ public class PickUpPutDown : MonoBehaviour
         }
 
         // 왼쪽에 레일 설치하기
-        else if(holdItem.CompareTag("Rail") && canSetZoneLeft.activeSelf == true)
-		{
+        else if (holdItem.CompareTag("Rail") && canSetZoneLeft.activeSelf == true)
+        {
             holdRail = holdItem.GetComponent("Rail") as Rail;
 
             RemoveRailToList(lastBeforeRail);
@@ -494,17 +530,18 @@ public class PickUpPutDown : MonoBehaviour
 
             if (holdRail.getInt() == 1) // 들고 있는 레일이 1개 일 때
             {
-                equipPoint.transform.DetachChildren();   
+                equipPoint.transform.DetachChildren();
 
                 lastBeforeRail = holdItem;
 
                 isHold = false;
                 isHoldRail = false;
+                holdItem = null;
 
                 canSetZoneLeft.SetActive(false);
             }
-            else if(holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
-			{
+            else if (holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
+            {
                 lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
                 holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
             }
@@ -566,11 +603,12 @@ public class PickUpPutDown : MonoBehaviour
 
                 isHold = false;
                 isHoldRail = false;
+                holdItem = null;
 
                 canSetZoneRight.SetActive(false);
             }
-            else if(holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
-			{
+            else if (holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
+            {
                 lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
                 holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
             }
@@ -605,9 +643,9 @@ public class PickUpPutDown : MonoBehaviour
         }
 
         // 도끼 내려놓기, 곡괭이 내려놓기, 나무 블럭 내려놓기, 돌 블럭 내려놓기
-        else if (nearItem == null && (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe") || holdItem.CompareTag("WoodStack")  || holdItem.CompareTag("RockStack")))
-		{
-            Debug.Log("도끼 내려놓기");
+        else if (nearItem == null && (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe") || holdItem.CompareTag("WoodStack") || holdItem.CompareTag("RockStack")))
+        {
+            Debug.Log("바닥에 내려놓기");
             Debug.Log(nearItem);
 
             equipPoint.transform.DetachChildren();
@@ -617,6 +655,7 @@ public class PickUpPutDown : MonoBehaviour
             //holdItem.GetComponent<Rigidbody>().isKinematic = false;
 
             isHold = false;
+            holdItem = null;
         }
 
         // 나무 블럭이 있을 경우 그 위에 쌓기
@@ -657,6 +696,7 @@ public class PickUpPutDown : MonoBehaviour
                 holdItem.transform.rotation = nearItem.transform.rotation;
             }
             isHold = false;
+            holdItem = null;
         }
 
         // 돌 블럭이 있을 경우 그 위에 쌓기
@@ -695,6 +735,59 @@ public class PickUpPutDown : MonoBehaviour
                 holdItem.transform.rotation = nearItem.transform.rotation;
             }
             isHold = false;
+            holdItem = null;
+        }
+
+        // 모듈 바닥에 내려놓으면 원래 자리로 돌려놓기
+        else if (!isTrainNear && nearItem == null && holdItem.CompareTag("Train"))
+        {
+            Debug.Log("모듈 바닥에 내려놓기");
+
+            Transform holdItemT = holdItem.transform;
+
+            equipPoint.transform.DetachChildren();
+            holdItem.transform.position = holdItemT.position + new Vector3(0, -0.4f, 0);
+
+            holdItem.GetComponent<Collider>().enabled = true;
+
+            isHold = false;
+            holdItem = null;
+        }
+
+        //모듈 기차에 붙이기 - 모듈의 레이어 바꾸기, 모듈의 포지션 조정, Train의 자식오브젝트로 두기
+        else if (isTrainNear && holdItem.CompareTag("Train"))
+        {
+            Debug.Log("모듈 붙이기");
+
+            equipPoint.transform.DetachChildren();
+            int lastChildModuleNum = GameObject.Find("Train").transform.childCount - 1;
+            holdItem.transform.parent = GameObject.Find("Train").transform;
+            holdItem.transform.localPosition = GameObject.Find("Train").transform.GetChild(lastChildModuleNum).gameObject.transform.localPosition - new Vector3(3.2f, 0, 0);
+            holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+            
+            holdItem.GetComponent<Collider>().enabled = true;
+            holdItem.layer = 0;
+
+            // Train의 BoxCollider 키워주고 기차 List에 모듈 추가하기
+            GameObject.Find("Train").GetComponent<BoxCollider>().size += new Vector3(6, 0, 0);
+            
+            if(holdItem.name == "train_breakingmodule")
+			{
+                TrainSingleton.instance.AddToList(TrainSingleton.ModuleType.Brake);
+			}
+            else if(holdItem.name == "train_conversionmodule")
+			{
+                TrainSingleton.instance.AddToList(TrainSingleton.ModuleType.Conversion);
+			}
+            else if(holdItem.name == "train_platformmodule")
+			{
+                TrainSingleton.instance.AddToList(TrainSingleton.ModuleType.Platform);
+			}
+
+            isHold = false;
+            holdItem = null;
+
+            Debug.Log(TrainSingleton.instance.trainList.Count);
         }
     }
 
@@ -706,6 +799,11 @@ public class PickUpPutDown : MonoBehaviour
             isItemNear = true;
             nearItem = other.gameObject;
 		}
+
+        else if(other.name == "Train")
+		{
+            isTrainNear = true;
+		}
 	}
     
     private void OnTriggerExit(Collider other)
@@ -715,6 +813,11 @@ public class PickUpPutDown : MonoBehaviour
             //Debug.Log("아이템과 멀어짐");
             isItemNear = false;
             nearItem = null;
+        }
+
+        else if (other.name == "Train")
+        {
+            isTrainNear = false;
         }
     }
 }

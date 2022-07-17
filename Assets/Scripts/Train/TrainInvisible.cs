@@ -65,7 +65,7 @@ public class TrainInvisible : MonoBehaviour
         Debug.Log("platform모듈 시작");
         rockPut = false;
         SetCollider();
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f * rockNum);
         SetCollider();
         Debug.Log("platform모듈 끝");
     }

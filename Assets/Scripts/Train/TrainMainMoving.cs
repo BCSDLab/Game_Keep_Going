@@ -26,12 +26,15 @@ public class TrainMainMoving : MonoBehaviour
 
 	void Update()
 	{
-		if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+		if (GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
 		{
-			if (GameObject.Find("Train").transform.Find("train_breakingmodule").GetComponent<TrainBrake>().getWoodPut())
+			if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
 			{
-				StopAllCoroutines();
-				StartCoroutine(trainBrake());
+				if (GameObject.Find("Train").transform.Find("train_breakingmodule").GetComponent<TrainBrake>().getWoodPut())
+				{
+					StopAllCoroutines();
+					StartCoroutine(trainBrake());
+				}
 			}
 		}
 
@@ -50,14 +53,17 @@ public class TrainMainMoving : MonoBehaviour
 
 	private void RailRoad()
 	{
-		//if (player.GetRailRoad().Count != 0)
-		if(player.GetRailRoad().Count - location > 0)
+		if (player.GetRailRoad() != null)
 		{
-			isMove = true;
-			//Debug.Log(player.GetRailRoad().Count);
-			//Debug.Log(player.GetRailRoad()[0]);
-			StartCoroutine(TrainMove(player.GetRailRoad()[location]));
-			//player.GetRailRoad().RemoveAt(0);
+			Debug.Log("È®ÀÎ¿ë " + player.GetRailRoad());
+			if (player.GetRailRoad().Count - location > 0)
+			{
+				isMove = true;
+				//Debug.Log(player.GetRailRoad().Count);
+				//Debug.Log(player.GetRailRoad()[0]);
+				StartCoroutine(TrainMove(player.GetRailRoad()[location]));
+				//player.GetRailRoad().RemoveAt(0);
+			}
 		}
 	}
 
