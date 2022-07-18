@@ -44,11 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c16cf23b68f3ba4da424b4f534d83fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   Enemy: {fileID: 5124024433484447432}
   State: 0
-  LockRange: 12
-  AttackRange: 3
 --- !u!136 &5124024432018141166
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -79,7 +76,7 @@ GameObject:
   - component: {fileID: 5124024433484447432}
   m_Layer: 0
   m_Name: EnemyFollowing
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

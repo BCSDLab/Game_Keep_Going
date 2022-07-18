@@ -10,8 +10,9 @@ public class EnemyStranding : EnemyScript
     public float range = 3.0f;
     public float speed = 1.0f;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         FirstSetup(300, 1.0f, 5.0f);
     }
 

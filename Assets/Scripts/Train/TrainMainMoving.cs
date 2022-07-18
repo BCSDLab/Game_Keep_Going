@@ -10,6 +10,7 @@ using UnityEngine;
 
 public class TrainMainMoving : MonoBehaviour
 {
+    [SerializeField]
 	private PickUpPutDown player;
 
 	private bool hasPos = false;

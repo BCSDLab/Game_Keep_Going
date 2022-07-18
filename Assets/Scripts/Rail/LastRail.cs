@@ -18,17 +18,17 @@ public class LastRail: MonoBehaviour
     /*
     void Update()
     {
-        if(player == null)
+        /*if(player == null)
         {
             GameObject playerObj = GameObject.Find("player");
             if (playerObj.GetComponents<MyPlayer>() != null)
                 player = playerObj.transform.GetComponent<PickUpPutDown>();
-        }
+        }*/
     }
     */
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.CompareTag("Player") && player.isHoldRail && !canSetZone.isThereRail)
+		if (other.gameObject.CompareTag("Player") && player.IsHoldRail() && !canSetZone.isThereRail)
 		{
             Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
             trChild.gameObject.SetActive(true);

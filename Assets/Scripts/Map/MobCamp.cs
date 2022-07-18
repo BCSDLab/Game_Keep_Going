@@ -41,7 +41,8 @@ public class MobCamp : MonoBehaviour
             Vector3 point;
             if (RandomPoint(transform.position, spawnRadius, out point))
             {
-                Instantiate(mobStranding, point, Quaternion.identity);
+                GameObject mob =  Instantiate(mobStranding, point, Quaternion.identity);
+                mob.transform.parent = GameObject.Find("EnemyParant").transform;
             }
         }
     }
