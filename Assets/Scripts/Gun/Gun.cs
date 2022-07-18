@@ -9,7 +9,7 @@ public class Gun : MonoBehaviour
 
     float nextShootTime;
 
-    public void Shoot()
+    public virtual void Shoot()
     {
         if (Time.time > nextShootTime)
         {
