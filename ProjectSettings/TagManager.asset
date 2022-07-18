@@ -10,9 +10,6 @@ TagManager:
   - Axe
   - Pickaxe
   - Snow
-  - Train
-  - WoodStack
-  - RockStack
   layers:
   - Default
   - TransparentFX

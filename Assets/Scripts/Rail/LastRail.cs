@@ -15,7 +15,7 @@ public class LastRail: MonoBehaviour
         canSetZone = this.gameObject.transform.GetChild(0).GetComponent<CanSetZone>();
     }
 
-    /*
+    
     void Update()
     {
         /*if(player == null)
@@ -25,7 +25,7 @@ public class LastRail: MonoBehaviour
                 player = playerObj.transform.GetComponent<PickUpPutDown>();
         }*/
     }
-    */
+
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.gameObject.CompareTag("Player") && player.IsHoldRail() && !canSetZone.isThereRail)
