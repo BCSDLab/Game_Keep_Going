@@ -7,8 +7,12 @@ public class TrainInvisible : MonoBehaviour
     private GameObject[] train;
 
     [SerializeField]
-    private bool isInvisible = false;
-    
+    private bool rockPut = false;
+    [SerializeField]
+    private bool canRockPut = false;
+
+    private int rockNum;
+
 
     void Start()
     {
@@ -18,17 +22,53 @@ public class TrainInvisible : MonoBehaviour
     
     void Update()
     {
-        if (isInvisible)
+        if (rockPut)
             StartCoroutine(Invisible());
+    }
+
+    public bool GetCanRockPut()
+    {
+        return canRockPut;
+    }
+
+    public bool GetRockPut()
+    {
+        return rockPut;
+    }
+
+    public void SetRockPut(bool setBool)
+    {
+        rockPut = setBool;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && other.GetComponent<PickUpPutDown>().GetHoldItem() != null && other.GetComponent<PickUpPutDown>().GetHoldItem().CompareTag("RockStack"))
+        {
+            rockNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<RockStack>().getInt();
+            canRockPut = true;
+            Debug.Log("platform모듈에서 돌블럭 인식");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player") && other.GetComponent<PickUpPutDown>().GetHoldItem() != null && other.GetComponent<PickUpPutDown>().GetHoldItem().CompareTag("RockStack"))
+        {
+            canRockPut = false;
+            Debug.Log("platform모듈에서 돌블럭과 멀어짐");
+        }
     }
 
     IEnumerator Invisible()
 	{
-        isInvisible = false;
+        Debug.Log("platform모듈 시작");
+        rockPut = false;
         SetCollider();
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f * rockNum);
         SetCollider();
-	}
+        Debug.Log("platform모듈 끝");
+    }
 
 
     private void SetCollider()
