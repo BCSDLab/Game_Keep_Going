@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/* <·¹ÀÏ>
- * use gravity´Â Ç×»ó false
- * is kinematicÀº Ç×»ó true
- * is trigger´Â Ç×»ó true
- * tag´Â Ç×»ó Rail
- * ¼³Ä¡ µÇ±â Àü ·¹ÀÏÀÇ ·¹ÀÌ¾î : Item, ¼³Ä¡ µÈ ÈÄ ·¹ÀÏÀÇ ·¹ÀÌ¾î : Default
+/* <ë ˆì¼>
+ * use gravityëŠ” í•­ìƒ false
+ * is kinematicì€ í•­ìƒ true
+ * is triggerëŠ” í•­ìƒ true
+ * tagëŠ” í•­ìƒ Rail
+ * ì„¤ì¹˜ ë˜ê¸° ì „ ë ˆì¼ì˜ ë ˆì´ì–´ : Item, ì„¤ì¹˜ ëœ í›„ ë ˆì¼ì˜ ë ˆì´ì–´ : Default
  * 
- * ¹Ù´Ú¿¡ ÀÖ´Â ¾ÆÀÌÅÛ ·¹ÀÏ(¶Ç´Â ½×ÀÎ ·¹ÀÏ Áß ¸Ç ¾Æ·¡ ·¹ÀÏ) : box collider = true
- * ·¹ÀÏÀ» Áı°í ÀÖÀ¸¸é(1°³) : box collider = false
- * ´Ù¸¥ ·¹ÀÏ À§¿¡ ¿Ã·ÁÁö¸é : box collider = false
- * ¼³Ä¡µÈ ·¹ÀÏ : box collider = true
+ * ë°”ë‹¥ì— ìˆëŠ” ì•„ì´í…œ ë ˆì¼(ë˜ëŠ” ìŒ“ì¸ ë ˆì¼ ì¤‘ ë§¨ ì•„ë˜ ë ˆì¼) : box collider = true
+ * ë ˆì¼ì„ ì§‘ê³  ìˆìœ¼ë©´(1ê°œ) : box collider = false
+ * ë‹¤ë¥¸ ë ˆì¼ ìœ„ì— ì˜¬ë ¤ì§€ë©´ : box collider = false
+ * ì„¤ì¹˜ëœ ë ˆì¼ : box collider = true
  */
 
-// spaceÅ°·Î ÀÛµ¿ÇÏ´Â Çàµ¿(·¹ÀÏ Áı±â, ³»·Á³õ±â, ¼³Ä¡ÇÏ±â µî)
+// spaceí‚¤ë¡œ ì‘ë™í•˜ëŠ” í–‰ë™(ë ˆì¼ ì§‘ê¸°, ë‚´ë ¤ë†“ê¸°, ì„¤ì¹˜í•˜ê¸° ë“±)
 
 public class PickUpPutDown : MonoBehaviour
 {
@@ -25,11 +25,15 @@ public class PickUpPutDown : MonoBehaviour
     private CanSetZone canSetZoneFrontS;
     private CanSetZone canSetZoneLeftS;
     private CanSetZone canSetZoneRightS;
+    [SerializeField]
     private GameObject lastRailPos;
     private GameObject curvedRail;
-    private GameObject lastBeforeRail; // ¼³Ä¡ÇÑ ·¹ÀÏÀÇ ÀÌÀü ·¹ÀÏ
+    [SerializeField]
+    private GameObject lastBeforeRail; // ì„¤ì¹˜í•œ ë ˆì¼ì˜ ì´ì „ ë ˆì¼
     private GameObject equipPoint;
+    [SerializeField]
     private GameObject nearItem;
+    [SerializeField]
     private GameObject holdItem;
 
     public Rail nearRail;
@@ -43,16 +47,30 @@ public class PickUpPutDown : MonoBehaviour
     private TrainConversion canBlockPut;
     private TrainInvisible canRockPut;
 
+    private Vector3 PutDownPosition = Vector3.zero;
 
     private List<GameObject> railroad1;
     private List<GameObject> railroad2;
 
-    // »óÅÂ º¯¼ö
+    // ìƒíƒœ ë³€ìˆ˜
+    [SerializeField]
     private bool isHold = false;
-	private bool isItemNear = false;
+    [SerializeField]
+	  private bool isItemNear = false;
+    
     public bool isHoldRail = false;
     private bool isTrainNear = false;
 
+
+    public bool IsHoldRail()
+    {
+        return (isHold && holdItem.tag == "Rail");
+    }
+
+    public bool IsHold()
+    {
+        return isHold;
+    }
 
     void Start()
     {
@@ -64,6 +82,10 @@ public class PickUpPutDown : MonoBehaviour
         canSetZoneRightS = GameObject.Find("PreCanSetZoneRight").GetComponent<CanSetZone>();
         lastRailPos = GameObject.Find("LastRailPos");
         curvedRail = Resources.Load("Prefabs/rail_curvedbase") as GameObject;
+
+        lastBeforeRail = GameObject.Find("FixedRail");
+        lastBeforeRail = lastBeforeRail.transform.GetChild(7).gameObject;
+
         equipPoint = GameObject.FindGameObjectWithTag("EquipPoint");
         if (GameObject.Find("FIxedRail") != null)
         {
@@ -130,10 +152,10 @@ public class PickUpPutDown : MonoBehaviour
 		}
 	}
 
-	// ÇÃ·¹ÀÌ¾î°¡ ºí·° ³ÖÀ¸¸é rockPutÀÌ·±°Å true·Î ÇØÁÖ±â, holdItemÀº destroy
+	// í”Œë ˆì´ì–´ê°€ ë¸”ëŸ­ ë„£ìœ¼ë©´ rockPutì´ëŸ°ê±° trueë¡œ í•´ì£¼ê¸°, holdItemì€ destroy
 	private void BlockPutToConvert()
 	{
-        // ÇÃ·¹ÀÌ¾î°¡ º¯È¯ ¸ğµâ°ú Ãæµ¹ÇÑ »óÅÂÀÌ°í, holdItemÀÌ nullÀÌ ¾Æ´Ï°í, holdItemÀÌ WoodStackÀÌ°Å³ª RockStackÀÌ¸é true
+        // í”Œë ˆì´ì–´ê°€ ë³€í™˜ ëª¨ë“ˆê³¼ ì¶©ëŒí•œ ìƒíƒœì´ê³ , holdItemì´ nullì´ ì•„ë‹ˆê³ , holdItemì´ WoodStackì´ê±°ë‚˜ RockStackì´ë©´ true
         canBlockPut = GameObject.Find("train_conversionmodule").transform.GetComponent<TrainConversion>();
 		if (canBlockPut.getCanBlockPut())
 		{
@@ -156,14 +178,14 @@ public class PickUpPutDown : MonoBehaviour
         canWoodPut = GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>();
 		if (canWoodPut.GetCanWoodPut())
 		{
-            // µé°í ÀÖ´ø ³ª¹« ºí·° destroyÇÏ±â
-            // woodPut = true·Î ÇÏ±â
+            // ë“¤ê³  ìˆë˜ ë‚˜ë¬´ ë¸”ëŸ­ destroyí•˜ê¸°
+            // woodPut = trueë¡œ í•˜ê¸°
             GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>().setWoodPut(true); 
             Object.Destroy(holdItem);
             holdItem = null;
             
 
-            Debug.Log("³ª¹« ºí·°ÀÌ Àû¿ëµÊ!!!!!");
+            Debug.Log("ë‚˜ë¬´ ë¸”ëŸ­ì´ ì ìš©ë¨!!!!!");
 		}
     }
 
@@ -196,87 +218,72 @@ public class PickUpPutDown : MonoBehaviour
     }
 
 
-    // ¾ÆÀÌÅÛ Áİ±â ½Ãµµ
+    // ì•„ì´í…œ ì¤ê¸° ì‹œë„
     private void TryItemPickUp()
 	{
         if(isItemNear && nearItem.layer == 6)
 		{
             ItemPickUp();
-		}
+        }
     }
 
-    // ¾ÆÀÌÅÛ Áİ±â
+    // ì•„ì´í…œ ì¤ê¸°
     private void ItemPickUp()
 	{
-        nearRail = nearItem.GetComponent("Rail") as Rail; // Ãæµ¹ÇÑ ·¹ÀÏÀÇ Rail½ºÅ©¸³Æ® °¡Á®¿À±â
-                                                          //holdRail = holdItem.GetComponent("Rail") as Rail; // µé°íÀÖ´Â ·¹ÀÏÀÇ Rail½ºÅ©¸³Æ® °¡Á®¿À±â
+        nearRail = nearItem.GetComponent("Rail") as Rail; // ì¶©ëŒí•œ ë ˆì¼ì˜ RailìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+                                                          //holdRail = holdItem.GetComponent("Rail") as Rail; // ë“¤ê³ ìˆëŠ” ë ˆì¼ì˜ RailìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
         nearWood = nearItem.GetComponent("WoodStack") as WoodStack;
         nearRock = nearItem.GetComponent("RockStack") as RockStack;
 
 
-        // ·¹ÀÏ Áİ±â
+        // ë ˆì¼ ì¤ê¸°
         /// <summary>
-        /// ¹Ù´Ú¿¡ ·¹ÀÏÀÌ 3°³ ½×¿©ÀÖ°í ¾À¿¡¼­ ¹Ù´Ú°ú Ã¹¹øÂ°·Î °¡±î¿î ·¹ÀÏÀ» rail, railÀ§ÀÇ ·¹ÀÏÀ» rail1, rail1À§ÀÇ ·¹ÀÏÀ» rail2¶ó ÇÏ¸é
-        /// railÀº rail1, rail2ÀÇ ºÎ¸ğ ¿ÀºêÁ§Æ®°¡ µÈ´Ù. ±×¸®°í railÀÇ 0¹øÂ° ÀÚ½ÄÀº railÀÇ defalt¿ÀºêÁ§Æ®, railÀÇ 1¹ø¤Š ÀÚ½ÄÀº rail1, 2¹øÂ° ÀÚ½ÄÀº rail2°¡ µÈ´Ù.
-        /// ÀÌ·¸°Ô ÇÑ ÀÌÀ¯´Â ¸Ç ¾Æ·¡ÀÇ ºÎ¸ğ ¿ÀºêÁ§Æ®¸¸ box collider¸¦ Å°°í ³ª¸ÓÁö ÀÚ½Ä ·¹ÀÏ ¿ÀºêÁ§Æ®´Â box collider¸¦ ²ô·Á°í ÀÌ·¸°Ô Çß´Ù.
+        /// ë°”ë‹¥ì— ë ˆì¼ì´ 3ê°œ ìŒ“ì—¬ìˆê³  ì”¬ì—ì„œ ë°”ë‹¥ê³¼ ì²«ë²ˆì§¸ë¡œ ê°€ê¹Œìš´ ë ˆì¼ì„ rail, railìœ„ì˜ ë ˆì¼ì„ rail1, rail1ìœ„ì˜ ë ˆì¼ì„ rail2ë¼ í•˜ë©´
+        /// railì€ rail1, rail2ì˜ ë¶€ëª¨ ì˜¤ë¸Œì íŠ¸ê°€ ëœë‹¤. ê·¸ë¦¬ê³  railì˜ 0ë²ˆì§¸ ìì‹ì€ railì˜ defaltì˜¤ë¸Œì íŠ¸, railì˜ 1ë²ˆÂŠ ìì‹ì€ rail1, 2ë²ˆì§¸ ìì‹ì€ rail2ê°€ ëœë‹¤.
+        /// ì´ë ‡ê²Œ í•œ ì´ìœ ëŠ” ë§¨ ì•„ë˜ì˜ ë¶€ëª¨ ì˜¤ë¸Œì íŠ¸ë§Œ box colliderë¥¼ í‚¤ê³  ë‚˜ë¨¸ì§€ ìì‹ ë ˆì¼ ì˜¤ë¸Œì íŠ¸ëŠ” box colliderë¥¼ ë„ë ¤ê³  ì´ë ‡ê²Œ í–ˆë‹¤.
         /// 
-        /// ½×¿©ÀÖ´Â ·¹ÀÏÀÌ 3°³ ÀÌÇÏÀÏ ¶§ : ÇÃ·¹ÀÌ¾î°¡ ½×ÀÎ ·¹ÀÏ ÂÊÀ¸·Î °¬À» ¶§ railÀ» ÀÎ½ÄÇÒ °ÍÀÌ°í, space¸¦ ´©¸£¸é railÀº equipPointÀÇ ÀÚ½Ä¿ÀºêÁ§Æ®°¡ µÇ°í
-        /// railÀÇ Æ÷Áö¼ÇÀÌ equipPointÀÇ Æ÷Áö¼ÇÀ¸·Î ¸ÂÃçÁø´Ù.
-        /// ½×¿©ÀÖ´Â ·¹ÀÏÀÌ 3°³º¸´Ù ¸¹À» ¶§ : ½×¿©ÀÖ´Â ·¹ÀÏÀÌ ¹Ù´Ú¿¡¼­ºÎÅÍ rail, rail1, rail2, rail3, rail4 ÀÌ·¸°Ô ÀÖ´Ù°í ÇÏ¸é
-        /// ÇÃ·¹ÀÌ¾î°¡ railÀ» °¨ÁöÇßÀ» ¶§ space¸¦ ´©¸£¸é rail3ÀÌ rail2ÀÇ ÀÚ½Ä ¿ÀºêÁ§Æ®°¡ µÇ°í rail4µµ rail2ÀÇ ÀÚ½Ä ¿ÀºêÁ§Æ®°¡ µÈ´Ù.
-        /// ±× µÚ rail2´Â equipPointÀÇ ÀÚ½Ä¿ÀºêÁ§Æ®°¡ µÇ°í rail2ÀÇ Æ÷Áö¼ÇÀÌ equipPointÀÇ Æ÷Áö¼ÇÀ¸·Î ¸ÂÃçÁø´Ù.
+        /// ìŒ“ì—¬ìˆëŠ” ë ˆì¼ì´ 3ê°œ ì´í•˜ì¼ ë•Œ : í”Œë ˆì´ì–´ê°€ ìŒ“ì¸ ë ˆì¼ ìª½ìœ¼ë¡œ ê°”ì„ ë•Œ railì„ ì¸ì‹í•  ê²ƒì´ê³ , spaceë¥¼ ëˆ„ë¥´ë©´ railì€ equipPointì˜ ìì‹ì˜¤ë¸Œì íŠ¸ê°€ ë˜ê³ 
+        /// railì˜ í¬ì§€ì…˜ì´ equipPointì˜ í¬ì§€ì…˜ìœ¼ë¡œ ë§ì¶°ì§„ë‹¤.
+        /// ìŒ“ì—¬ìˆëŠ” ë ˆì¼ì´ 3ê°œë³´ë‹¤ ë§ì„ ë•Œ : ìŒ“ì—¬ìˆëŠ” ë ˆì¼ì´ ë°”ë‹¥ì—ì„œë¶€í„° rail, rail1, rail2, rail3, rail4 ì´ë ‡ê²Œ ìˆë‹¤ê³  í•˜ë©´
+        /// í”Œë ˆì´ì–´ê°€ railì„ ê°ì§€í–ˆì„ ë•Œ spaceë¥¼ ëˆ„ë¥´ë©´ rail3ì´ rail2ì˜ ìì‹ ì˜¤ë¸Œì íŠ¸ê°€ ë˜ê³  rail4ë„ rail2ì˜ ìì‹ ì˜¤ë¸Œì íŠ¸ê°€ ëœë‹¤.
+        /// ê·¸ ë’¤ rail2ëŠ” equipPointì˜ ìì‹ì˜¤ë¸Œì íŠ¸ê°€ ë˜ê³  rail2ì˜ í¬ì§€ì…˜ì´ equipPointì˜ í¬ì§€ì…˜ìœ¼ë¡œ ë§ì¶°ì§„ë‹¤.
         /// </summary>
+        /// 
         if (nearItem.CompareTag("Rail"))
         {
-            // ½×¿©ÀÖ´Â ·¹ÀÏÀÌ 3°³ ÀÌÇÏÀÏ ¶§
+            Rail nearRail = nearItem.GetComponent<Rail>();
+            nearRail = nearItem.GetComponent("Rail") as Rail; // ì¶©ëŒí•œ ë ˆì¼ì˜ RailìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+                                                              //holdRail = holdItem.GetComponent("Rail") as Rail; // ë“¤ê³ ìˆëŠ” ë ˆì¼ì˜ RailìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+                                                              // ìŒ“ì—¬ìˆëŠ” ë ˆì¼ì´ 3ê°œ ì´í•˜ì¼ ë•Œ
             if (nearRail.getInt() <= 3)
             {
-                holdItem = nearItem;
+//develop       holdItem = nearRail.DeleteRail(nearRail.getInt());
                 nearItem = null;
-                holdItem.transform.SetParent(equipPoint.transform);
-                holdItem.transform.localPosition = Vector3.zero;
-                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
-                holdItem.transform.Rotate(new Vector3(0, 90, 0));
-
-                Collider itemColider = holdItem.GetComponent<Collider>();
-                //Rigidbody itemRigidbody = holdItem.GetComponent<Rigidbody>();
-                itemColider.enabled = false;
-                //itemRigidbody.isKinematic = true;
-
-                isHold = true;
-                isHoldRail = true;
+                nearRail = null;
             }
-            // ½×¿©ÀÖ´Â ·¹ÀÏÀÌ 3°³º¸´Ù ¸¹À» ¶§
+            // ìŒ“ì—¬ìˆëŠ” ë ˆì¼ì´ 3ê°œë³´ë‹¤ ë§ì„ ë•Œ
             else if (nearRail.getInt() > 3)
             {
-                //Debug.Log(nearRail.getInt());
-                nearItem.transform.GetChild(nearRail.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.getInt() - 3));
-                //Debug.Log(nearRail.getInt());
-                nearItem.transform.GetChild(nearRail.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.getInt() - 3));
-                //Debug.Log(nearRail.getInt());
-                holdItem = nearItem.transform.GetChild(nearRail.getInt() - 3).gameObject;
-
-
+//develop       holdItem = nearRail.DeleteRail(3);
                 nearItem = null;
-                holdItem.transform.SetParent(equipPoint.transform);
-                holdItem.transform.localPosition = Vector3.zero;
-                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
-                holdItem.transform.Rotate(new Vector3(0, 90, 0));
-
-                Collider itemColider = holdItem.GetComponent<Collider>();
-                itemColider.enabled = false;
-
-                isHold = true;
-                isHoldRail = true;
+                nearRail = null;
             }
+
+            holdItem.transform.SetParent(equipPoint.transform);
+            holdItem.transform.localPosition = Vector3.zero;
+            holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+            holdItem.transform.Rotate(new Vector3(0, 90, 0));
+
+            isHold = true;
+
         }
 
-        // µµ³¢ µé±â, °î±ªÀÌ µé±â
+        // ë„ë¼ ë“¤ê¸°, ê³¡ê´­ì´ ë“¤ê¸°
         else if (nearItem.CompareTag("Axe") || nearItem.CompareTag("Pickaxe"))
         {
             holdItem = nearItem;
             nearItem = null;
-            Debug.Log("µµ³¢ È¹µæ");
+            Debug.Log("ë„ë¼ íšë“");
             holdItem.transform.SetParent(equipPoint.transform);
             holdItem.transform.localPosition = Vector3.zero;
             //holdItem.transform.Translate(new Vector3(0.4f, 0, 0));
@@ -290,10 +297,10 @@ public class PickUpPutDown : MonoBehaviour
             isHold = true;
         }
 
-        // ³ª¹« ºí·° µé±â
+        // ë‚˜ë¬´ ë¸”ëŸ­ ë“¤ê¸°
         else if (nearItem.CompareTag("WoodStack"))
         {
-            // ½×¿©ÀÖ´Â ³ª¹«ºí·°ÀÌ 3°³ ÀÌÇÏÀÏ ¶§
+            // ìŒ“ì—¬ìˆëŠ” ë‚˜ë¬´ë¸”ëŸ­ì´ 3ê°œ ì´í•˜ì¼ ë•Œ
             if (nearWood.getInt() <= 3)
             {
                 holdItem = nearItem;
@@ -307,7 +314,7 @@ public class PickUpPutDown : MonoBehaviour
 
                 isHold = true;
             }
-            // ½×¿©ÀÖ´Â ³ª¹«ºí·°ÀÌ 3°³º¸´Ù ¸¹À» ¶§
+            // ìŒ“ì—¬ìˆëŠ” ë‚˜ë¬´ë¸”ëŸ­ì´ 3ê°œë³´ë‹¤ ë§ì„ ë•Œ
             else if (nearWood.getInt() > 3)
             {
                 nearItem.transform.GetChild(nearWood.getInt() - 2).SetParent(nearItem.transform.GetChild(nearWood.getInt() - 3));
@@ -327,10 +334,10 @@ public class PickUpPutDown : MonoBehaviour
             }
         }
 
-        // µ¹ ºí·° µé±â
+        // ëŒ ë¸”ëŸ­ ë“¤ê¸°
         else if (nearItem.CompareTag("RockStack"))
         {
-            // ½×¿©ÀÖ´Â µ¹ ºí·°ÀÌ 3°³ ÀÌÇÏÀÏ ¶§
+            // ìŒ“ì—¬ìˆëŠ” ëŒ ë¸”ëŸ­ì´ 3ê°œ ì´í•˜ì¼ ë•Œ
             if (nearRock.getInt() <= 3)
             {
                 holdItem = nearItem;
@@ -344,7 +351,7 @@ public class PickUpPutDown : MonoBehaviour
 
                 isHold = true;
             }
-            // ½×¿©ÀÖ´Â µ¹ ºí·°ÀÌ 3°³º¸´Ù ¸¹À» ¶§
+            // ìŒ“ì—¬ìˆëŠ” ëŒ ë¸”ëŸ­ì´ 3ê°œë³´ë‹¤ ë§ì„ ë•Œ
             else if (nearRock.getInt() > 3)
             {
                 nearItem.transform.GetChild(nearRock.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRock.getInt() - 3));
@@ -364,12 +371,12 @@ public class PickUpPutDown : MonoBehaviour
             }
         }
 
-        // ¸ğµâ µé±â
+        // ëª¨ë“ˆ ë“¤ê¸°
         else if(nearItem.CompareTag("Train"))
 		{
             holdItem = nearItem;
             nearItem = null;
-            Debug.Log("¸ğµâ ÁÖ¿ò!");
+            Debug.Log("ëª¨ë“ˆ ì£¼ì›€!");
             holdItem.transform.SetParent(equipPoint.transform);
             holdItem.transform.localPosition = Vector3.zero;
             holdItem.transform.localPosition = Vector3.right + Vector3.up * -0.7f + Vector3.forward * 0.1f;
@@ -381,49 +388,47 @@ public class PickUpPutDown : MonoBehaviour
         }
     }
 
-    // ¾ÆÀÌÅÛ ³»·Á³õ±â ½Ãµµ
+    // ì•„ì´í…œ ë‚´ë ¤ë†“ê¸° ì‹œë„
     private void TryItemPutDown()
 	{
         ItemPutDown();
 	}
 
-    // ¾ÆÀÌÅÛ ³»·Á³õ±â, ·¹ÀÏ ¼³Ä¡ÇÏ±â
+    // ì•„ì´í…œ ë‚´ë ¤ë†“ê¸°, ë ˆì¼ ì„¤ì¹˜í•˜ê¸°
     private void ItemPutDown()
 	{
-
-        // ·¹ÀÏ ¹Ù´Ú¿¡ ³»·Á³õ±â
+        /*
+        // ë ˆì¼ ë°”ë‹¥ì— ë‚´ë ¤ë†“ê¸°
         if (holdItem.CompareTag("Rail") && nearItem == null && canSetZoneFront.activeSelf == false && canSetZoneLeft.activeSelf == false && canSetZoneRight.activeSelf == false)
         {
 
             equipPoint.transform.DetachChildren();
-            holdItem.transform.position = equipPoint.transform.position - new Vector3(0, 1.2f, 0);
+            holdItem.transform.position = PutDownPosition + new Vector3(0,1.6f,0);
+            holdItem.transform.rotation = Quaternion.identity;
 
-            Collider itemColider = holdItem.GetComponent<Collider>();
-            //Rigidbody itemRigidbody = holdItem.GetComponent<Rigidbody>();
-            itemColider.enabled = true;
-            //itemRigidbody.isKinematic = false;
+            holdItem.GetComponent<Collider>().enabled = true;
 
             isHold = false;
             isHoldRail = false;
             holdItem = null;
         }
 
-        // ·¹ÀÏÀÌ ÀÖÀ» °æ¿ì ±× À§¿¡ ½×±â
+        // ë ˆì¼ì´ ìˆì„ ê²½ìš° ê·¸ ìœ„ì— ìŒ“ê¸°
         /// <summary>
-        /// ¹Ù´Ú¿¡ ½×¿©ÀÖ´Â ·¹ÀÏÀÌ ¹Ù´Ú¿¡¼­ºÎÅÍ rail, rail1, rail2 ÀÌ·¸°Ô ÀÖ´Ù°í ÇÏÀÚ.
-        /// ÇÃ·¹ÀÌ¾î°¡ µé°íÀÖ´Â ·¹ÀÏ 3°³¸¦ ´õ ½×´Â °úÁ¤À» ¼³¸íÇÏ¸é
-        /// ÇÃ·¹ÀÌ¾î°¡ ½×ÀÎ ·¹ÀÏ ÂÊÀ¸·Î °¡¸é ÇÃ·¹ÀÌ¾î°¡ railÀ» °¨ÁöÇÏ°í, space¸¦ ´©¸£¸é µé°í ÀÖ´Â 3°³ÀÇ ·¹ÀÏÀº railÀÇ ÀÚ½Ä ¿ÀºêÁ§Æ®°¡ µÈ´Ù.
-        /// µé°í ÀÖ´ø ·¹ÀÏÀÌ railÀÇ ÀÚ½Ä ¿ÀºêÁ§Æ®°¡ µÇ´Â ¼ø¼­·Î´Â µé°í ÀÖ´ø ·¹ÀÏÀÇ Ã¹¹ø¤Š ÀÚ½Ä ·¹ÀÏ -> µé°í ÀÖ´ø ·¹ÀÏÀÇ µÎ¹øÂ° ÀÚ½Ä ·¹ÀÏ -> µé°í ÀÖ´ø ·¹ÀÏ¿¡¼­ ºÎ¸ğ°¡ µÇ´Â ·¹ÀÏ ¼øÀÌ´Ù.
+        /// ë°”ë‹¥ì— ìŒ“ì—¬ìˆëŠ” ë ˆì¼ì´ ë°”ë‹¥ì—ì„œë¶€í„° rail, rail1, rail2 ì´ë ‡ê²Œ ìˆë‹¤ê³  í•˜ì.
+        /// í”Œë ˆì´ì–´ê°€ ë“¤ê³ ìˆëŠ” ë ˆì¼ 3ê°œë¥¼ ë” ìŒ“ëŠ” ê³¼ì •ì„ ì„¤ëª…í•˜ë©´
+        /// í”Œë ˆì´ì–´ê°€ ìŒ“ì¸ ë ˆì¼ ìª½ìœ¼ë¡œ ê°€ë©´ í”Œë ˆì´ì–´ê°€ railì„ ê°ì§€í•˜ê³ , spaceë¥¼ ëˆ„ë¥´ë©´ ë“¤ê³  ìˆëŠ” 3ê°œì˜ ë ˆì¼ì€ railì˜ ìì‹ ì˜¤ë¸Œì íŠ¸ê°€ ëœë‹¤.
+        /// ë“¤ê³  ìˆë˜ ë ˆì¼ì´ railì˜ ìì‹ ì˜¤ë¸Œì íŠ¸ê°€ ë˜ëŠ” ìˆœì„œë¡œëŠ” ë“¤ê³  ìˆë˜ ë ˆì¼ì˜ ì²«ë²ˆÂŠ ìì‹ ë ˆì¼ -> ë“¤ê³  ìˆë˜ ë ˆì¼ì˜ ë‘ë²ˆì§¸ ìì‹ ë ˆì¼ -> ë“¤ê³  ìˆë˜ ë ˆì¼ì—ì„œ ë¶€ëª¨ê°€ ë˜ëŠ” ë ˆì¼ ìˆœì´ë‹¤.
         /// </summary>
         else if (holdItem.CompareTag("Rail") && nearItem != null && nearItem.CompareTag("Rail") && nearItem.layer == 6)
         {
-            nearRail = nearItem.GetComponent("Rail") as Rail; // Ãæµ¹ÇÑ ·¹ÀÏÀÇ Rail½ºÅ©¸³Æ® °¡Á®¿À±â
-            holdRail = holdItem.GetComponent("Rail") as Rail; // µé°íÀÖ´Â ·¹ÀÏÀÇ Rail½ºÅ©¸³Æ® °¡Á®¿À±â
+            nearRail = nearItem.GetComponent("Rail") as Rail; // ì¶©ëŒí•œ ë ˆì¼ì˜ RailìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+            holdRail = holdItem.GetComponent("Rail") as Rail; // ë“¤ê³ ìˆëŠ” ë ˆì¼ì˜ RailìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
 
-            // ¸Ç ¾Æ·¡ÀÇ ·¹ÀÏÀ» ¼³Ä¡ À§Ä¡·Î ¼³Á¤
+            // ë§¨ ì•„ë˜ì˜ ë ˆì¼ì„ ì„¤ì¹˜ ìœ„ì¹˜ë¡œ ì„¤ì •
             equipPoint.transform.DetachChildren();
 
-            // µé°í ÀÖ´Â ·¹ÀÏÀÌ 1°³ ÀÏ ¶§
+            // ë“¤ê³  ìˆëŠ” ë ˆì¼ì´ 1ê°œ ì¼ ë•Œ
             if (holdRail.getInt() == 1)
             {
                 holdItem.transform.SetParent(nearItem.transform);
@@ -433,13 +438,13 @@ public class PickUpPutDown : MonoBehaviour
 
                 //holdItem.GetComponent<Rigidbody>().isKinematic = true;
             }
-            // µé°í ÀÖ´Â ·¹ÀÏÀÌ 2°³ ÀÌ»óÀÏ ¶§
+            // ë“¤ê³  ìˆëŠ” ë ˆì¼ì´ 2ê°œ ì´ìƒì¼ ë•Œ
             else if (holdRail.getInt() >= 2)
             {
                 int i;
                 for (i = 1; i < holdRail.getInt(); i++)
                 {
-                    // Ã¹¹øÂ° ÀÚ½ÄrailÀ» setparent·Î À§Ä¡ ¹Ù²åÀ¸´Ï±î ±× µÚ 2,3¹øÂ° ÀÚ½Ä ·¹ÀÏ ÀÎ½ÄÀÌ ¹®Á¦°¡ µÇ´Â°ÍÀÓ. i¸¦ 1·Î ¼öÁ¤
+                    // ì²«ë²ˆì§¸ ìì‹railì„ setparentë¡œ ìœ„ì¹˜ ë°”ê¿¨ìœ¼ë‹ˆê¹Œ ê·¸ ë’¤ 2,3ë²ˆì§¸ ìì‹ ë ˆì¼ ì¸ì‹ì´ ë¬¸ì œê°€ ë˜ëŠ”ê²ƒì„. ië¥¼ 1ë¡œ ìˆ˜ì •
                     Debug.Log(i);
                     holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRail.getInt() + i - 1);
                     holdItem.transform.GetChild(1).transform.rotation = nearItem.transform.rotation;
@@ -459,18 +464,34 @@ public class PickUpPutDown : MonoBehaviour
             isHold = false;
             isHoldRail = false;
             holdItem = null;
-
+          }
+//Develop          
+//          else if (holdItem.CompareTag("Rail") && nearItem.CompareTag("Rail") && nearItem.layer == 6)
+//          {
+//            holdItem.GetComponent<Rail>().DisableAllCollider();
+//            nearItem.GetComponent<Rail>().PileUpRail(holdItem);
+//            holdItem = null;
+//            isHold = false;
+//          }
         }
+        */
 
-        // ¾Õ¿¡ ·¹ÀÏ ¼³Ä¡ÇÏ±â
+        // ì•ì— ë ˆì¼ ì„¤ì¹˜í•˜ê¸°
         else if (holdItem.CompareTag("Rail") && canSetZoneFront.activeSelf == true)
         {
-            holdRail = holdItem.GetComponent("Rail") as Rail; // µé°íÀÖ´Â ·¹ÀÏÀÇ Rail½ºÅ©¸³Æ® °¡Á®¿À±â
+            holdRail = holdItem.GetComponent("Rail") as Rail; // ë“¤ê³ ìˆëŠ” ë ˆì¼ì˜ RailìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+//Develop
+		// ì•ì— ë ˆì¼ ì„¤ì¹˜í•˜ê¸°
+//		if (holdItem.CompareTag("Rail") && canSetZoneFront.activeSelf == true)
+//        {
+//            Rail holdRail = holdItem.GetComponent<Rail>();
 
-            if (holdRail.getInt() == 1) // µé°í ÀÖ´Â ·¹ÀÏÀÌ 1°³ÀÏ ¶§
+
+            if (holdRail.getInt() == 1) // ë“¤ê³  ìˆëŠ” ë ˆì¼ì´ 1ê°œì¼ ë•Œ
             {
                 equipPoint.transform.DetachChildren();
-                lastBeforeRail = holdItem;
+//develop       lastBeforeRail = holdRail.DeleteRail(1);
+
 
                 isHold = false;
                 isHoldRail = false;
@@ -478,10 +499,12 @@ public class PickUpPutDown : MonoBehaviour
 
                 canSetZoneFront.SetActive(false);
             }
-            else if (holdRail.getInt() > 1) // µé°í ÀÖ´Â ·¹ÀÏÀÌ 2°³ ÀÌ»óÀÏ ¶§
+            else if (holdRail.getInt() > 1) // ë“¤ê³  ìˆëŠ” ë ˆì¼ì´ 2ê°œ ì´ìƒì¼ ë•Œ
             {
+//develop       lastBeforeRail = holdRail.DeleteRail(1);
                 lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
                 holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
+
             }
 
             lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));
@@ -491,9 +514,7 @@ public class PickUpPutDown : MonoBehaviour
             lastBeforeRail.transform.Rotate(0, 90, 0);
 
             Collider itemColider = lastBeforeRail.GetComponent<Collider>();
-            //Rigidbody itemRigidbody = holdItem.GetComponent<Rigidbody>();
             itemColider.enabled = true;
-            //itemRigidbody.isKinematic = false;
 
             lastBeforeRail.layer = 0;
 
@@ -502,21 +523,16 @@ public class PickUpPutDown : MonoBehaviour
             canSetZoneRightS.isThereRail = false;
 
             AddRailToList(lastBeforeRail);
-            //railroad1.Add(lastBeforeRail);
-            //railroad2.Add(lastBeforeRail);
-            //railroad3.Add(lastBeforeRail);
-            //Debug.Log(railroad.Peek().position);
         }
 
-        // ¿ŞÂÊ¿¡ ·¹ÀÏ ¼³Ä¡ÇÏ±â
+        // ì™¼ìª½ì— ë ˆì¼ ì„¤ì¹˜í•˜ê¸°
+
         else if (holdItem.CompareTag("Rail") && canSetZoneLeft.activeSelf == true)
         {
             holdRail = holdItem.GetComponent("Rail") as Rail;
 
+
             RemoveRailToList(lastBeforeRail);
-            //railroad1.Remove(lastBeforeRail);
-            //railroad2.Remove(lastBeforeRail);
-            //railroad3.Remove(lastBeforeRail);
             Destroy(lastBeforeRail);
             Transform lastBeforeRailT = lastBeforeRail.transform;
             GameObject curvedRailObject = Instantiate(curvedRail);
@@ -524,25 +540,26 @@ public class PickUpPutDown : MonoBehaviour
             curvedRailObject.transform.position = lastBeforeRailT.position;
             curvedRailObject.layer = lastBeforeRailLayer;
             AddRailToList(curvedRailObject);
-            //railroad1.Add(curvedRailObject);
-            //railroad2.Add(curvedRailObject);
-            //railroad3.Add(curvedRailObject);
 
-            if (holdRail.getInt() == 1) // µé°í ÀÖ´Â ·¹ÀÏÀÌ 1°³ ÀÏ ¶§
+            if (holdRail.getInt() == 1) // ë“¤ê³  ìˆëŠ” ë ˆì¼ì´ 1ê°œ ì¼ ë•Œ
             {
                 equipPoint.transform.DetachChildren();
 
-                lastBeforeRail = holdItem;
 
+                lastBeforeRail = holdItem;
+//develop       lastBeforeRail = holdRail.DeleteRail(1);
                 isHold = false;
                 isHoldRail = false;
                 holdItem = null;
 
-                canSetZoneLeft.SetActive(false);
+
+                canSetZoneFront.SetActive(false);
             }
-            else if (holdRail.getInt() > 1) // µé°í ÀÖ´Â ·¹ÀÏÀÌ 2°³ ÀÌ»óÀÏ ¶§
+
+            else if (holdRail.getInt() > 1) // ë“¤ê³  ìˆëŠ” ë ˆì¼ì´ 2ê°œ ì´ìƒì¼ ë•Œ
             {
                 lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
+//develop       lastBeforeRail = holdRail.DeleteRail(1);                
                 holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
             }
 
@@ -557,11 +574,7 @@ public class PickUpPutDown : MonoBehaviour
             curvedRailObject.transform.Rotate(0, 90, 0);
 
             Collider itemColider = lastBeforeRail.GetComponent<Collider>();
-            //Rigidbody itemRigidbody = lastBeforeRail.GetComponent<Rigidbody>();
             itemColider.enabled = true;
-            //itemRigidbody.isKinematic = false;
-
-            //lastBeforeRail.layer = 0;
             lastBeforeRail.layer = 7;
 
             canSetZoneFrontS.isThereRail = false;
@@ -569,21 +582,14 @@ public class PickUpPutDown : MonoBehaviour
             canSetZoneRightS.isThereRail = false;
 
             AddRailToList(lastBeforeRail);
-            //railroad1.Add(lastBeforeRail);
-            //railroad2.Add(lastBeforeRail);
-            //railroad3.Add(lastBeforeRail);
-            //Debug.Log(railroad.Peek().position);
         }
 
-        // ¿À¸¥ÂÊ¿¡ ·¹ÀÏ ¼³Ä¡ÇÏ±â
+        // ì˜¤ë¥¸ìª½ì— ë ˆì¼ ì„¤ì¹˜í•˜ê¸°
         else if (holdItem.CompareTag("Rail") && canSetZoneRight.activeSelf == true)
         {
-            holdRail = holdItem.GetComponent("Rail") as Rail;
+            Rail holdRail = holdItem.GetComponent<Rail>();
 
             RemoveRailToList(lastBeforeRail);
-            //railroad1.Remove(lastBeforeRail);
-            //railroad2.Remove(lastBeforeRail);
-            //railroad3.Remove(lastBeforeRail);
             Destroy(lastBeforeRail);
             Transform lastBeforeRailT = lastBeforeRail.transform;
             GameObject curvedRailObject = Instantiate(curvedRail);
@@ -591,26 +597,26 @@ public class PickUpPutDown : MonoBehaviour
             curvedRailObject.transform.position = lastBeforeRailT.position;
             curvedRailObject.layer = lastBeforeRailLayer;
             AddRailToList(curvedRailObject);
-            //railroad1.Add(curvedRailObject);
-            //railroad2.Add(curvedRailObject);
-            //railroad3.Add(curvedRailObject);
 
-            if (holdRail.getInt() == 1) // µé°í ÀÖ´Â ·¹ÀÏÀÌ 1°³ ÀÏ ¶§
+            if (holdRail.getInt() == 1) // ë“¤ê³  ìˆëŠ” ë ˆì¼ì´ 1ê°œ ì¼ ë•Œ
             {
                 equipPoint.transform.DetachChildren();
-
-                lastBeforeRail = holdItem;
+//develop       lastBeforeRail = holdRail.DeleteRail(1);
 
                 isHold = false;
                 isHoldRail = false;
                 holdItem = null;
 
-                canSetZoneRight.SetActive(false);
+
+                canSetZoneFront.SetActive(false);
             }
-            else if (holdRail.getInt() > 1) // µé°í ÀÖ´Â ·¹ÀÏÀÌ 2°³ ÀÌ»óÀÏ ¶§
+
+            else if (holdRail.getInt() > 1) // ë“¤ê³  ìˆëŠ” ë ˆì¼ì´ 2ê°œ ì´ìƒì¼ ë•Œ
             {
                 lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
+//develop       lastBeforeRail = holdRail.DeleteRail(1);                
                 holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
+
             }
 
             lastRailPos.transform.Translate(new Vector3(0, 0, -1.6f));
@@ -624,11 +630,8 @@ public class PickUpPutDown : MonoBehaviour
             curvedRailObject.transform.Rotate(0, 180, 0);
 
             Collider itemColider = lastBeforeRail.GetComponent<Collider>();
-            //Rigidbody itemRigidbody = lastBeforeRail.GetComponent<Rigidbody>();
             itemColider.enabled = true;
-            //itemRigidbody.isKinematic = false;
 
-            //lastBeforeRail.layer = 0;
             lastBeforeRail.layer = 8;
 
             canSetZoneFrontS.isThereRail = false;
@@ -636,16 +639,13 @@ public class PickUpPutDown : MonoBehaviour
             canSetZoneRightS.isThereRail = false;
 
             AddRailToList(lastBeforeRail);
-            //railroad1.Add(lastBeforeRail);
-            //railroad2.Add(lastBeforeRail);
-            //railroad3.Add(lastBeforeRail);
-            //Debug.Log(railroad.Peek().position);
+
         }
 
-        // µµ³¢ ³»·Á³õ±â, °î±ªÀÌ ³»·Á³õ±â, ³ª¹« ºí·° ³»·Á³õ±â, µ¹ ºí·° ³»·Á³õ±â
+        // ë„ë¼ ë‚´ë ¤ë†“ê¸°, ê³¡ê´­ì´ ë‚´ë ¤ë†“ê¸°, ë‚˜ë¬´ ë¸”ëŸ­ ë‚´ë ¤ë†“ê¸°, ëŒ ë¸”ëŸ­ ë‚´ë ¤ë†“ê¸°
         else if (nearItem == null && (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe") || holdItem.CompareTag("WoodStack") || holdItem.CompareTag("RockStack")))
         {
-            Debug.Log("¹Ù´Ú¿¡ ³»·Á³õ±â");
+            Debug.Log("ë°”ë‹¥ì— ë‚´ë ¤ë†“ê¸°");
             Debug.Log(nearItem);
 
             equipPoint.transform.DetachChildren();
@@ -658,18 +658,18 @@ public class PickUpPutDown : MonoBehaviour
             holdItem = null;
         }
 
-        // ³ª¹« ºí·°ÀÌ ÀÖÀ» °æ¿ì ±× À§¿¡ ½×±â
+        // ë‚˜ë¬´ ë¸”ëŸ­ì´ ìˆì„ ê²½ìš° ê·¸ ìœ„ì— ìŒ“ê¸°
         else if (holdItem.CompareTag("WoodStack") && nearItem != null && nearItem.CompareTag("WoodStack") && nearItem.layer == 6)
         {
-            Debug.Log("³ª¹«ºí·° À§¿¡ ½×±â");
+            Debug.Log("ë‚˜ë¬´ë¸”ëŸ­ ìœ„ì— ìŒ“ê¸°");
 
-            nearWood = nearItem.GetComponent("WoodStack") as WoodStack; // Ãæµ¹ÇÑ ³ª¹« ºí·°ÀÇ WoodStack½ºÅ©¸³Æ® °¡Á®¿À±â
-            holdWood = holdItem.GetComponent("WoodStack") as WoodStack; // µé°íÀÖ´Â ³ª¹« ºí·°ÀÇ WoodStack½ºÅ©¸³Æ® °¡Á®¿À±â
+            nearWood = nearItem.GetComponent("WoodStack") as WoodStack; // ì¶©ëŒí•œ ë‚˜ë¬´ ë¸”ëŸ­ì˜ WoodStackìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+            holdWood = holdItem.GetComponent("WoodStack") as WoodStack; // ë“¤ê³ ìˆëŠ” ë‚˜ë¬´ ë¸”ëŸ­ì˜ WoodStackìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
 
-            // ¸Ç ¾Æ·¡ÀÇ ³ª¹« ºí·°À» ¼³Ä¡ À§Ä¡·Î ¼³Á¤
+            // ë§¨ ì•„ë˜ì˜ ë‚˜ë¬´ ë¸”ëŸ­ì„ ì„¤ì¹˜ ìœ„ì¹˜ë¡œ ì„¤ì •
             equipPoint.transform.DetachChildren();
 
-            // µé°í ÀÖ´Â ³ª¹« ºí·°ÀÌ 1°³ ÀÏ ¶§
+            // ë“¤ê³  ìˆëŠ” ë‚˜ë¬´ ë¸”ëŸ­ì´ 1ê°œ ì¼ ë•Œ
             if (holdWood.getInt() == 1)
             {
                 holdItem.transform.SetParent(nearItem.transform);
@@ -678,7 +678,7 @@ public class PickUpPutDown : MonoBehaviour
                 holdItem.transform.rotation = nearItem.transform.rotation;
             }
 
-            // µé°í ÀÖ´Â ³ª¹« ºí·°ÀÌ 2°³ ÀÌ»óÀÏ ¶§
+            // ë“¤ê³  ìˆëŠ” ë‚˜ë¬´ ë¸”ëŸ­ì´ 2ê°œ ì´ìƒì¼ ë•Œ
             else if (holdWood.getInt() >= 2)
             {
                 int i;
@@ -699,16 +699,16 @@ public class PickUpPutDown : MonoBehaviour
             holdItem = null;
         }
 
-        // µ¹ ºí·°ÀÌ ÀÖÀ» °æ¿ì ±× À§¿¡ ½×±â
+        // ëŒ ë¸”ëŸ­ì´ ìˆì„ ê²½ìš° ê·¸ ìœ„ì— ìŒ“ê¸°
         else if (holdItem.CompareTag("RockStack") && nearItem != null && nearItem.CompareTag("RockStack") && nearItem.layer == 6)
         {
-            nearRock = nearItem.GetComponent("RockStack") as RockStack; // Ãæµ¹ÇÑ µ¹ ºí·°ÀÇ RockStack½ºÅ©¸³Æ® °¡Á®¿À±â
-            holdRock = holdItem.GetComponent("RockStack") as RockStack; // µé°íÀÖ´Â µ¹ ºí·°ÀÇ RockStack½ºÅ©¸³Æ® °¡Á®¿À±â
+            nearRock = nearItem.GetComponent("RockStack") as RockStack; // ì¶©ëŒí•œ ëŒ ë¸”ëŸ­ì˜ RockStackìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
+            holdRock = holdItem.GetComponent("RockStack") as RockStack; // ë“¤ê³ ìˆëŠ” ëŒ ë¸”ëŸ­ì˜ RockStackìŠ¤í¬ë¦½íŠ¸ ê°€ì ¸ì˜¤ê¸°
 
-            // ¸Ç ¾Æ·¡ÀÇ µ¹ ºí·°À» ¼³Ä¡ À§Ä¡·Î ¼³Á¤
+            // ë§¨ ì•„ë˜ì˜ ëŒ ë¸”ëŸ­ì„ ì„¤ì¹˜ ìœ„ì¹˜ë¡œ ì„¤ì •
             equipPoint.transform.DetachChildren();
 
-            // µé°í ÀÖ´Â µ¹ ºí·°ÀÌ 1°³ ÀÏ ¶§
+            // ë“¤ê³  ìˆëŠ” ëŒ ë¸”ëŸ­ì´ 1ê°œ ì¼ ë•Œ
             if (holdRock.getInt() == 1)
             {
                 holdItem.transform.SetParent(nearItem.transform);
@@ -717,7 +717,7 @@ public class PickUpPutDown : MonoBehaviour
                 holdItem.transform.rotation = nearItem.transform.rotation;
             }
 
-            // µé°í ÀÖ´Â µ¹ ºí·°ÀÌ 2°³ ÀÌ»óÀÏ ¶§
+            // ë“¤ê³  ìˆëŠ” ëŒ ë¸”ëŸ­ì´ 2ê°œ ì´ìƒì¼ ë•Œ
             else if (holdRock.getInt() >= 2)
             {
                 int i;
@@ -738,10 +738,10 @@ public class PickUpPutDown : MonoBehaviour
             holdItem = null;
         }
 
-        // ¸ğµâ ¹Ù´Ú¿¡ ³»·Á³õÀ¸¸é ¿ø·¡ ÀÚ¸®·Î µ¹·Á³õ±â
+        // ëª¨ë“ˆ ë°”ë‹¥ì— ë‚´ë ¤ë†“ìœ¼ë©´ ì›ë˜ ìë¦¬ë¡œ ëŒë ¤ë†“ê¸°
         else if (!isTrainNear && nearItem == null && holdItem.CompareTag("Train"))
         {
-            Debug.Log("¸ğµâ ¹Ù´Ú¿¡ ³»·Á³õ±â");
+            Debug.Log("ëª¨ë“ˆ ë°”ë‹¥ì— ë‚´ë ¤ë†“ê¸°");
 
             Transform holdItemT = holdItem.transform;
 
@@ -754,10 +754,10 @@ public class PickUpPutDown : MonoBehaviour
             holdItem = null;
         }
 
-        //¸ğµâ ±âÂ÷¿¡ ºÙÀÌ±â - ¸ğµâÀÇ ·¹ÀÌ¾î ¹Ù²Ù±â, ¸ğµâÀÇ Æ÷Áö¼Ç Á¶Á¤, TrainÀÇ ÀÚ½Ä¿ÀºêÁ§Æ®·Î µÎ±â
+        //ëª¨ë“ˆ ê¸°ì°¨ì— ë¶™ì´ê¸° - ëª¨ë“ˆì˜ ë ˆì´ì–´ ë°”ê¾¸ê¸°, ëª¨ë“ˆì˜ í¬ì§€ì…˜ ì¡°ì •, Trainì˜ ìì‹ì˜¤ë¸Œì íŠ¸ë¡œ ë‘ê¸°
         else if (isTrainNear && holdItem.CompareTag("Train"))
         {
-            Debug.Log("¸ğµâ ºÙÀÌ±â");
+            Debug.Log("ëª¨ë“ˆ ë¶™ì´ê¸°");
 
             equipPoint.transform.DetachChildren();
             int lastChildModuleNum = GameObject.Find("Train").transform.childCount - 1;
@@ -768,7 +768,7 @@ public class PickUpPutDown : MonoBehaviour
             holdItem.GetComponent<Collider>().enabled = true;
             holdItem.layer = 0;
 
-            // TrainÀÇ BoxCollider Å°¿öÁÖ°í ±âÂ÷ List¿¡ ¸ğµâ Ãß°¡ÇÏ±â
+            // Trainì˜ BoxCollider í‚¤ì›Œì£¼ê³  ê¸°ì°¨ Listì— ëª¨ë“ˆ ì¶”ê°€í•˜ê¸°
             GameObject.Find("Train").GetComponent<BoxCollider>().size += new Vector3(6, 0, 0);
             
             if(holdItem.name == "train_breakingmodule")
@@ -795,7 +795,7 @@ public class PickUpPutDown : MonoBehaviour
 	{
         if(other.gameObject.layer == LayerMask.NameToLayer("Item"))
 		{
-            //Debug.Log("¾ÆÀÌÅÛ °¨Áö(¹İÅõ¸í)");
+            //Debug.Log("ì•„ì´í…œ ê°ì§€(ë°˜íˆ¬ëª…)");
             isItemNear = true;
             nearItem = other.gameObject;
 		}
@@ -810,7 +810,7 @@ public class PickUpPutDown : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Item"))
         {
-            //Debug.Log("¾ÆÀÌÅÛ°ú ¸Ö¾îÁü");
+            //Debug.Log("ì•„ì´í…œê³¼ ë©€ì–´ì§");
             isItemNear = false;
             nearItem = null;
         }
@@ -819,5 +819,11 @@ public class PickUpPutDown : MonoBehaviour
         {
             isTrainNear = false;
         }
+    }
+
+    public void SetPutDownPosition(Vector3 _position)
+    {
+        Debug.Log("ë†“ëŠ” ë¸”ëŸ­ êµì²´" + _position);
+        PutDownPosition = _position;
     }
 }

@@ -15,17 +15,32 @@ public class NetworkManager : MonoBehaviour
 	private Ping ping = null;
 	public int ping_time { get; private set; }
 	public bool isHost { get; private set; } = false;
-	public static NetworkManager Instance { get; } = new NetworkManager();
-
-	public void Send(ArraySegment<byte> sendBuff)
+	private static NetworkManager instance;
+	public static NetworkManager Instance
 	{
-		_session.Send(sendBuff);
+		get
+		{
+			if (!instance)
+			{
+				instance = FindObjectOfType(typeof(NetworkManager)) as NetworkManager;
+			}
+			return instance;
+		}
 	}
 
-    private void Awake()
-    {
+	private void Awake()
+	{
+		if (instance == null)
+		{
+			instance = this;
+		}
+		else if (instance != this)
+		{
+			Destroy(gameObject);
+		}
 		DontDestroyOnLoad(gameObject);
 	}
+
 
     void Start()
     {
@@ -39,6 +54,11 @@ public class NetworkManager : MonoBehaviour
 
 		Connect();
 		ping_time = 10;
+	}
+
+	public void Send(ArraySegment<byte> sendBuff)
+	{
+		_session.Send(sendBuff);
 	}
 
 	public void Connect()

@@ -5,16 +5,13 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour, IDamageable
 {
-
     public NavMeshAgent Enemy;
     [SerializeField]
     public EnemyState State = EnemyState.Idle;
 
     private float hp;
     private int maxhp;
-    
-
-    
+    protected int enemyIdx;
 
     public enum EnemyState
     {
@@ -25,10 +22,12 @@ public class EnemyScript : MonoBehaviour, IDamageable
         Death
     }
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         UpdateState();
         DoAction();
+        /*if (networkManager != null)
+            SendEnemyList();*/
     }
 
     public virtual void UpdateState()
@@ -38,7 +37,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
 
 
     /// <summary>
-    /// ¾ç¼öÀÇ µ¥¹ÌÁö¸¦ ÀÔÀ» °æ¿ì µ¥¹ÌÁö·Î Ã³¸®, À½¼öÀÇ µ¥¹ÌÁöÀÇ °æ¿ì Èú·Î Ã³¸®ÇÔ.
+    /// ì–‘ìˆ˜ì˜ ë°ë¯¸ì§€ë¥¼ ì…ì„ ê²½ìš° ë°ë¯¸ì§€ë¡œ ì²˜ë¦¬, ìŒìˆ˜ì˜ ë°ë¯¸ì§€ì˜ ê²½ìš° íë¡œ ì²˜ë¦¬í•¨.
     /// </summary>
     /// <param name="damage"></param>
     /// <returns></returns>
@@ -72,7 +71,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
     {
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         FirstSet();
     }
@@ -89,7 +88,7 @@ public class EnemyScript : MonoBehaviour, IDamageable
     }
 
     /// <summary>
-    /// Á¤»óÀûÀ¸·Î Á×¾úÀ» °æ¿ì¿¡ true°ª »ı¼º. ¹®Á¦°¡ »ı±æ °æ¿ì¿¡ Ãß°¡ÀûÀ¸·Î ÀÌ¾ß±âÇØ¾ßÇÒ°Å¸® ÀÌ¾ß±âÇÏ±â.
+    /// ì •ìƒì ìœ¼ë¡œ ì£½ì—ˆì„ ê²½ìš°ì— trueê°’ ìƒì„±. ë¬¸ì œê°€ ìƒê¸¸ ê²½ìš°ì— ì¶”ê°€ì ìœ¼ë¡œ ì´ì•¼ê¸°í•´ì•¼í• ê±°ë¦¬ ì´ì•¼ê¸°í•˜ê¸°.
     /// </summary>
     /// <returns></returns>
     public virtual bool DeathControl() 

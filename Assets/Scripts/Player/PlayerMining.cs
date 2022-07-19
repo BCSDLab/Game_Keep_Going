@@ -21,7 +21,7 @@ public class PlayerMining : MonoBehaviour
         stoneResourceObj = Resources.Load("Prefabs/rock_stack") as GameObject;
         woodResourceObj =  Resources.Load("Prefabs/wood_stack") as GameObject;
         miningCorutine = null;
-        map = GameObject.Find("Map").GetComponent<Map>();
+        map = MapManager.instance.currentMap;
         timeObj = Resources.Load("Prefabs/timeImage") as GameObject;
         timeObj = Instantiate(timeObj, Vector2.zero, Quaternion.identity, GameObject.Find("Canvas").transform); 
         timeImage = timeObj.GetComponent<Image>();

@@ -56,6 +56,8 @@ public class Map : MonoBehaviour
     [SerializeField]
     private List<int> HillLineBottom;
 
+    public GameObject[] trains = new GameObject[4];
+
     private int MobCampCount = 3;
 
     public void SetStageLevel()
@@ -76,7 +78,7 @@ public class Map : MonoBehaviour
         if (Application.isEditor)
         {
             Debug.Log("에디터에서 현재 작업중입니다.");
-            ModifierForEditorMode();
+            //ModifierForEditorMode();
         }
         else
         {
@@ -127,8 +129,9 @@ public class Map : MonoBehaviour
         HillGroupGen(); // Hill Group 생성.
 
         DataBasePositionSelection(); // 시드기반 오브젝트 제작.
+        TrainDataSet();
         StationGen(); // Station 생성.
-        MobCampGen(); // 몹 캠프 생성.
+        //MobCampGen(); // 몹 캠프 생성.
         SnowLayerSetup(); // 눈 레이어 설정. 모든 오브젝트가 설정된 다음에 만들어져야 함.
     }
 
@@ -197,31 +200,58 @@ public class Map : MonoBehaviour
         return false;
     }
 
-    void secondSetupTest()
+
+    void TrainDataSet()
     {
-
+        trains[0] = GameObject.Find("train_mainmodule");
+        trains[1] = GameObject.Find("train_savemodule");
+        trains[2] = GameObject.Find("train_railmakingmodule");
+        trains[3] = GameObject.Find("train_breakingmodule");
     }
-
-
+    void TrainGen(int x , int y)
+    {
+        trains[0].transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE);
+        trains[1].transform.position = new Vector3(x * BLOCK_SIZE - 3.2f, 1.6f, y * BLOCK_SIZE);
+        trains[2].transform.position = new Vector3(x * BLOCK_SIZE - 3.2f, 1.6f, y * BLOCK_SIZE);
+        trains[3].transform.position = new Vector3(x * BLOCK_SIZE - 9.6f, 1.6f, y * BLOCK_SIZE);
+    }
+    /// <summary>
+    /// 역 제작. 첫 스테이지에서만 앞 부분에 역이 들어감.
+    /// </summary>
     void StationGen()
     {
-        int x = Random.Range(0, 4);
-        int y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
-        while (true)
+        int x, y;
+        if(MapManager.instance.stageLevel == 1)
         {
-            if (IsObjectPosValid(x, y) && IsObjectPosValid(x + 1, y) && IsObjectPosValid(x, y - 1))
+            x = Random.Range(4, 10);
+            y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
+            while (true)
             {
-                AddObject(x, y, 5);
-                AddObject(x, y - 1, 4);
-                lastrailpos.transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, (y - 1) * BLOCK_SIZE);
-                break;
-            }
-            else
-            {
-                x = Random.Range(0, 4);
-                y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
+                if (IsObjectPosValid(x, y) && 
+                    IsObjectPosValid(x + 1, y) && 
+                    IsObjectPosValid(x, y - 1) &&
+                    IsObjectPosValid(x-1, y-1) &&
+                    IsObjectPosValid(x-2, y-1) &&
+                    IsObjectPosValid(x-3, y-1))
+                {
+                    
+                    AddObject(x, y, 5);
+                    AddObject(x, y - 1, 4);
+
+                    GameObject data = GameObject.Find("FixedRail");
+                    data.transform.position = new Vector3((x - 7) * BLOCK_SIZE, 0, (y - 1) * BLOCK_SIZE - 5.0f);
+                    lastrailpos.transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, (y - 1) * BLOCK_SIZE);
+                    TrainGen(x, y - 1);
+                    break;
+                }
+                else
+                {
+                    x = Random.Range(0, 4);
+                    y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
+                }
             }
         }
+        
 
         x = Random.Range(block_HorizLength - 4, block_HorizLength);
         y = Random.Range(block_VertLength / 2 - 5, block_VertLength / 2 + 5);
@@ -231,7 +261,6 @@ public class Map : MonoBehaviour
             {
                 AddObject(x, y, 8);
                 AddObject(x, y - 1, 4);
-                lastrailpos.transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, (y - 1) * BLOCK_SIZE);
                 break;
             }
             else
@@ -241,6 +270,7 @@ public class Map : MonoBehaviour
             }
         }
     }
+
     /// <summary>
     /// 강 지역이 반으로 가르지 않도록 만드는 기능. 양쪽 호수의 최대 범위를 만들어놓음.
     /// 위쪽 Line의 경우는 최대 길이시 가운데에서 3 떨어지고
@@ -862,7 +892,7 @@ public class Map : MonoBehaviour
             }
             else if (type == 4) // rail
             {
-                tempObject = Instantiate(rail, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+                tempObject = Instantiate(rail, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.Euler(0,90,0) *  Quaternion.identity, this.transform);
             }
             else if (type == 5) // start_station
             {
