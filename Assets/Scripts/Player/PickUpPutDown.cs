@@ -397,7 +397,6 @@ public class PickUpPutDown : MonoBehaviour
     // 아이템 내려놓기, 레일 설치하기
     private void ItemPutDown()
 	{
-        /*
         // 레일 바닥에 내려놓기
         if (holdItem.CompareTag("Rail") && nearItem == null && canSetZoneFront.activeSelf == false && canSetZoneLeft.activeSelf == false && canSetZoneRight.activeSelf == false)
         {
@@ -464,7 +463,8 @@ public class PickUpPutDown : MonoBehaviour
             isHold = false;
             isHoldRail = false;
             holdItem = null;
-          }
+        }
+        /*
 //Develop          
 //          else if (holdItem.CompareTag("Rail") && nearItem.CompareTag("Rail") && nearItem.layer == 6)
 //          {
