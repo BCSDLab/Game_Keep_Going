@@ -60,6 +60,19 @@ public class PickUpPutDown : MonoBehaviour
     
     public bool isHoldRail = false;
     private bool isTrainNear = false;
+    private bool isModule1Near = false;
+    private bool isModule2Near = false;
+    private bool isModule3Near = false;
+    private bool isModule4Near = false;
+    private bool isModule5Near = false;
+    private bool isModule6Near = false;
+
+    private bool isModule1Empty = false;
+    private bool isModule2Empty = false;
+    private bool isModule3Empty = false;
+    private bool isModule4Empty = false;
+    private bool isModule5Empty = false;
+    private bool isModule6Empty = false;
 
 
     public bool IsHoldRail()
@@ -83,8 +96,8 @@ public class PickUpPutDown : MonoBehaviour
         lastRailPos = GameObject.Find("LastRailPos");
         curvedRail = Resources.Load("Prefabs/rail_curvedbase") as GameObject;
 
-        lastBeforeRail = GameObject.Find("FixedRail");
-        lastBeforeRail = lastBeforeRail.transform.GetChild(7).gameObject;
+        //lastBeforeRail = GameObject.Find("FixedRail");
+        //lastBeforeRail = lastBeforeRail.transform.GetChild(7).gameObject;
 
         equipPoint = GameObject.FindGameObjectWithTag("EquipPoint");
         if (GameObject.Find("FIxedRail") != null)
@@ -111,6 +124,7 @@ public class PickUpPutDown : MonoBehaviour
             if (!isHold)
             {
                 TryItemPickUp();
+                ModulePickUp();
             }
             else
             {
@@ -221,9 +235,70 @@ public class PickUpPutDown : MonoBehaviour
     // 아이템 줍기 시도
     private void TryItemPickUp()
 	{
-        if(isItemNear && nearItem.layer == 6)
-		{
-            ItemPickUp();
+        if (nearItem != null)
+        {
+            if (isItemNear && nearItem.layer == 6)
+            {
+                ItemPickUp();
+            }
+        }
+    }
+
+    // 설치된 모듈 줍기
+    private void ModulePickUp()
+	{
+        if (nearItem != null)
+        {
+            if (nearItem.CompareTag("Train")) // layer는 아이템으로 바꿔주기!!
+            {
+                if (nearItem.transform.parent.CompareTag("ModuleCase"))
+                {
+                    holdItem = nearItem;
+                    nearItem = null;
+
+                    if (holdItem.transform.parent.name == "ModuleCase1")
+                    {
+                        TrainSingleton.instance.moduleList["Module1"] = 0;
+                    }
+                    else if (holdItem.transform.parent.name == "ModuleCase2")
+                    {
+                        TrainSingleton.instance.moduleList["Module2"] = 0;
+                    }
+                    else if (holdItem.transform.parent.name == "ModuleCase3")
+                    {
+                        TrainSingleton.instance.moduleList["Module3"] = 0;
+                    }
+                    else if (holdItem.transform.parent.name == "ModuleCase4")
+                    {
+                        TrainSingleton.instance.moduleList["Module4"] = 0;
+                    }
+                    else if (holdItem.transform.parent.name == "ModuleCase5")
+                    {
+                        TrainSingleton.instance.moduleList["Module5"] = 0;
+                    }
+                    else if (holdItem.transform.parent.name == "ModuleCase6")
+                    {
+                        TrainSingleton.instance.moduleList["Module6"] = 0;
+                    }
+
+                    Debug.Log("설치되었던 모듈 주움!");
+                    holdItem.transform.SetParent(equipPoint.transform);
+                    holdItem.transform.localPosition = Vector3.zero;
+                    holdItem.transform.localPosition = Vector3.right + Vector3.up * -0.7f + Vector3.forward * 0.1f;
+                    holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+                    if (holdItem.name == "train_mainmodule")
+                    {
+                        holdItem.transform.Rotate(new Vector3(0, 180, 0));
+                    }
+
+                    holdItem.GetComponent<Collider>().enabled = false;
+                    holdItem.layer = 6;
+
+                    isHold = true;
+
+
+                }
+            }
         }
     }
 
@@ -376,11 +451,16 @@ public class PickUpPutDown : MonoBehaviour
 		{
             holdItem = nearItem;
             nearItem = null;
-            Debug.Log("모듈 주움!");
+
+            Debug.Log("아이템인 모듈 주움!");
             holdItem.transform.SetParent(equipPoint.transform);
             holdItem.transform.localPosition = Vector3.zero;
             holdItem.transform.localPosition = Vector3.right + Vector3.up * -0.7f + Vector3.forward * 0.1f;
 			holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+            if (holdItem.name == "train_mainmodule")
+            {
+                holdItem.transform.Rotate(new Vector3(0, 180, 0));
+            }
 
             holdItem.GetComponent<Collider>().enabled = false;
 
@@ -738,7 +818,7 @@ public class PickUpPutDown : MonoBehaviour
             holdItem = null;
         }
 
-        // 모듈 바닥에 내려놓으면 원래 자리로 돌려놓기
+        // 모듈 바닥에 내려놓기
         else if (!isTrainNear && nearItem == null && holdItem.CompareTag("Train"))
         {
             Debug.Log("모듈 바닥에 내려놓기");
@@ -754,40 +834,155 @@ public class PickUpPutDown : MonoBehaviour
             holdItem = null;
         }
 
-        //모듈 기차에 붙이기 - 모듈의 레이어 바꾸기, 모듈의 포지션 조정, Train의 자식오브젝트로 두기
+        //모듈 기차에 붙이기 - 모듈의 레이어 바꾸기, 모듈의 포지션 조정, 위치한 ModuleCase의 자식 오브젝트로 두기
         else if (isTrainNear && holdItem.CompareTag("Train"))
         {
-            Debug.Log("모듈 붙이기");
 
-            equipPoint.transform.DetachChildren();
-            int lastChildModuleNum = GameObject.Find("Train").transform.childCount - 1;
-            holdItem.transform.parent = GameObject.Find("Train").transform;
-            holdItem.transform.localPosition = GameObject.Find("Train").transform.GetChild(lastChildModuleNum).gameObject.transform.localPosition - new Vector3(3.2f, 0, 0);
-            holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
-            
-            holdItem.GetComponent<Collider>().enabled = true;
-            holdItem.layer = 0;
+            if(isModule1Empty)
+            {
+                equipPoint.transform.DetachChildren();
+                holdItem.transform.parent = GameObject.Find("Train").transform.Find("ModuleCase1").transform;
+                // 딕셔너리에 밸류 추가
+                TrainSingleton.instance.moduleList["Module1"] = 1;
+                Debug.Log("첫번째 모듈 케이스");
 
-            // Train의 BoxCollider 키워주고 기차 List에 모듈 추가하기
-            GameObject.Find("Train").GetComponent<BoxCollider>().size += new Vector3(6, 0, 0);
-            
-            if(holdItem.name == "train_breakingmodule")
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+
+                if(holdItem.name == "train_mainmodule")
+				{
+                    holdItem.transform.Rotate(new Vector3(0, 180, 0));
+				}
+
+                holdItem.GetComponent<Collider>().enabled = true;
+                holdItem.layer = 0;
+
+                GameObject.Find("Train").transform.Find("ModuleCase1").transform.Find("Cube").gameObject.SetActive(false);
+
+                isHold = false;
+                holdItem = null;
+            }
+            else if (isModule2Empty)
 			{
-                TrainSingleton.instance.AddToList(TrainSingleton.ModuleType.Brake);
-			}
-            else if(holdItem.name == "train_conversionmodule")
-			{
-                TrainSingleton.instance.AddToList(TrainSingleton.ModuleType.Conversion);
-			}
-            else if(holdItem.name == "train_platformmodule")
-			{
-                TrainSingleton.instance.AddToList(TrainSingleton.ModuleType.Platform);
-			}
+                equipPoint.transform.DetachChildren();
+                holdItem.transform.parent = GameObject.Find("Train").transform.Find("ModuleCase2").transform;
+                // 딕셔너리에 밸류 추가
+                TrainSingleton.instance.moduleList["Module2"] = 1;
+                Debug.Log("두번째 모듈 케이스");
 
-            isHold = false;
-            holdItem = null;
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
 
-            Debug.Log(TrainSingleton.instance.trainList.Count);
+                if (holdItem.name == "train_mainmodule")
+                {
+                    holdItem.transform.Rotate(new Vector3(0, 180, 0));
+                }
+
+                holdItem.GetComponent<Collider>().enabled = true;
+                holdItem.layer = 0;
+
+                GameObject.Find("Train").transform.Find("ModuleCase2").transform.Find("Cube").gameObject.SetActive(false);
+
+                isHold = false;
+                holdItem = null;
+            }
+            else if (isModule3Empty)
+			{
+                equipPoint.transform.DetachChildren();
+                holdItem.transform.parent = GameObject.Find("Train").transform.Find("ModuleCase3").transform;
+                // 딕셔너리에 밸류 추가
+                TrainSingleton.instance.moduleList["Module3"] = 1;
+                Debug.Log("세번째 모듈 케이스");
+
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+
+                if (holdItem.name == "train_mainmodule")
+                {
+                    holdItem.transform.Rotate(new Vector3(0, 180, 0));
+                }
+
+                holdItem.GetComponent<Collider>().enabled = true;
+                holdItem.layer = 0;
+
+                GameObject.Find("Train").transform.Find("ModuleCase3").transform.Find("Cube").gameObject.SetActive(false);
+
+                isHold = false;
+                holdItem = null;
+            }
+            else if (isModule4Empty)
+			{
+                equipPoint.transform.DetachChildren();
+                holdItem.transform.parent = GameObject.Find("Train").transform.Find("ModuleCase4").transform;
+                // 딕셔너리에 밸류 추가
+                TrainSingleton.instance.moduleList["Module4"] = 1;
+                Debug.Log("네번째 모듈 케이스");
+
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+
+                if (holdItem.name == "train_mainmodule")
+                {
+                    holdItem.transform.Rotate(new Vector3(0, 180, 0));
+                }
+
+                holdItem.GetComponent<Collider>().enabled = true;
+                holdItem.layer = 0;
+
+                GameObject.Find("Train").transform.Find("ModuleCase4").transform.Find("Cube").gameObject.SetActive(false);
+
+                isHold = false;
+                holdItem = null;
+            }
+            else if (isModule5Empty)
+			{
+                equipPoint.transform.DetachChildren();
+                holdItem.transform.parent = GameObject.Find("Train").transform.Find("ModuleCase5").transform;
+                // 딕셔너리에 밸류 추가
+                TrainSingleton.instance.moduleList["Module5"] = 1;
+                Debug.Log("다섯번째 모듈 케이스");
+
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+
+                if (holdItem.name == "train_mainmodule")
+                {
+                    holdItem.transform.Rotate(new Vector3(0, 180, 0));
+                }
+
+                holdItem.GetComponent<Collider>().enabled = true;
+                holdItem.layer = 0;
+
+                GameObject.Find("Train").transform.Find("ModuleCase5").transform.Find("Cube").gameObject.SetActive(false);
+
+                isHold = false;
+                holdItem = null;
+            }
+            else if (isModule6Empty)
+			{
+                equipPoint.transform.DetachChildren();
+                holdItem.transform.parent = GameObject.Find("Train").transform.Find("ModuleCase6").transform;
+                // 딕셔너리에 밸류 추가
+                TrainSingleton.instance.moduleList["Module6"] = 1;
+                Debug.Log("여섯번째 모듈 케이스");
+
+                holdItem.transform.localPosition = Vector3.zero;
+                holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+
+                if (holdItem.name == "train_mainmodule")
+                {
+                    holdItem.transform.Rotate(new Vector3(0, 180, 0));
+                }
+
+                holdItem.GetComponent<Collider>().enabled = true;
+                holdItem.layer = 0;
+
+                GameObject.Find("Train").transform.Find("ModuleCase6").transform.Find("Cube").gameObject.SetActive(false);
+
+                isHold = false;
+                holdItem = null;
+            }
+
         }
     }
 
@@ -800,10 +995,78 @@ public class PickUpPutDown : MonoBehaviour
             nearItem = other.gameObject;
 		}
 
-        else if(other.name == "Train")
+        if(other.gameObject.layer == LayerMask.NameToLayer("Default") && other.CompareTag("Train"))
 		{
-            isTrainNear = true;
+            isItemNear = true;
+            nearItem = other.gameObject;
 		}
+
+        if (holdItem != null) {
+            if (other.CompareTag("ModuleCase") && holdItem.CompareTag("Train"))
+            {
+                isTrainNear = true; // ModuleCase1~6과 충돌하면 true
+
+                if (other.name == "ModuleCase1")
+                {
+                    isModule1Near = true;
+                    if (TrainSingleton.instance.moduleList["Module1"] == 0)
+                    {
+                        GameObject.Find("Train").transform.Find("ModuleCase1").transform.Find("Cube").gameObject.SetActive(true);
+                        isModule1Empty = true;
+                    }
+                }
+                else if (other.name == "ModuleCase2")
+                {
+                    isModule2Near = true;
+                    if (TrainSingleton.instance.moduleList["Module2"] == 0)
+                    {
+                        
+                        GameObject.Find("Train").transform.Find("ModuleCase2").transform.Find("Cube").gameObject.SetActive(true);
+                        isModule2Empty = true;
+                    }
+                }
+                else if (other.name == "ModuleCase3")
+                {
+                    isModule3Near = true;
+                    if (TrainSingleton.instance.moduleList["Module3"] == 0)
+                    {
+                        
+                        GameObject.Find("Train").transform.Find("ModuleCase3").transform.Find("Cube").gameObject.SetActive(true);
+                        isModule3Empty = true;
+                    }
+                }
+                else if (other.name == "ModuleCase4")
+                {
+                    isModule4Near = true;
+                    if (TrainSingleton.instance.moduleList["Module4"] == 0)
+                    {
+                        
+                        GameObject.Find("Train").transform.Find("ModuleCase4").transform.Find("Cube").gameObject.SetActive(true);
+                        isModule4Empty = true;
+                    }
+                }
+                else if (other.name == "ModuleCase5")
+                {
+                    isModule5Near = true;
+                    if (TrainSingleton.instance.moduleList["Module5"] == 0)
+                    {
+                        
+                        GameObject.Find("Train").transform.Find("ModuleCase5").transform.Find("Cube").gameObject.SetActive(true);
+                        isModule5Empty = true;
+                    }
+                }
+                else if (other.name == "ModuleCase6")
+                {
+                    isModule6Near = true;
+                    if (TrainSingleton.instance.moduleList["Module6"] == 0)
+                    {
+                        
+                        GameObject.Find("Train").transform.Find("ModuleCase6").transform.Find("Cube").gameObject.SetActive(true);
+                        isModule6Empty = true;
+                    }
+                }
+            }
+        }
 	}
     
     private void OnTriggerExit(Collider other)
@@ -815,9 +1078,52 @@ public class PickUpPutDown : MonoBehaviour
             nearItem = null;
         }
 
-        else if (other.name == "Train")
+        if (other.gameObject.layer == LayerMask.NameToLayer("Default") && other.CompareTag("Train"))
+        {
+            isItemNear = false;
+            nearItem = null;
+        }
+
+        else if (other.CompareTag("ModuleCase"))
         {
             isTrainNear = false;
+
+            if (other.name == "ModuleCase1")
+            {
+                isModule1Near = false;
+                isModule1Empty = false;
+                GameObject.Find("Train").transform.Find("ModuleCase1").transform.Find("Cube").gameObject.SetActive(false);
+            }
+            else if (other.name == "ModuleCase2")
+            {
+                isModule2Near = false;
+                isModule2Empty = false;
+                GameObject.Find("Train").transform.Find("ModuleCase2").transform.Find("Cube").gameObject.SetActive(false);
+            }
+            else if (other.name == "ModuleCase3")
+            {
+                isModule3Near = false;
+                isModule3Empty = false;
+                GameObject.Find("Train").transform.Find("ModuleCase3").transform.Find("Cube").gameObject.SetActive(false);
+            }
+            else if (other.name == "ModuleCase4")
+            {
+                isModule4Near = false;
+                isModule4Empty = false;
+                GameObject.Find("Train").transform.Find("ModuleCase4").transform.Find("Cube").gameObject.SetActive(false);
+            }
+            else if (other.name == "ModuleCase5")
+            {
+                isModule5Near = false;
+                isModule5Empty = false;
+                GameObject.Find("Train").transform.Find("ModuleCase5").transform.Find("Cube").gameObject.SetActive(false);
+            }
+            else if (other.name == "ModuleCase6")
+            {
+                isModule6Near = false;
+                isModule6Empty = false;
+                GameObject.Find("Train").transform.Find("ModuleCase6").transform.Find("Cube").gameObject.SetActive(false);
+            }
         }
     }
 
