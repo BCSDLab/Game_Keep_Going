@@ -32,27 +32,19 @@ public class TrainSingleton : MonoBehaviour
         Platform
     }
 
-    //public List<int> trainList;
+    [SerializeField]
     public Dictionary<string, int> moduleList;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        //trainList = new List<int>();
         moduleList = new Dictionary<string, int>();
 
-        //moduleList.Add("Module1", (int)ModuleType.Main);
-        //moduleList.Add("Module2", (int)ModuleType.RailMaking);
-        //moduleList.Add("Module3", (int)ModuleType.Save);
-        //moduleList.Add("Module4", (int)ModuleType.Default);
-        //moduleList.Add("Module5", (int)ModuleType.Default);
-        //moduleList.Add("Module6", (int)ModuleType.Default);
-
-        moduleList.Add("Module1", 1); // 1은 ModuleCase칸에 모듈이 있는 상태
-        moduleList.Add("Module2", 1);
-        moduleList.Add("Module3", 1);
-        moduleList.Add("Module4", 0); // 0은 ModuleCase칸에 모듈이 없는 상태
+        moduleList.Add("Module1", 1);
+        moduleList.Add("Module2", 2);
+        moduleList.Add("Module3", 3);
+        moduleList.Add("Module4", 0);
         moduleList.Add("Module5", 0);
         moduleList.Add("Module6", 0);
     }
@@ -60,21 +52,60 @@ public class TrainSingleton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //moduleList["Module1"] = GameObject.Find("Train").transform.Find("ModuleCase1").childCount - 1;
-        //moduleList["Module2"] = GameObject.Find("Train").transform.Find("ModuleCase2").childCount - 1;
-        //moduleList["Module3"] = GameObject.Find("Train").transform.Find("ModuleCase3").childCount - 1;
-        //moduleList["Module4"] = GameObject.Find("Train").transform.Find("ModuleCase4").childCount - 1;
-        //moduleList["Module5"] = GameObject.Find("Train").transform.Find("ModuleCase5").childCount - 1;
-        //moduleList["Module6"] = GameObject.Find("Train").transform.Find("ModuleCase6").childCount - 1;
+
     }
 
-    public void Add(ModuleType type)
+    public void PullTrain()
 	{
+        List<string> moduleL = new List<string>();
+        moduleL.Add("Module1");
+        moduleL.Add("Module2");
+        moduleL.Add("Module3");
+        moduleL.Add("Module4");
+        moduleL.Add("Module5");
+        moduleL.Add("Module6");
 
+        for(int i = moduleL.Count - 1; i > 0; i--)
+		{
+            if(moduleList[moduleL[i]] == 0)
+			{
+                continue;
+			}
+
+            if(moduleList[moduleL[i-1]] == 0)
+			{
+                moduleList[moduleL[i-1]] = moduleList[moduleL[i]];
+                moduleList[moduleL[i]] = 0;
+
+                GameObject.Find("Train").transform.GetChild(i).transform.GetChild(1).parent = GameObject.Find("Train").transform.GetChild(i - 1);
+                GameObject.Find("Train").transform.GetChild(i - 1).GetChild(1).transform.localPosition = Vector3.zero;
+            }
+		}
+
+        for(int i = 0; i < moduleL.Count - 1; i++)
+		{
+            if(moduleList[moduleL[i]] != 0)
+			{
+                continue;
+			}
+
+            if(moduleList[moduleL[i+1]] != 0)
+			{
+                moduleList[moduleL[i]] = moduleList[moduleL[i + 1]];
+                moduleList[moduleL[i + 1]] = 0;
+
+                GameObject.Find("Train").transform.GetChild(i+1).transform.GetChild(1).parent = GameObject.Find("Train").transform.GetChild(i);
+                GameObject.Find("Train").transform.GetChild(i).GetChild(1).transform.localPosition = Vector3.zero;
+            }
+		}
+
+
+		Debug.Log("모듈 배열" + instance.moduleList["Module1"]);
+		Debug.Log(instance.moduleList["Module2"]);
+		Debug.Log(instance.moduleList["Module3"]);
+		Debug.Log(instance.moduleList["Module4"]);
+		Debug.Log(instance.moduleList["Module5"]);
+		Debug.Log(instance.moduleList["Module6"]);
 	}
 
-    public void Remove(ModuleType type)
-	{
-        //trainList.Remove((int)type);
-	}
 }

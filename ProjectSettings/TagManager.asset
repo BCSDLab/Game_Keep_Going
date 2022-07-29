@@ -13,6 +13,8 @@ TagManager:
   - Train
   - WoodStack
   - RockStack
+  - Enemy
+  - ModuleCase
   layers:
   - Default
   - TransparentFX
