@@ -9,6 +9,9 @@ public class Rail : MonoBehaviour
 	//[SerializeField]
 	//private Rail theRail;
 
+
+    // 테스트를 위해 주석 처리함
+    /*
     void UpdateRailCount()
     {
         if(transform.childCount == 1)
@@ -105,10 +108,12 @@ public class Rail : MonoBehaviour
             transform.GetChild(1).GetComponent<Rail>().DisableAllCollider();
         }
     }
+    */
 
     void Update()
     {
-		//CountRailNum();
+        // 테스틀를 위해 추가함
+		CountRailNum();
     }
 
 	private void CountRailNum()

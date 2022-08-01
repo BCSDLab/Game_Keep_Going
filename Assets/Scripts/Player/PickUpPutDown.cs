@@ -90,6 +90,7 @@ public class PickUpPutDown : MonoBehaviour
 		lastRailPos = GameObject.Find("LastRailPos");
 		curvedRail = Resources.Load("Prefabs/rail_curvedbase") as GameObject;
 
+		// 테스트를 위해 주석 처리함
 		//lastBeforeRail = GameObject.Find("FixedRail");
 		//lastBeforeRail = lastBeforeRail.transform.GetChild(7).gameObject;
 
@@ -322,6 +323,8 @@ public class PickUpPutDown : MonoBehaviour
 		/// 
 		if (nearItem.CompareTag("Rail"))
 		{
+			// 테스트를 위해 주석 처리함
+			/*
 			Rail nearRail = nearItem.GetComponent<Rail>();
 			nearRail = nearItem.GetComponent("Rail") as Rail; // 충돌한 레일의 Rail스크립트 가져오기
 															  //holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
@@ -348,7 +351,50 @@ public class PickUpPutDown : MonoBehaviour
 			holdItem.transform.Rotate(new Vector3(0, 90, 0));
 
 			isHold = true;
+			*/
 
+
+			// 쌓여있는 레일이 3개 이하일 때
+			if (nearRail.getInt() <= 3)
+			{
+				holdItem = nearItem;
+				nearItem = null;
+				holdItem.transform.SetParent(equipPoint.transform);
+				holdItem.transform.localPosition = Vector3.zero;
+				holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+				holdItem.transform.Rotate(new Vector3(0, 90, 0));
+
+				Collider itemColider = holdItem.GetComponent<Collider>();
+				//Rigidbody itemRigidbody = holdItem.GetComponent<Rigidbody>();
+				itemColider.enabled = false;
+				//itemRigidbody.isKinematic = true;
+
+				isHold = true;
+				isHoldRail = true;
+			}
+			// 쌓여있는 레일이 3개보다 많을 때
+			else if (nearRail.getInt() > 3)
+			{
+				//Debug.Log(nearRail.getInt());
+				nearItem.transform.GetChild(nearRail.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.getInt() - 3));
+				//Debug.Log(nearRail.getInt());
+				nearItem.transform.GetChild(nearRail.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.getInt() - 3));
+				//Debug.Log(nearRail.getInt());
+				holdItem = nearItem.transform.GetChild(nearRail.getInt() - 3).gameObject;
+
+
+				nearItem = null;
+				holdItem.transform.SetParent(equipPoint.transform);
+				holdItem.transform.localPosition = Vector3.zero;
+				holdItem.transform.rotation = new Quaternion(0, 0, 0, 0);
+				holdItem.transform.Rotate(new Vector3(0, 90, 0));
+
+				Collider itemColider = holdItem.GetComponent<Collider>();
+				itemColider.enabled = false;
+
+				isHold = true;
+				isHoldRail = true;
+			}
 		}
 
 		// 도끼 들기, 곡괭이 들기
@@ -480,8 +526,10 @@ public class PickUpPutDown : MonoBehaviour
 		{
 
 			equipPoint.transform.DetachChildren();
-			holdItem.transform.position = PutDownPosition + new Vector3(0, 1.6f, 0);
-			holdItem.transform.rotation = Quaternion.identity;
+			holdItem.transform.position = equipPoint.transform.position - new Vector3(0, 1.2f, 0);
+			// 테스트를 위해 주석 처리함
+			//holdItem.transform.position = PutDownPosition + new Vector3(0, 1.6f, 0);
+			//holdItem.transform.rotation = Quaternion.identity;
 
 			holdItem.GetComponent<Collider>().enabled = true;
 
@@ -566,6 +614,8 @@ public class PickUpPutDown : MonoBehaviour
 				equipPoint.transform.DetachChildren();
 				//develop       lastBeforeRail = holdRail.DeleteRail(1);
 
+				// 테스트를 위해 추가함
+				lastBeforeRail = holdItem;
 
 				isHold = false;
 				isHoldRail = false;
@@ -676,6 +726,9 @@ public class PickUpPutDown : MonoBehaviour
 			{
 				equipPoint.transform.DetachChildren();
 				//develop       lastBeforeRail = holdRail.DeleteRail(1);
+
+				// 테스트를 위해 추가함
+				lastBeforeRail = holdItem;
 
 				isHold = false;
 				isHoldRail = false;
