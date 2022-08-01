@@ -56,7 +56,7 @@ public class TrainMainMoving : MonoBehaviour
 	{
 		if (player.GetRailRoad() != null)
 		{
-			Debug.Log("확인용 " + player.GetRailRoad());
+			//Debug.Log("확인용 " + player.GetRailRoad());
 			if (player.GetRailRoad().Count - location > 0)
 			{
 				isMove = true;

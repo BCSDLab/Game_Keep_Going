@@ -14,7 +14,8 @@ public class TrainModuleMoving : MonoBehaviour
 	void Start()
 	{
 		StartCoroutine(Wait());
-		trainMain = GameObject.Find("train_mainmodule");
+		//trainMain = GameObject.Find("train_mainmodule");
+		trainMain = GameObject.Find("Train").transform.Find("ModuleCase1").gameObject;
 		player = GameObject.Find("player").GetComponent<PickUpPutDown>();
 	}
 
