@@ -100,25 +100,25 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
-    public void LeaveRoom(S_BroadcastEnterRoom packet)
-    {
-        LeaveAll();
-        if (_myPlayer.PlayerId == packet.playerId)
-        {
-            Debug.Log("EnterRoom Delete");
-            GameObject.Destroy(_myPlayer.gameObject);
-            _myPlayer = null;
-        }
-        else
-        {
-            Player player1 = null;
-            if (_players.TryGetValue(packet.playerId, out player1))
-            {
-                GameObject.Destroy(player1.gameObject);
-                _players.Remove(packet.playerId);
-            }
-        }
-    }
+    //public void LeaveRoom(S_BroadcastEnterRoom packet)
+    //{
+    //    LeaveAll();
+    //    if (_myPlayer.PlayerId == packet.playerId)
+    //    {
+    //        Debug.Log("EnterRoom Delete");
+    //        GameObject.Destroy(_myPlayer.gameObject);
+    //        _myPlayer = null;
+    //    }
+    //    else
+    //    {
+    //        Player player1 = null;
+    //        if (_players.TryGetValue(packet.playerId, out player1))
+    //        {
+    //            GameObject.Destroy(player1.gameObject);
+    //            _players.Remove(packet.playerId);
+    //        }
+    //    }
+    //}
     public void LeaveAll()
     {
         foreach (KeyValuePair<int, Player> player in _players)
@@ -141,6 +141,30 @@ public class PlayerManager : MonoBehaviour
         {
             if (player.GetComponent<OtherPlayer>().PlayerId == packet.playerId)
                 player.GetComponent<PlayerStat>().TakeDamage(packet.health);
+        }
+    }
+    /// <summary>
+    /// Change held item (non-host player)
+    /// </summary>
+    /// <param name="packet"></param>
+    public void HeldItem(S_BroadcastPlayerStatus packet)
+    {
+        if (_myPlayer.PlayerId == packet.playerId)
+        {
+            //_myPlayer.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
+        }
+        else
+        {
+            Player player = null;
+            if (_players.TryGetValue(packet.playerId, out player))
+            {
+                Vector3 targetPos = new Vector3(packet.posX, 1.6f, packet.posZ);
+                player.gameObject.GetComponent<OtherPlayer>().SetTargetPos(targetPos);
+                player.transform.rotation = Quaternion.Euler(0, packet.rotateY, 0);
+                player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
+
+                //GameObject.Instantiate(packet.itemIdx, player.transform.GetChild(2));
+            }
         }
     }
 }

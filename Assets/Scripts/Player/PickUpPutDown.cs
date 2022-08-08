@@ -1141,4 +1141,15 @@ public class PickUpPutDown : MonoBehaviour
 		Debug.Log("놓는 블럭 교체" + _position);
 		PutDownPosition = _position;
 	}
+
+	/// <summary>
+	/// When PickUpPutDown Event, Send information to Other Player
+	/// </summary>
+	/// <param name="heldItem"></param>
+	/// <param name="_type"></param>
+	public void SendPacketPick(GameObject heldItem, int _type)
+    {
+		ServerPlayerAction serverPlayerAction = new ServerPlayerAction();
+		serverPlayerAction.PickUpDownResource(heldItem, _type);
+	}
 }

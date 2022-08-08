@@ -2,10 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceManager : MonoBehaviour
+enum ResourcesType
 {
+    Rail = 1,
+    Axe = 2,
+    PickAxe = 3,
+    Wood = 4,
+    Stone = 5,
+}
+public class ResourceManager
+{
+
     MyPlayer _myPlayer;
-    Dictionary<int, Resource> _resources = new Dictionary<int, Resource>();
+    ArrayList _resources = new ArrayList();
     public static ResourceManager Instance { get; } = new ResourceManager();
     // Start is called before the first frame update
     void Start()
@@ -18,6 +27,22 @@ public class ResourceManager : MonoBehaviour
     {
         
     }
+
+    public void AddResource(GameObject gameObject)
+    {
+        _resources.Add(gameObject);
+    }
+    public void RemoveResource(int idx)
+    {
+        GameObject gameObject = (GameObject)_resources[idx];
+        _resources.Remove(gameObject);
+        GameObject.Destroy(gameObject);
+    }
+    public int GetResourceIdx(GameObject gameObject)
+    {
+        return _resources.IndexOf(gameObject);
+    }
+
     /*
     public void Add(S_ResourceList packet)
     {
