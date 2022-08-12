@@ -34,7 +34,13 @@ public class OtherPlayer : Player
     private void Update()
     {
         //Vector3 moveVelocity = new Vector3(dirH, 0, dirV) * moveSpeed;
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, 4f * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, 7f * Time.deltaTime);
         //playerRigid.MovePosition(playerRigid.position + moveVelocity * Time.deltaTime);
+    }
+
+    public void Pick()
+    {
+        transform.position = targetPos;
+        GetComponent<PickUpPutDown>().PickUp();
     }
 }

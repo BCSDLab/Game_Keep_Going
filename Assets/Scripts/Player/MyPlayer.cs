@@ -23,7 +23,7 @@ public class MyPlayer : Player
         myRigidbody = GetComponent<Rigidbody>();
         viewCamera = Camera.main;
         /// 지웠음...
-        //networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
         gunController = GetComponent<GunController>();
 	}
 
@@ -48,6 +48,17 @@ public class MyPlayer : Player
         {
             gunController.Shoot();
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            GetComponent<PickUpPutDown>().PickUp();
+            C_PickUp pickPacket = new C_PickUp();
+            pickPacket.posX = transform.position.x;
+            pickPacket.posY = transform.position.y;
+            pickPacket.posZ = transform.position.z;
+            pickPacket.rotateY = transform.rotation.eulerAngles.y;
+            pickPacket.status = true;
+            networkManager.Send(pickPacket.Write());
+        }
 
         C_Move movePacket = new C_Move();
         movePacket.posX = transform.position.x;
@@ -56,7 +67,7 @@ public class MyPlayer : Player
         movePacket.dirH = dirH;
         movePacket.dirV = dirV;
         movePacket.rotateY = transform.rotation.eulerAngles.y;
-        //networkManager.Send(movePacket.Write());
+        networkManager.Send(movePacket.Write());
     }
 
     void FixedUpdate()

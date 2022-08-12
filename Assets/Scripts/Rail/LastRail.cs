@@ -6,6 +6,7 @@ using UnityEngine;
 public class LastRail: MonoBehaviour
 {
     private PickUpPutDown player;
+    private PickUpPutDown otherPlayer;
     private CanSetZone canSetZone;
 
 
@@ -33,10 +34,13 @@ public class LastRail: MonoBehaviour
         Debug.Log(canSetZone.isThereRail);
 
 
-		if (other.gameObject.CompareTag("Player") && player.IsHoldRail() && !canSetZone.isThereRail)
+		if (other.gameObject.CompareTag("Player") && !canSetZone.isThereRail)
 		{
-            Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
-            trChild.gameObject.SetActive(true);
+            if (other.transform.GetComponent<PickUpPutDown>().isHoldRail)
+            {
+                Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
+                trChild.gameObject.SetActive(true);
+            }
 		}
 	}
 

@@ -50,6 +50,10 @@ public class PlayerMove_temp : MonoBehaviour
         {
             //gunController.Shoot();
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            GetComponent<PickUpPutDown>().PickUp();
+        }
 
         //C_Move movePacket = new C_Move();
         //movePacket.posX = transform.position.x;
