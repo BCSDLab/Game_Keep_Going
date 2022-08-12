@@ -100,11 +100,12 @@ public class PickUpPutDown : MonoBehaviour
 		//lastBeforeRail = lastBeforeRail.transform.GetChild(7).gameObject;
 
 		equipPoint = GameObject.FindGameObjectWithTag("EquipPoint");
-		if (GameObject.Find("FIxedRail") != null)
+		if (GameObject.Find("FixedRail") != null)
 		{
-			lastBeforeRail = GameObject.Find("FIxedRail").transform.GetChild(7).gameObject;
+            lastBeforeRail = GameObject.Find("FixedRail");
 			railroad1 = new List<GameObject>();
 			railroad2 = new List<GameObject>();
+            print("lastbeforerail installed");
 			AddRailToList(lastBeforeRail);
 		}
 

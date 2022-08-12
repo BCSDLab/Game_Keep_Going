@@ -35,9 +35,18 @@ public class Map : MonoBehaviour
     private GameObject snow;
     private GameObject start_station;
     private GameObject end_station;
+
+
     public GameObject rail;
-    public GameObject lastrailpos;
+    [SerializeField]
+    private GameObject beforeRail;
+    [SerializeField]
+    private GameObject lastRailPos;
+    [SerializeField]
+    private GameObject train;
+
     private GameObject MobCamp;
+
 
 
     private List<GameObject> blockSet;
@@ -55,8 +64,6 @@ public class Map : MonoBehaviour
     private List<int> HillLineTop;
     [SerializeField]
     private List<int> HillLineBottom;
-
-    public GameObject[] trains = new GameObject[4];
 
     private int MobCampCount = 3;
 
@@ -110,6 +117,7 @@ public class Map : MonoBehaviour
         HillLineBottom = new List<int>();
         // 최초 업데이트.
 
+        /*
         if (NetworkManager.Instance.isHost)
         {
             RandomNumberGenSetup(); // 시드기반 랜덤 숫자 제너레이팅 설정.
@@ -120,6 +128,9 @@ public class Map : MonoBehaviour
         }
         else
             Random.seed = MapManager.instance.seed;
+
+        */
+
         BaseField(); // 기반이 되는 블럭 설정.
         LakeLineGen(); // Lake의 기준이 되는 Line생성.
         //LakeLineTest();
@@ -129,7 +140,6 @@ public class Map : MonoBehaviour
         HillGroupGen(); // Hill Group 생성.
 
         DataBasePositionSelection(); // 시드기반 오브젝트 제작.
-        TrainDataSet();
         StationGen(); // Station 생성.
         //MobCampGen(); // 몹 캠프 생성.
         SnowLayerSetup(); // 눈 레이어 설정. 모든 오브젝트가 설정된 다음에 만들어져야 함.
@@ -149,7 +159,9 @@ public class Map : MonoBehaviour
         snow = Resources.Load("Prefabs/Snow") as GameObject;
         start_station = Resources.Load("Prefabs/Station_Start") as GameObject;
         rail = Resources.Load("Prefabs/rail") as GameObject;
-        lastrailpos = GameObject.Find("LastRailPos");
+        lastRailPos = GameObject.Find("LastRailPos");
+        beforeRail = GameObject.Find("FixedRail");
+        train = GameObject.Find("Train");
         MobCamp = Resources.Load("Prefabs/MobCamp") as GameObject;
         end_station = Resources.Load("Prefabs/Station_End") as GameObject;
     }
@@ -201,20 +213,11 @@ public class Map : MonoBehaviour
     }
 
 
-    void TrainDataSet()
+    void TrainMovePosition(int x , int y)
     {
-        trains[0] = GameObject.Find("train_mainmodule");
-        trains[1] = GameObject.Find("train_savemodule");
-        trains[2] = GameObject.Find("train_railmakingmodule");
-        trains[3] = GameObject.Find("train_breakingmodule");
+        train.transform.position =  new Vector3(x * BLOCK_SIZE -4.8f , 0.0f, y * BLOCK_SIZE -14.3f);
     }
-    void TrainGen(int x , int y)
-    {
-        trains[0].transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE);
-        trains[1].transform.position = new Vector3(x * BLOCK_SIZE - 3.2f, 1.6f, y * BLOCK_SIZE);
-        trains[2].transform.position = new Vector3(x * BLOCK_SIZE - 3.2f, 1.6f, y * BLOCK_SIZE);
-        trains[3].transform.position = new Vector3(x * BLOCK_SIZE - 9.6f, 1.6f, y * BLOCK_SIZE);
-    }
+
     /// <summary>
     /// 역 제작. 첫 스테이지에서만 앞 부분에 역이 들어감.
     /// </summary>
@@ -238,10 +241,9 @@ public class Map : MonoBehaviour
                     AddObject(x, y, 5);
                     AddObject(x, y - 1, 4);
 
-                    GameObject data = GameObject.Find("FixedRail");
-                    data.transform.position = new Vector3((x - 7) * BLOCK_SIZE, 0, (y - 1) * BLOCK_SIZE - 5.0f);
-                    lastrailpos.transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, (y - 1) * BLOCK_SIZE);
-                    TrainGen(x, y - 1);
+                    beforeRail.transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, (y - 1) * BLOCK_SIZE);
+                    lastRailPos.transform.position = new Vector3(x * BLOCK_SIZE, 1.6f, (y - 1) * BLOCK_SIZE);
+                    TrainMovePosition(x, y - 1);
                     break;
                 }
                 else
