@@ -71,7 +71,12 @@ public class PickUpPutDown : MonoBehaviour
 
 	public bool IsHoldRail()
 	{
+		//Debug.Log("isHold는" + isHold);
+		//Debug.Log("holditem의 tag는" + holdItem.tag);
+
 		return (isHold && holdItem.tag == "Rail");
+		//return isHoldRail;
+
 	}
 
 	public bool IsHold()
@@ -253,28 +258,31 @@ public class PickUpPutDown : MonoBehaviour
 
 					if (holdItem.transform.parent.name == "ModuleCase1")
 					{
-						TrainSingleton.instance.moduleList["Module1"] = 0;
+						TrainSingleton.instance1.moduleDic["Module1"] = 0;
 					}
 					else if (holdItem.transform.parent.name == "ModuleCase2")
 					{
-						TrainSingleton.instance.moduleList["Module2"] = 0;
+						TrainSingleton.instance1.moduleDic["Module2"] = 0;
 					}
 					else if (holdItem.transform.parent.name == "ModuleCase3")
 					{
-						TrainSingleton.instance.moduleList["Module3"] = 0;
+						TrainSingleton.instance1.moduleDic["Module3"] = 0;
 					}
 					else if (holdItem.transform.parent.name == "ModuleCase4")
 					{
-						TrainSingleton.instance.moduleList["Module4"] = 0;
+						TrainSingleton.instance1.moduleDic["Module4"] = 0;
 					}
 					else if (holdItem.transform.parent.name == "ModuleCase5")
 					{
-						TrainSingleton.instance.moduleList["Module5"] = 0;
+						TrainSingleton.instance1.moduleDic["Module5"] = 0;
 					}
 					else if (holdItem.transform.parent.name == "ModuleCase6")
 					{
-						TrainSingleton.instance.moduleList["Module6"] = 0;
+						TrainSingleton.instance1.moduleDic["Module6"] = 0;
 					}
+
+					TrainSingleton.instance1.SyncData();
+					TrainSingleton.instance1.SaveModuleDataToJson();
 
 					Debug.Log("설치되었던 모듈 주움!");
 					holdItem.transform.SetParent(equipPoint.transform);
@@ -286,7 +294,7 @@ public class PickUpPutDown : MonoBehaviour
 						holdItem.transform.Rotate(new Vector3(0, 180, 0));
 					}
 
-					TrainSingleton.instance.PullTrain();
+					TrainSingleton.instance1.PullTrain();
 
 					holdItem.GetComponent<Collider>().enabled = false;
 					holdItem.layer = 6;
@@ -985,30 +993,32 @@ public class PickUpPutDown : MonoBehaviour
 		if (holdItem.name == "train_mainmodule")
 		{
 			holdItem.transform.Rotate(new Vector3(0, 180, 0));
-			TrainSingleton.instance.moduleList[moduleNum] = 1;
+			TrainSingleton.instance1.moduleDic[moduleNum] = 1;
 		}
 		else if (holdItem.name == "train_railmakingmodule")
 		{
-			TrainSingleton.instance.moduleList[moduleNum] = 2;
+			TrainSingleton.instance1.moduleDic[moduleNum] = 2;
 		}
 		else if (holdItem.name == "train_savemodule")
 		{
-			TrainSingleton.instance.moduleList[moduleNum] = 3;
+			TrainSingleton.instance1.moduleDic[moduleNum] = 3;
 		}
 		else if (holdItem.name == "train_breakingmodule")
 		{
-			TrainSingleton.instance.moduleList[moduleNum] = 4;
+			TrainSingleton.instance1.moduleDic[moduleNum] = 4;
 		}
 		else if (holdItem.name == "train_conversionmodule")
 		{
-			TrainSingleton.instance.moduleList[moduleNum] = 5;
+			TrainSingleton.instance1.moduleDic[moduleNum] = 5;
 		}
 		else if (holdItem.name == "train_platformmodule")
 		{
-			TrainSingleton.instance.moduleList[moduleNum] = 6;
+			TrainSingleton.instance1.moduleDic[moduleNum] = 6;
 		}
 
-		TrainSingleton.instance.PullTrain();
+		TrainSingleton.instance1.PullTrain();
+		TrainSingleton.instance1.SyncData();
+		TrainSingleton.instance1.SaveModuleDataToJson();
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -1034,7 +1044,7 @@ public class PickUpPutDown : MonoBehaviour
 
 				if (other.name == "ModuleCase1")
 				{
-					if (TrainSingleton.instance.moduleList["Module1"] == 0)
+					if (TrainSingleton.instance1.moduleDic["Module1"] == 0)
 					{
 						GameObject.Find("Train").transform.Find("ModuleCase1").transform.Find("Cube").gameObject.SetActive(true);
 						isModule1Empty = true;
@@ -1042,7 +1052,7 @@ public class PickUpPutDown : MonoBehaviour
 				}
 				else if (other.name == "ModuleCase2")
 				{
-					if (TrainSingleton.instance.moduleList["Module2"] == 0)
+					if (TrainSingleton.instance1.moduleDic["Module2"] == 0)
 					{
 						GameObject.Find("Train").transform.Find("ModuleCase2").transform.Find("Cube").gameObject.SetActive(true);
 						isModule2Empty = true;
@@ -1050,7 +1060,7 @@ public class PickUpPutDown : MonoBehaviour
 				}
 				else if (other.name == "ModuleCase3")
 				{
-					if (TrainSingleton.instance.moduleList["Module3"] == 0)
+					if (TrainSingleton.instance1.moduleDic["Module3"] == 0)
 					{
 						GameObject.Find("Train").transform.Find("ModuleCase3").transform.Find("Cube").gameObject.SetActive(true);
 						isModule3Empty = true;
@@ -1058,7 +1068,7 @@ public class PickUpPutDown : MonoBehaviour
 				}
 				else if (other.name == "ModuleCase4")
 				{
-					if (TrainSingleton.instance.moduleList["Module4"] == 0)
+					if (TrainSingleton.instance1.moduleDic["Module4"] == 0)
 					{
 						GameObject.Find("Train").transform.Find("ModuleCase4").transform.Find("Cube").gameObject.SetActive(true);
 						isModule4Empty = true;
@@ -1066,7 +1076,7 @@ public class PickUpPutDown : MonoBehaviour
 				}
 				else if (other.name == "ModuleCase5")
 				{
-					if (TrainSingleton.instance.moduleList["Module5"] == 0)
+					if (TrainSingleton.instance1.moduleDic["Module5"] == 0)
 					{
 						GameObject.Find("Train").transform.Find("ModuleCase5").transform.Find("Cube").gameObject.SetActive(true);
 						isModule5Empty = true;
@@ -1074,7 +1084,7 @@ public class PickUpPutDown : MonoBehaviour
 				}
 				else if (other.name == "ModuleCase6")
 				{
-					if (TrainSingleton.instance.moduleList["Module6"] == 0)
+					if (TrainSingleton.instance1.moduleDic["Module6"] == 0)
 					{
 						GameObject.Find("Train").transform.Find("ModuleCase6").transform.Find("Cube").gameObject.SetActive(true);
 						isModule6Empty = true;
