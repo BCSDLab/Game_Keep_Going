@@ -17,13 +17,14 @@ public class PlayerManager : MonoBehaviour
             NetworkManager.Instance.SetHost();
         foreach (S_PlayerList.Player p in packet.players)
         {
-            GameObject go = Instantiate(obj) as GameObject;
             if (p.isSelf)
             {
+                GameObject go = GameObject.Find("player");
                 MyPlayer myPlayer = go.AddComponent<MyPlayer>();
                 myPlayer.PlayerId = p.playerId;
                 myPlayer.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
                 _myPlayer = myPlayer;
+                TrainManager.Instance.AddTrains();
             }
             else
             {
@@ -33,6 +34,7 @@ public class PlayerManager : MonoBehaviour
                     return;
                 }
                 */
+                GameObject go = Instantiate(obj) as GameObject;
                 OtherPlayer player = go.AddComponent<OtherPlayer>();
                 player.PlayerId = p.playerId;
                 player.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
@@ -60,7 +62,6 @@ public class PlayerManager : MonoBehaviour
                 Vector3 targetPos = new Vector3(packet.posX, 1.6f, packet.posZ);
                 player.gameObject.GetComponent<OtherPlayer>().SetTargetPos(targetPos);
                 player.transform.rotation = Quaternion.Euler(0, packet.rotateY, 0);
-                player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
             }
         }
     }
