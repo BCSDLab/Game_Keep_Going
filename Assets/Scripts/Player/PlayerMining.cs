@@ -82,10 +82,12 @@ public class PlayerMining : MonoBehaviour
         {
             Instantiate(woodResourceObj, resourcesPos, collObj.transform.rotation);
         }
-        
-        //C_Resource resource = new C_Resource();
-        //resource.resourceIdx = map.GetResourceIndex(collObj);
-        //resource.Write();
+
+        /*
+        C_Resource resource = new C_Resource();
+        resource.resourceIdx = map.GetResourceIndex(collObj);
+        resource.Write();
+        */
 
         Destroy(collObj);
         miningCorutine = null;

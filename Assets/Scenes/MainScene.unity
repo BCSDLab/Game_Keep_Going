@@ -485,6 +485,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3957338178714025036, guid: fb20018888818ba49aeb9185cbd45efa, type: 3}
   m_PrefabInstance: {fileID: 1224105365}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &27913359
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 27913360}
+  - component: {fileID: 27913361}
+  m_Layer: 0
+  m_Name: CameraDummy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &27913360
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27913359}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 641289081}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &27913361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27913359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffab52e2317de634aac3499e3b801197, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Train: {fileID: 958522214}
 --- !u!4 &33932686 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3957338178714025036, guid: fb20018888818ba49aeb9185cbd45efa, type: 3}
@@ -2377,11 +2422,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 641289078}
-  m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
-  m_LocalPosition: {x: 7.7, y: 13.7, z: 0.17}
+  m_LocalRotation: {x: 0.42261827, y: -0, z: -0, w: 0.9063079}
+  m_LocalPosition: {x: 15.6, y: 25, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 27913360}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: 0, z: 0}
 --- !u!1 &641916542
@@ -3434,6 +3479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stoneNum: 0
   woodNum: 0
+  trainRailSaving: {fileID: 0}
 --- !u!65 &886679547
 BoxCollider:
   m_ObjectHideFlags: 0

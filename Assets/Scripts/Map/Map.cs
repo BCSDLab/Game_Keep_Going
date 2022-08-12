@@ -35,7 +35,7 @@ public class Map : MonoBehaviour
     private GameObject snow;
     private GameObject start_station;
     private GameObject end_station;
-
+    private GameObject border;
 
     public GameObject rail;
     [SerializeField]
@@ -156,6 +156,7 @@ public class Map : MonoBehaviour
         stone = Resources.Load("Prefabs/stone") as GameObject;
         rock = Resources.Load("Prefabs/TempRock") as GameObject;
         marker = Resources.Load("Prefabs/Marker") as GameObject;
+        border = Resources.Load("Prefabs/borderBlock") as GameObject;
         snow = Resources.Load("Prefabs/Snow") as GameObject;
         start_station = Resources.Load("Prefabs/Station_Start") as GameObject;
         rail = Resources.Load("Prefabs/rail") as GameObject;
@@ -289,21 +290,21 @@ public class Map : MonoBehaviour
 
             up += Random.Range(-3, 3);
             down += Random.Range(-3, 3);
-            if (up > (block_VertLength / 2) - 1)
+            if (up > (block_VertLength / 2) - 5)
             {
-                up = (block_VertLength / 2) - 1;
+                up = (block_VertLength / 2) - 5;
             }
-            else if (up < 3)
+            else if (up < 5)
             {
-                up = 3;
+                up = 5;
             }
-            if (down < (block_VertLength / 2) + 1)
+            if (down < (block_VertLength / 2) + 5)
             {
-                down = (block_VertLength / 2) + 1;
+                down = (block_VertLength / 2) + 5;
             }
-            else if (down > block_VertLength - 3)
+            else if (down > block_VertLength - 5)
             {
-                down = block_VertLength - 3;
+                down = block_VertLength - 5;
             }
             LakeLineTop.Add(up);
             LakeLineBottom.Add(down);
@@ -429,7 +430,6 @@ public class Map : MonoBehaviour
 
             }
             dx++;
-            print("왔냐?");
         }
         return dx;
     }
@@ -458,7 +458,7 @@ public class Map : MonoBehaviour
                     {
                         return dx;
                     }
-                    AddObject(dx, dy, 2, new Vector3(1, 0.5f + (((y + 1)- dy) * 0.1f), 1));
+                    AddObject(dx, dy, 2, new Vector3(1, 0.3f + (((y + 1)- dy) * 0.08f), 1));
 
                 }
             }
@@ -687,12 +687,24 @@ public class Map : MonoBehaviour
     /// </summary>
     void BaseField()
     {
+        if(MapManager.instance.stageLevel == 1)
+        {
+            for(int x = -10; x < 0; x++)
+            {
+                for (int vertPos = 0; vertPos < block_VertLength; vertPos++)
+                {
+                    AddBlockWithoutIndexing(x, vertPos, 1);
+                }
+            }
+        }
         for (int index = block_StartPosition; index < block_EndPosition; index++)
         {
             for (int vertPos = 0; vertPos < block_VertLength; vertPos++)
             {
                 AddBlock(index, vertPos, 1);
             }
+            AddBlockWithoutIndexing(index, -1, 9);
+            AddBlockWithoutIndexing(index, block_VertLength, 9);
         }
     }
 
@@ -760,7 +772,7 @@ public class Map : MonoBehaviour
     /// <param name="type"></param>
     void GenObjectPile(int x, int y, int type)
     {
-        int cnt = 15;
+        int cnt = 23;
         int x_setpos = x;
         int y_setpos = y;
 
@@ -1024,6 +1036,31 @@ public class Map : MonoBehaviour
             tempBlock = new GameObject();
         }
         blockSet.Insert(block_VertLength * x + y, tempBlock);
+    }
+
+    void AddBlockWithoutIndexing(int x, int y, int type)
+    {
+        GameObject tempBlock;
+        if (type == 0)
+        {
+            tempBlock = Instantiate(dummy, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+        }
+        if (type == 1) // dirt
+        {
+            tempBlock = Instantiate(dirt, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+        }
+        else if (type == 2) // water
+        {
+            tempBlock = Instantiate(water, map_BasedPos + new Vector3(x * BLOCK_SIZE, -0.3f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+        }
+        else if (type == 9) // border
+        {
+            tempBlock = Instantiate(border, map_BasedPos + new Vector3(x * BLOCK_SIZE, 0, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+        }
+        else
+        {
+            tempBlock = new GameObject();
+        }
     }
 
     /// <summary>

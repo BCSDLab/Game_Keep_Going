@@ -9,6 +9,7 @@ public class TrainRailMaking : MonoBehaviour
     Coroutine makingCorutine;
     static float makeTime = 3.0f;
     public int stoneNum, woodNum;
+    [SerializeField]
     TrainRailSaving trainRailSaving;
     // Start is called before the first frame update
     void Start()
