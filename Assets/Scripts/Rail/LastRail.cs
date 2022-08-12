@@ -28,6 +28,11 @@ public class LastRail: MonoBehaviour
     */
     private void OnTriggerEnter(Collider other)
 	{
+        Debug.Log(other.gameObject.tag);
+        Debug.Log(player.IsHoldRail());
+        Debug.Log(canSetZone.isThereRail);
+
+
 		if (other.gameObject.CompareTag("Player") && player.IsHoldRail() && !canSetZone.isThereRail)
 		{
             Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
