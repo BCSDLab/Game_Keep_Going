@@ -99,7 +99,7 @@ public class PickUpPutDown : MonoBehaviour
 		//lastBeforeRail = GameObject.Find("FixedRail");
 		//lastBeforeRail = lastBeforeRail.transform.GetChild(7).gameObject;
 
-		equipPoint = GameObject.FindGameObjectWithTag("EquipPoint");
+		equipPoint = transform.GetChild(1).gameObject;
 		if (GameObject.Find("FixedRail") != null)
 		{
             lastBeforeRail = GameObject.Find("FixedRail");
@@ -120,36 +120,37 @@ public class PickUpPutDown : MonoBehaviour
 
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Space))
+	}
+
+	public void PickUp()
+    {
+		if (!isHold)
 		{
-			if (!isHold)
+			TryItemPickUp();
+			ModulePickUp(); // 이 함수는 상점에서만 호출될 수 있도록 코드 추가 필요
+		}
+		else
+		{
+			TryItemPutDown();
+			if (GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
 			{
-				TryItemPickUp();
-				ModulePickUp(); // 이 함수는 상점에서만 호출될 수 있도록 코드 추가 필요
+				if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+				{
+					WoodPutToBrake();
+				}
 			}
-			else
+			if (GameObject.Find("Train").transform.Find("train_conversionmodule") != null)
 			{
-				TryItemPutDown();
-				if (GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
+				if (GameObject.Find("Train").transform.Find("train_conversionmodule").gameObject.activeSelf == true)
 				{
-					if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
-					{
-						WoodPutToBrake();
-					}
+					BlockPutToConvert();
 				}
-				if (GameObject.Find("Train").transform.Find("train_conversionmodule") != null)
+			}
+			if (GameObject.Find("Train").transform.Find("train_platformmodule") != null)
+			{
+				if (GameObject.Find("Train").transform.Find("train_platformmodule").gameObject.activeSelf == true)
 				{
-					if (GameObject.Find("Train").transform.Find("train_conversionmodule").gameObject.activeSelf == true)
-					{
-						BlockPutToConvert();
-					}
-				}
-				if (GameObject.Find("Train").transform.Find("train_platformmodule") != null)
-				{
-					if (GameObject.Find("Train").transform.Find("train_platformmodule").gameObject.activeSelf == true)
-					{
-						RockPutForPlatform();
-					}
+					RockPutForPlatform();
 				}
 			}
 		}

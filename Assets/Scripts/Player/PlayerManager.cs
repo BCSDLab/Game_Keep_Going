@@ -20,9 +20,9 @@ public class PlayerManager : MonoBehaviour
             if (p.isSelf)
             {
                 GameObject go = GameObject.Find("player");
-                MyPlayer myPlayer = go.AddComponent<MyPlayer>();
+                MyPlayer myPlayer = go.GetComponent<MyPlayer>();
                 myPlayer.PlayerId = p.playerId;
-                myPlayer.transform.position = new Vector3(p.posX, 1.6f, p.posZ);
+                myPlayer.transform.position = new Vector3(10, 4.0f, 10);
                 _myPlayer = myPlayer;
                 TrainManager.Instance.AddTrains();
             }
@@ -165,6 +165,24 @@ public class PlayerManager : MonoBehaviour
                 player.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
 
                 //GameObject.Instantiate(packet.itemIdx, player.transform.GetChild(2));
+            }
+        }
+    }
+    public void PickUpItem(S_BroadcastPickUp packet)
+    {
+        if (_myPlayer.PlayerId == packet.playerId)
+        {
+            //_myPlayer.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
+        }
+        else
+        {
+            Player player = null;
+            if (_players.TryGetValue(packet.playerId, out player))
+            {
+                Vector3 targetPos = new Vector3(packet.posX, 1.6f, packet.posZ);
+                player.gameObject.GetComponent<OtherPlayer>().SetTargetPos(targetPos);
+                player.transform.rotation = Quaternion.Euler(0, packet.rotateY, 0);
+                player.gameObject.GetComponent<OtherPlayer>().Pick();
             }
         }
     }

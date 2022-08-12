@@ -117,7 +117,7 @@ public class Map : MonoBehaviour
         HillLineBottom = new List<int>();
         // 최초 업데이트.
 
-        /*
+        
         if (NetworkManager.Instance.isHost)
         {
             RandomNumberGenSetup(); // 시드기반 랜덤 숫자 제너레이팅 설정.
@@ -129,7 +129,7 @@ public class Map : MonoBehaviour
         else
             Random.seed = MapManager.instance.seed;
 
-        */
+        
 
         BaseField(); // 기반이 되는 블럭 설정.
         LakeLineGen(); // Lake의 기준이 되는 Line생성.

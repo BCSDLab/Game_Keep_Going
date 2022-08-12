@@ -91,7 +91,15 @@ class PacketHandler
 
 		EnemyManager.Instance.MoveEnemy(pkt);
 	}
+	public static void S_BroadcastPickUpHandler(PacketSession session, IPacket packet)
+	{
+		S_BroadcastPickUp pkt = packet as S_BroadcastPickUp;
+		ServerSession serverSession = session as ServerSession;
+
+		PlayerManager.Instance.PickUpItem(pkt);
+	}
 	
+
 	/*
 	public static void Handler(PacketSession session, IPacket packet)
 	{
