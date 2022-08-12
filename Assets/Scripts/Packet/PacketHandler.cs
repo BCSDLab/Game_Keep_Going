@@ -68,7 +68,7 @@ class PacketHandler
 		S_BroadcastEnterRoom pkt = packet as S_BroadcastEnterRoom;
 		ServerSession serverSession = session as ServerSession;
 
-		PlayerManager.Instance.LeaveRoom(pkt);
+		//PlayerManager.Instance.LeaveRoom(pkt);
 	}
 	public static void S_BroadcastResourceHandler(PacketSession session, IPacket packet)
 	{

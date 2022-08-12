@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 678015304503140719}
   - component: {fileID: 8064872114123437442}
   - component: {fileID: 678015304353690363}
+  - component: {fileID: -8453832122361616616}
   m_Layer: 0
   m_Name: player_test
   m_TagString: Player
@@ -246,6 +247,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponHold: {fileID: 1818139982406028209}
   startingGun: {fileID: 718267245720830486, guid: c2a29f73967834c47bfd872163ae18cb, type: 3}
+--- !u!114 &-8453832122361616616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7167108132795321237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b07b2456c11502147ae0e1c3368a6976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lastRailPos: {fileID: 0}
+  lastBeforeRail: {fileID: 0}
+  nearItem: {fileID: 0}
+  holdItem: {fileID: 0}
+  nearRail: {fileID: 0}
+  holdRail: {fileID: 0}
+  isHold: 0
+  isItemNear: 0
+  isHoldRail: 0
 --- !u!1 &8500824764384917158
 GameObject:
   m_ObjectHideFlags: 0
