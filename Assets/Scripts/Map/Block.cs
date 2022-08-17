@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BlockType
+{
+    GRASS,
+    WATER
+};
+
 public class Block : MonoBehaviour
 {
-    enum Type { Grass, Water };
+    public BlockType block_Type;
 
-    public int x;
-    public int y;
-    private Type block_Type;
-
+    public int x, y;
 
     // Start is called before the first frame update
     void Start()
     {
-        block_Type = Type.Grass;
+        //block_Type = BlockType.GRASS;
     }
 
     // Update is called once per frame

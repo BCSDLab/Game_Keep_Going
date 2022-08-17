@@ -15,6 +15,7 @@ TagManager:
   - RockStack
   - Enemy
   - ModuleCase
+  - StickRail
   layers:
   - Default
   - TransparentFX

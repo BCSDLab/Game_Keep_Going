@@ -9,7 +9,6 @@ public class Rail : MonoBehaviour
 	//[SerializeField]
 	//private Rail theRail;
 
-
     // 테스트를 위해 주석 처리함
     /*
     void UpdateRailCount()

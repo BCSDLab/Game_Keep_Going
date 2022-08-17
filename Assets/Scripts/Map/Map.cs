@@ -38,6 +38,7 @@ public class Map : MonoBehaviour
     private GameObject border;
 
     public GameObject rail;
+    public GameObject stickRail;
     [SerializeField]
     private GameObject beforeRail;
     [SerializeField]
@@ -160,6 +161,7 @@ public class Map : MonoBehaviour
         snow = Resources.Load("Prefabs/Snow") as GameObject;
         start_station = Resources.Load("Prefabs/Station_Start") as GameObject;
         rail = Resources.Load("Prefabs/rail") as GameObject;
+        stickRail = Resources.Load("Prefabs/rail_stick") as GameObject;
         lastRailPos = GameObject.Find("LastRailPos");
         beforeRail = GameObject.Find("FixedRail");
         train = GameObject.Find("Train");
@@ -263,7 +265,7 @@ public class Map : MonoBehaviour
             if (IsObjectPosValid(x, y) && IsObjectPosValid(x + 1, y) && IsObjectPosValid(x, y - 1))
             {
                 AddObject(x, y, 8);
-                AddObject(x, y - 1, 4);
+                AddObject(x, y - 1, 10);
                 break;
             }
             else
@@ -929,6 +931,10 @@ public class Map : MonoBehaviour
             else if (type == 9) // marker
             {
                 tempObject = Instantiate(marker, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
+            }
+            else if (type == 10) // stick_rail
+            {
+                tempObject = Instantiate(stickRail, map_BasedPos + new Vector3(x * BLOCK_SIZE, 1.6f, y * BLOCK_SIZE), Quaternion.identity, this.transform);
             }
             else
             {
