@@ -16,7 +16,16 @@ public class LastRail: MonoBehaviour
         canSetZone = this.gameObject.transform.GetChild(0).GetComponent<CanSetZone>();
     }
 
-    /*
+	//private void Update()
+	//{
+	//	if(canSetZone.blockType == 1)
+	//	{
+ //           Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
+ //           trChild.gameObject.SetActive(false);
+ //       }
+	//}
+
+	/*
     void Update()
     {
 //      if(player == null)
@@ -27,19 +36,23 @@ public class LastRail: MonoBehaviour
 //      }
     }
     */
-    private void OnTriggerEnter(Collider other)
+	private void OnTriggerEnter(Collider other)
 	{
-        Debug.Log(other.gameObject.tag);
-        Debug.Log(player.IsHoldRail());
-        Debug.Log(canSetZone.isThereRail);
+        //Debug.Log(other.gameObject.tag);
+        //Debug.Log(player.IsHoldRail());
+        //Debug.Log(canSetZone.isThereRail);
+        Debug.Log("BlockType은" + canSetZone.blockType);
 
 
 		if (other.gameObject.CompareTag("Player") && !canSetZone.isThereRail)
 		{
-            if (other.transform.GetComponent<PickUpPutDown>().isHoldRail)
+            if (canSetZone.blockType != 1)
             {
-                Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
-                trChild.gameObject.SetActive(true);
+                if (other.transform.GetComponent<PickUpPutDown>().isHoldRail)
+                {
+                    Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
+                    trChild.gameObject.SetActive(true);
+                }
             }
 		}
 	}

@@ -68,6 +68,8 @@ public class PickUpPutDown : MonoBehaviour
 	private bool isModule5Empty = false;
 	private bool isModule6Empty = false;
 
+	private int blockType = 0; // 0: grass, 1: water
+
 
 	public bool IsHoldRail()
 	{
@@ -525,7 +527,10 @@ public class PickUpPutDown : MonoBehaviour
 	// 아이템 내려놓기 시도
 	private void TryItemPutDown()
 	{
-		ItemPutDown();
+		//if (blockType != 1)
+		//{
+			ItemPutDown();
+		//}
 	}
 
 	// 아이템 내려놓기, 레일 설치하기
@@ -534,7 +539,6 @@ public class PickUpPutDown : MonoBehaviour
 		// 레일 바닥에 내려놓기
 		if (holdItem.CompareTag("Rail") && nearItem == null && canSetZoneFront.activeSelf == false && canSetZoneLeft.activeSelf == false && canSetZoneRight.activeSelf == false)
 		{
-
 			equipPoint.transform.DetachChildren();
 			holdItem.transform.position = equipPoint.transform.position - new Vector3(0, 1.2f, 0);
 			// 테스트를 위해 주석 처리함
@@ -640,8 +644,11 @@ public class PickUpPutDown : MonoBehaviour
 				holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
 
 			}
-
+			
 			lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));
+			// 여기서 blockType 업데이트가 되어야 할듯... -> ontrigger~ 함수는 오브젝트의 변화가 감지되어야 호출된다.
+			if (canSetZoneFrontS.blockType == 1)
+				canSetZoneFront.SetActive(false);
 			lastBeforeRail.transform.position = lastRailPos.transform.position;
 
 			lastBeforeRail.transform.rotation = lastRailPos.transform.rotation;
@@ -655,6 +662,9 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneFrontS.isThereRail = false;
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
+
+			if (canSetZoneFrontS.blockType == 1)
+				canSetZoneFront.SetActive(false);
 
 			AddRailToList(lastBeforeRail);
 		}
@@ -698,6 +708,8 @@ public class PickUpPutDown : MonoBehaviour
 			}
 
 			lastRailPos.transform.Translate(new Vector3(0, 0, 1.6f));
+			//if (canSetZoneLeftS.blockType == 1)
+			//	canSetZoneLeft.SetActive(false);
 			lastBeforeRail.transform.position = lastRailPos.transform.position;
 
 			lastRailPos.transform.Rotate(0, -90, 0);
@@ -714,6 +726,9 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneFrontS.isThereRail = false;
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
+
+			//if (canSetZoneLeftS.blockType == 1)
+			//	canSetZoneLeft.SetActive(false);
 
 			AddRailToList(lastBeforeRail);
 		}
@@ -757,6 +772,8 @@ public class PickUpPutDown : MonoBehaviour
 			}
 
 			lastRailPos.transform.Translate(new Vector3(0, 0, -1.6f));
+			//if (canSetZoneRightS.blockType == 1)
+			//	canSetZoneRight.SetActive(false);
 			lastBeforeRail.transform.position = lastRailPos.transform.position;
 
 			lastRailPos.transform.Rotate(0, 90, 0);
@@ -774,6 +791,9 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneFrontS.isThereRail = false;
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
+
+			//if (canSetZoneRightS.blockType == 1)
+			//	canSetZoneRight.SetActive(false);
 
 			AddRailToList(lastBeforeRail);
 
