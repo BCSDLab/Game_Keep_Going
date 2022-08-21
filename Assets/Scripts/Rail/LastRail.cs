@@ -16,14 +16,14 @@ public class LastRail: MonoBehaviour
         canSetZone = this.gameObject.transform.GetChild(0).GetComponent<CanSetZone>();
     }
 
-	//private void Update()
-	//{
-	//	if(canSetZone.blockType == 1)
-	//	{
- //           Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
- //           trChild.gameObject.SetActive(false);
- //       }
-	//}
+	private void FixedUpdate()
+	{
+		if (canSetZone.blockType == 1)
+		{
+			Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
+			trChild.gameObject.SetActive(false);
+		}
+	}
 
 	/*
     void Update()
