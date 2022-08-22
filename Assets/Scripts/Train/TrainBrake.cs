@@ -35,7 +35,7 @@ public class TrainBrake : MonoBehaviour
 	{
 		if(other.CompareTag("Player") && other.GetComponent<PickUpPutDown>().GetHoldItem() != null && other.GetComponent<PickUpPutDown>().GetHoldItem().CompareTag("WoodStack"))
 		{
-            woodNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<WoodStack>().getInt();
+            woodNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<WoodStack>().GetInt();
             canWoodPut = true;
             Debug.Log("브레이크 모듈에서 나무블럭 인식");
         }

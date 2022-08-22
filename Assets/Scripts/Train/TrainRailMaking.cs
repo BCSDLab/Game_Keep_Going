@@ -8,19 +8,27 @@ public class TrainRailMaking : MonoBehaviour
     Image timeImage;
     Coroutine makingCorutine;
     static float makeTime = 3.0f;
-    public int stoneNum, woodNum;
+    public int rockNum, woodNum;
     [SerializeField]
     TrainRailSaving trainRailSaving;
+    [SerializeField]
+    private bool canResoucePut = false;
     // Start is called before the first frame update
     void Start()
     {
+        init();
         trainRailSaving = GameObject.Find("train_savemodule").GetComponent<TrainRailSaving>();
         timeImage = GameObject.Find("timeImage").GetComponent<Image>();
     }
     void init()
     {
-        stoneNum = 0;
+        rockNum = 0;
         woodNum = 0;
+    }
+
+    public bool GetCanResoucePut()
+    {
+        return canResoucePut;
     }
 
     void StartRailMaking()
@@ -34,6 +42,17 @@ public class TrainRailMaking : MonoBehaviour
         timeImage.transform.position = Camera.main.WorldToScreenPoint(timePos);
         timeImage.enabled = true;
     }
+
+    public void SavingResource(bool type, int num = 0)
+    {
+        //wood = false, Rock = true;
+        if (type)
+            rockNum += num;
+        else
+            woodNum += num;
+        canResoucePut = false;
+    }
+
     IEnumerator RailMakingTime()
     {
         float curTime = 0.0f;
@@ -46,17 +65,41 @@ public class TrainRailMaking : MonoBehaviour
         RailMaking();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && other.GetComponent<PickUpPutDown>().GetHoldItem() != null)
+        {
+            GameObject holdItem = other.GetComponent<PickUpPutDown>().GetHoldItem();
+            if (holdItem.CompareTag("WoodStack") || holdItem.CompareTag("RockStack"))
+            {
+                canResoucePut = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player") && other.GetComponent<PickUpPutDown>().GetHoldItem() != null)
+        {
+            GameObject holdItem = other.GetComponent<PickUpPutDown>().GetHoldItem();
+            if (holdItem.CompareTag("WoodStack") || holdItem.CompareTag("RockStack"))
+            {
+                canResoucePut = false;
+            }
+        }
+    }
+
     void RailMaking()
     {
         trainRailSaving.CreateRails();
-        stoneNum--;
+        rockNum--;
         woodNum--;
         timeImage.enabled = false;
     }
     // Update is called once per frame
     void Update()
     {
-        while(stoneNum * woodNum > 0 && timeImage.enabled == false)
+        while(rockNum * woodNum > 0 && timeImage.enabled == false)
         {
             StartRailMaking();
         }

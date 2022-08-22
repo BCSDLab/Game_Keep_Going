@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 5751009659897004954}
   - component: {fileID: 5207579185857242228}
   - component: {fileID: 5207579185857242231}
-  - component: {fileID: 4484657119226616172}
+  - component: {fileID: 4252306110378400034}
   m_Layer: 6
   m_Name: wood_stack
   m_TagString: WoodStack
@@ -144,7 +144,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4484657119226616172
+--- !u!114 &4252306110378400034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

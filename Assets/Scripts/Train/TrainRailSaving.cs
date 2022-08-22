@@ -20,8 +20,17 @@ public class TrainRailSaving : MonoBehaviour
 
     public void CreateRails()
     {
-        Vector3 createPosition = transform.position;
-        createPosition.y = transform.position.y + 0.8f;
-        Instantiate(railResource, createPosition, transform.rotation);
+        if (transform.childCount == 1)
+        {
+            GameObject newRail = Instantiate(railResource, transform);
+            newRail.transform.position = newRail.transform.position + new Vector3(0f, 0.8f, 0f);
+
+        }
+        else
+        {
+            Transform rail = transform.GetChild(1);
+            GameObject newRail = Instantiate(railResource, rail);
+            newRail.transform.position = rail.position + new Vector3(0, 0.3f, 0) * rail.GetComponent<Rail>().GetInt();
+        }
     }
 }
