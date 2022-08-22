@@ -18,7 +18,6 @@ public class MyPlayer : Player
 
     void Start()
     {
-        gameObject.AddComponent<PlayerMining>();
         controller = GetComponent<PlayerController>();
         myRigidbody = GetComponent<Rigidbody>();
         viewCamera = Camera.main;

@@ -139,5 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 974dff94a0da8554e924ef2518340e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stoneNum: 0
+  rockNum: 0
   woodNum: 0
+  trainRailSaving: {fileID: 0}
+  canResoucePut: 0

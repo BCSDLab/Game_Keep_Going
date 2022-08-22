@@ -22,7 +22,7 @@ public class TrainConversion : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rockNum = GameObject.Find("train_railmakingmodule").GetComponent<TrainRailMaking>().stoneNum;
+        rockNum = GameObject.Find("train_railmakingmodule").GetComponent<TrainRailMaking>().rockNum;
         woodNum = GameObject.Find("train_railmakingmodule").GetComponent<TrainRailMaking>().woodNum;
     }
 
@@ -86,11 +86,11 @@ public class TrainConversion : MonoBehaviour
         {
 			if (other.GetComponent<PickUpPutDown>().GetHoldItem().CompareTag("WoodStack"))
 			{
-                putWoodNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<WoodStack>().getInt();
+                putWoodNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<WoodStack>().GetInt();
             }
             else if (other.GetComponent<PickUpPutDown>().GetHoldItem().CompareTag("RockStack"))
 			{
-                putRockNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<RockStack>().getInt();
+                putRockNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<RockStack>().GetInt();
             }           
 
             canBlockPut = true;

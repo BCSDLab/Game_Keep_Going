@@ -38,9 +38,21 @@ public class OtherPlayer : Player
         //playerRigid.MovePosition(playerRigid.position + moveVelocity * Time.deltaTime);
     }
 
+    IEnumerable ServerDelay()
+    {
+        float curTime = 0.0f;
+        while (curTime < 6f * Time.deltaTime)
+        {
+            curTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        GetComponent<PickUpPutDown>().PickUp();
+    }
+
     public void Pick()
     {
         transform.position = targetPos;
-        GetComponent<PickUpPutDown>().PickUp();
+        StartCoroutine("ServerDelay");
     }
 }

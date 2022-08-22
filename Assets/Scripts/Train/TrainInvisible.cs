@@ -45,7 +45,7 @@ public class TrainInvisible : MonoBehaviour
     {
         if (other.CompareTag("Player") && other.GetComponent<PickUpPutDown>().GetHoldItem() != null && other.GetComponent<PickUpPutDown>().GetHoldItem().CompareTag("RockStack"))
         {
-            rockNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<RockStack>().getInt();
+            rockNum = other.GetComponent<PickUpPutDown>().GetHoldItem().GetComponent<RockStack>().GetInt();
             canRockPut = true;
             Debug.Log("platform모듈에서 돌블럭 인식");
         }
