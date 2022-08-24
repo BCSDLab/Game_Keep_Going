@@ -25,6 +25,7 @@ public class PickUpPutDown : MonoBehaviour
 	private CanSetZone canSetZoneFrontS;
 	private CanSetZone canSetZoneLeftS;
 	private CanSetZone canSetZoneRightS;
+	private LastRail FrontS;
 	[SerializeField]
 	private GameObject lastRailPos;
 	private GameObject curvedRail;
@@ -88,6 +89,7 @@ public class PickUpPutDown : MonoBehaviour
 
 	void Start()
 	{
+		FrontS = GameObject.Find("Front").GetComponent<LastRail>();
 		canSetZoneFront = GameObject.Find("PreCanSetZoneFront").transform.GetChild(0).gameObject;
 		canSetZoneLeft = GameObject.Find("PreCanSetZoneLeft").transform.GetChild(0).gameObject;
 		canSetZoneRight = GameObject.Find("PreCanSetZoneRight").transform.GetChild(0).gameObject;
@@ -645,10 +647,7 @@ public class PickUpPutDown : MonoBehaviour
 
 			}
 			
-			lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));
-			// 여기서 blockType 업데이트가 되어야 할듯... -> ontrigger~ 함수는 오브젝트의 변화가 감지되어야 호출된다.
-			if (canSetZoneFrontS.blockType == 1)
-				canSetZoneFront.SetActive(false);
+			lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));		
 			lastBeforeRail.transform.position = lastRailPos.transform.position;
 
 			lastBeforeRail.transform.rotation = lastRailPos.transform.rotation;
@@ -663,10 +662,11 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
 
-			if (canSetZoneFrontS.blockType == 1)
-				canSetZoneFront.SetActive(false);
 
 			AddRailToList(lastBeforeRail);
+
+			if (FrontS.LastRail_BT == 1)
+				canSetZoneFront.SetActive(false);
 		}
 
 		// 왼쪽에 레일 설치하기

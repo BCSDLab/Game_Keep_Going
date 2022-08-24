@@ -5,19 +5,19 @@ using UnityEngine;
 public class CanSetZone : MonoBehaviour
 {
     public bool isThereRail = false;
-	public int blockType;
+	public int canSetZone_BT; // canSetZone과 충돌했을 때의 blocktype
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if(other.gameObject.layer == 10)
+		if (other.GetComponent<Block>() != null)
 		{
 			if (other.GetComponent<Block>().block_Type == BlockType.GRASS)
 			{
-				blockType = 0;
+				canSetZone_BT = 0;
 			}
 			else if (other.GetComponent<Block>().block_Type == BlockType.WATER)
 			{
-				blockType = 1;
+				canSetZone_BT = 1;
 			}
 		}
 
