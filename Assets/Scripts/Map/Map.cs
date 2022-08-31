@@ -23,6 +23,7 @@ public class Map : MonoBehaviour
 
     [SerializeField]
     private string Seed = "qweasfds"; // 시드는 8단어의 String으로 구성.
+    private int seedGen = 0;
 
     
     private GameObject dirt;
@@ -347,15 +348,15 @@ public class Map : MonoBehaviour
 
     void HillGroupGen()
     {
-
+        GenHillFromTop(0);
         GenHillFromCenter(10);
+        GenHillFromTop(17);
         GenHillFromBottom(5);
-        GenHillFromTop(15);
-        GenHillFromTop(5);
         GenHillFromBottom(15);
         GenHillFromBottom(25);
-        GenHillFromCenter(35);
+        GenHillFromCenter(28);
         GenHillFromTop(20);
+        GenHillFromBottom(35);
     }
 
     int GenHillFromCenter(int x)
@@ -588,7 +589,7 @@ public class Map : MonoBehaviour
     /// <returns></returns>
     int GenLakeFromTop(int x)
     {
-        if (x + 3 >= block_HorizLength || x == -1)
+        if (x + 7 >= block_HorizLength || x == -1)
         {
             return -1;
         }
@@ -640,7 +641,7 @@ public class Map : MonoBehaviour
     /// <returns></returns>
     int GenLakeFromBottom(int x)
     {
-        if (x + 3 >= block_HorizLength || x == -1)
+        if (x + 7 >= block_HorizLength || x == -1)
         {
             return -1;
         }
@@ -718,13 +719,14 @@ public class Map : MonoBehaviour
         int seednum = 0;
         for (int index = 0; index < 8; index++)
         {
-            int c = (int)Seed[index] * (int)Mathf.Pow(index * (int)Seed[index], index);
+            int c = (int)(Seed[index] + MapManager.instance.seedGen) * (int)Mathf.Pow(index * (Seed[index] + MapManager.instance.seedGen), index);
             seednum += c;
         }
         print("Seed is " + Seed);
         print("SeedBased Number is " + seednum);
         int[] noiseValues;
         Random.seed = seednum;
+        MapManager.instance.seedGen++;
     }
 
     /// <summary>
