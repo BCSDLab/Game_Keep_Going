@@ -17,13 +17,15 @@ public class MapManager : MonoBehaviour
     [SerializeField]
     private GameObject MapPrefab;
 
+    [SerializeField]
+    public int seedGen = 0;
+    public int seed;
+
     public int stageLevel = 1;
     public int stageLength = 40;
 
     List<GameObject> Maps = new List<GameObject>();
     public Map currentMap;
-
-    public int seed;
     
     [SerializeField]
     public int snowingLevel = 6000; // 눈이 내리는 프레임 기준.
@@ -31,6 +33,7 @@ public class MapManager : MonoBehaviour
     public bool isSnowing = true;
     public int snowTiming = 0; // get함수로 가져올수도 있는데, 속도가 뭐가 더 빠른지 모름.
 
+    public Vector3 playerReturnPos;
 
     private void Awake()
     {
@@ -51,9 +54,17 @@ public class MapManager : MonoBehaviour
     {
         FirstSetup();
 
-        MapSetUp(40, stageLevel);
-        
+        SetupNewLevel(40); // 1스테이지 제작
+        SetupNewLevel(40); // 2스테이지 제작.
+    }
 
+    /// <summary>
+    /// 새로운 레벨의 맵을 생성, 길이만 조절 가능함.
+    /// </summary>
+    /// <param name="stagelength">스테이지의 길이.</param>
+    public void SetupNewLevel(int stagelength)
+    {
+        MapSetUp(stagelength, stageLevel);
     }
 
     void FixedUpdate()
