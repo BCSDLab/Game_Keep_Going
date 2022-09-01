@@ -25,6 +25,7 @@ public class PickUpPutDown : MonoBehaviour
 	private CanSetZone canSetZoneFrontS;
 	private CanSetZone canSetZoneLeftS;
 	private CanSetZone canSetZoneRightS;
+	private LastRail FrontS;
 	[SerializeField]
 	private GameObject lastRailPos;
 	private GameObject curvedRail;
@@ -62,7 +63,8 @@ public class PickUpPutDown : MonoBehaviour
 	private bool isStore = false;
 
 	public bool isHoldRail = false;
-	private bool isTrainNear = false;
+	private bool isMCNear = false; // ModuleCase 오브젝트와 충돌하면 true
+	public bool isTrainNear = false;
 
 	private bool isModule1Empty = false;
 	private bool isModule2Empty = false;
@@ -70,6 +72,9 @@ public class PickUpPutDown : MonoBehaviour
 	private bool isModule4Empty = false;
 	private bool isModule5Empty = false;
 	private bool isModule6Empty = false;
+
+	private int blockType = 0; // 0: grass, 1: water
+
 
 
 	public bool IsHoldRail()
@@ -89,6 +94,7 @@ public class PickUpPutDown : MonoBehaviour
 
 	void Start()
 	{
+		FrontS = GameObject.Find("Front").GetComponent<LastRail>();
 		canSetZoneFront = GameObject.Find("PreCanSetZoneFront").transform.GetChild(0).gameObject;
 		canSetZoneLeft = GameObject.Find("PreCanSetZoneLeft").transform.GetChild(0).gameObject;
 		canSetZoneRight = GameObject.Find("PreCanSetZoneRight").transform.GetChild(0).gameObject;
@@ -140,9 +146,8 @@ public class PickUpPutDown : MonoBehaviour
 			foreach (Transform child in Trains)
 			{
 				//module 이고, active가 되어 있는 자식만 확인
-				if (child.name.Contains("module") && child.gameObject.activeSelf == true)
+				if (!isStore && child.name.Contains("module") && child.gameObject.activeSelf == true)
 				{
-
 					//각 모듈에 해당하는 함수 작동
 					if (child.name == "train_breakingmodule")
 					{
@@ -553,16 +558,18 @@ public class PickUpPutDown : MonoBehaviour
 	// 아이템 내려놓기 시도
 	private void TryItemPutDown()
 	{
-		ItemPutDown();
+		//if (blockType != 1)
+		//{
+			ItemPutDown();
+		//}
 	}
 
 	// 아이템 내려놓기, 레일 설치하기
 	private void ItemPutDown()
 	{
 		// 레일 바닥에 내려놓기
-		if (holdItem.CompareTag("Rail") && nearItem == null && canSetZoneFront.activeSelf == false && canSetZoneLeft.activeSelf == false && canSetZoneRight.activeSelf == false)
+		if (holdItem.CompareTag("Rail") && nearItem == null && canSetZoneFront.activeSelf == false && canSetZoneLeft.activeSelf == false && canSetZoneRight.activeSelf == false && !isTrainNear)
 		{
-
 			equipPoint.transform.DetachChildren();
 			holdItem.transform.position = equipPoint.transform.position - new Vector3(0, 1.2f, 0);
 			// 테스트를 위해 주석 처리함
@@ -668,8 +675,8 @@ public class PickUpPutDown : MonoBehaviour
 				holdItem.transform.GetChild(holdRail.GetInt() - 1).parent = null;
 
 			}
-
-			lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));
+			
+			lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));		
 			lastBeforeRail.transform.position = lastRailPos.transform.position;
 
 			lastBeforeRail.transform.rotation = lastRailPos.transform.rotation;
@@ -684,7 +691,11 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
 
+
 			AddRailToList(lastBeforeRail);
+
+			if (FrontS.LastRail_BT == 1)
+				canSetZoneFront.SetActive(false);
 		}
 
 		// 왼쪽에 레일 설치하기
@@ -726,6 +737,8 @@ public class PickUpPutDown : MonoBehaviour
 			}
 
 			lastRailPos.transform.Translate(new Vector3(0, 0, 1.6f));
+			//if (canSetZoneLeftS.blockType == 1)
+			//	canSetZoneLeft.SetActive(false);
 			lastBeforeRail.transform.position = lastRailPos.transform.position;
 
 			lastRailPos.transform.Rotate(0, -90, 0);
@@ -742,6 +755,9 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneFrontS.isThereRail = false;
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
+
+			//if (canSetZoneLeftS.blockType == 1)
+			//	canSetZoneLeft.SetActive(false);
 
 			AddRailToList(lastBeforeRail);
 		}
@@ -785,6 +801,8 @@ public class PickUpPutDown : MonoBehaviour
 			}
 
 			lastRailPos.transform.Translate(new Vector3(0, 0, -1.6f));
+			//if (canSetZoneRightS.blockType == 1)
+			//	canSetZoneRight.SetActive(false);
 			lastBeforeRail.transform.position = lastRailPos.transform.position;
 
 			lastRailPos.transform.Rotate(0, 90, 0);
@@ -803,12 +821,15 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
 
+			//if (canSetZoneRightS.blockType == 1)
+			//	canSetZoneRight.SetActive(false);
+
 			AddRailToList(lastBeforeRail);
 
 		}
 
 		// 도끼 내려놓기, 곡괭이 내려놓기, 나무 블럭 내려놓기, 돌 블럭 내려놓기
-		else if (nearItem == null && (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe") || holdItem.CompareTag("WoodStack") || holdItem.CompareTag("RockStack")))
+		else if (nearItem == null && !isTrainNear && (holdItem.CompareTag("Axe") || holdItem.CompareTag("Pickaxe") || holdItem.CompareTag("WoodStack") || holdItem.CompareTag("RockStack")))
 		{
 			Debug.Log("바닥에 내려놓기");
 			Debug.Log(nearItem);
@@ -903,7 +924,7 @@ public class PickUpPutDown : MonoBehaviour
 		}
 
 		// 모듈 바닥에 내려놓기
-		else if (!isTrainNear && nearItem == null && holdItem.CompareTag("Train"))
+		else if (!isMCNear && nearItem == null && holdItem.CompareTag("Train"))
 		{
 			Debug.Log("모듈 바닥에 내려놓기");
 
@@ -919,7 +940,7 @@ public class PickUpPutDown : MonoBehaviour
 		}
 
 		//모듈 기차에 붙이기 - 모듈의 레이어 바꾸기, 모듈의 포지션 조정, 위치한 ModuleCase의 자식 오브젝트로 두기
-		else if (isTrainNear && holdItem.CompareTag("Train"))
+		else if (isMCNear && holdItem.CompareTag("Train"))
 		{
 			if (!(isModule1Empty || isModule2Empty || isModule3Empty || isModule4Empty || isModule5Empty || isModule6Empty))
 			{
@@ -1060,17 +1081,26 @@ public class PickUpPutDown : MonoBehaviour
 			nearItem = other.gameObject;
 		}
 
-		if (other.gameObject.layer == LayerMask.NameToLayer("Default") && other.CompareTag("Train"))
+		if (isStore)
 		{
-			isItemNear = true;
-			nearItem = other.gameObject;
+			if (other.gameObject.layer == LayerMask.NameToLayer("Default") && other.CompareTag("Train"))
+			{
+				isItemNear = true;
+				nearItem = other.gameObject;
+			}
 		}
+
+		if (other.gameObject.CompareTag("Train"))
+		{
+			isTrainNear = true;
+		}
+
 
 		if (holdItem != null)
 		{
 			if (other.CompareTag("ModuleCase") && holdItem.CompareTag("Train"))
 			{
-				isTrainNear = true; // ModuleCase1~6과 충돌하면 true
+				isMCNear = true; // ModuleCase1~6과 충돌하면 true
 
 				if (other.name == "ModuleCase1")
 				{
@@ -1133,15 +1163,23 @@ public class PickUpPutDown : MonoBehaviour
 			nearItem = null;
 		}
 
-		if (other.gameObject.layer == LayerMask.NameToLayer("Default") && other.CompareTag("Train"))
+		if (isStore)
 		{
-			isItemNear = false;
-			nearItem = null;
+			if (other.gameObject.layer == LayerMask.NameToLayer("Default") && other.CompareTag("Train"))
+			{
+				isItemNear = false;
+				nearItem = null;
+			}
+		}
+
+		if (other.gameObject.CompareTag("Train"))
+		{
+			isTrainNear = false;
 		}
 
 		else if (other.CompareTag("ModuleCase"))
 		{
-			isTrainNear = false;
+			isMCNear = false;
 
 			if (other.name == "ModuleCase1")
 			{
