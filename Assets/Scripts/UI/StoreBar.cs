@@ -25,6 +25,11 @@ public class StoreBar : MonoBehaviour
 		{
             innerColor = new Color(1,1,1);
             transform.GetComponent<Image>().color = innerColor;
+
+            // 이 아래는 새 스테이지 제너레이팅 겸 카메라 위치 복구용.
+            other.gameObject.transform.position = MapManager.instance.playerReturnPos;
+            MapManager.instance.SetupNewLevel(MapManager.instance.stageLength);
+            CameraManager.instance.ChangeTargetToTrain();
 		}
 	}
 

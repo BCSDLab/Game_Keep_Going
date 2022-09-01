@@ -120,7 +120,7 @@ public class Rail : MonoBehaviour
 		railStackNum = this.transform.childCount;
 	}
 
-	public int getInt()
+	public int GetInt()
 	{
 		return railStackNum;
 	}

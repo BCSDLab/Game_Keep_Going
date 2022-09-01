@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3558392800832281509}
   - component: {fileID: 3558392800832281508}
   - component: {fileID: 253910091491004847}
+  - component: {fileID: 9099584337964898090}
   m_Layer: 6
   m_Name: rail_stick
   m_TagString: StickRail
@@ -76,6 +77,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   railStackNum: 1
+--- !u!114 &9099584337964898090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4440719346928936694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27bdfbe5629c5504d8154d9c678d5584, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4624441829117664815
 GameObject:
   m_ObjectHideFlags: 0

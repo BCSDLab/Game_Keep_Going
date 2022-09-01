@@ -16,6 +16,7 @@ TagManager:
   - Enemy
   - ModuleCase
   - StickRail
+  - Block
   layers:
   - Default
   - TransparentFX
@@ -28,7 +29,7 @@ TagManager:
   - CurvedRailRight
   - Player
   - Blocks
-  - 
+  - Train
   - 
   - 
   - 

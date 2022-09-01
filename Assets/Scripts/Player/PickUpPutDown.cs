@@ -47,6 +47,7 @@ public class PickUpPutDown : MonoBehaviour
 	private TrainBrake canWoodPut;
 	private TrainConversion canBlockPut;
 	private TrainInvisible canRockPut;
+	private TrainRailMaking trainRailMaking;
 
 	private Vector3 PutDownPosition = Vector3.zero;
 
@@ -58,6 +59,8 @@ public class PickUpPutDown : MonoBehaviour
 	private bool isHold = false;
 	[SerializeField]
 	private bool isItemNear = false;
+	[SerializeField]
+	private bool isStore = false;
 
 	public bool isHoldRail = false;
 	private bool isTrainNear = false;
@@ -131,32 +134,39 @@ public class PickUpPutDown : MonoBehaviour
 		if (!isHold)
 		{
 			TryItemPickUp();
-			ModulePickUp(); // 이 함수는 상점에서만 호출될 수 있도록 코드 추가 필요
+			if(isStore)
+				ModulePickUp(); // 이 함수는 상점에서만 호출될 수 있도록 코드 추가 필요
 		}
 		else
 		{
 			TryItemPutDown();
-			if (GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
+			Transform[] Trains = GameObject.Find("Train").GetComponentsInChildren<Transform>();
+			foreach (Transform child in Trains)
 			{
-				if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+				//module 이고, active가 되어 있는 자식만 확인
+				if (child.name.Contains("module") && child.gameObject.activeSelf == true)
 				{
-					WoodPutToBrake();
+
+					//각 모듈에 해당하는 함수 작동
+					if (child.name == "train_breakingmodule")
+					{
+						WoodPutToBrake();
+					}
+					else if (child.name == "train_conversionmodule")
+					{
+						BlockPutToConvert();
+					}
+					else if (child.name == "train_platformmodule")
+					{
+						RockPutForPlatform();
+					}
+					else if (child.name == "train_railmakingmodule")
+					{
+						ResourcePutForSave();
+					}
 				}
 			}
-			if (GameObject.Find("Train").transform.Find("train_conversionmodule") != null)
-			{
-				if (GameObject.Find("Train").transform.Find("train_conversionmodule").gameObject.activeSelf == true)
-				{
-					BlockPutToConvert();
-				}
-			}
-			if (GameObject.Find("Train").transform.Find("train_platformmodule") != null)
-			{
-				if (GameObject.Find("Train").transform.Find("train_platformmodule").gameObject.activeSelf == true)
-				{
-					RockPutForPlatform();
-				}
-			}
+			
 		}
 	}
 
@@ -167,6 +177,7 @@ public class PickUpPutDown : MonoBehaviour
 		{
 			GameObject.Find("train_platformmodule").transform.GetComponent<TrainInvisible>().SetRockPut(true);
 			Object.Destroy(holdItem);
+			isHold = false;
 			holdItem = null;
 			Debug.Log("isHold " + isHold);
 		}
@@ -189,6 +200,7 @@ public class PickUpPutDown : MonoBehaviour
 			}
 			Object.Destroy(holdItem);
 			canBlockPut.setCanBlockPut(false);
+			isHold = false;
 			holdItem = null;
 		}
 	}
@@ -202,10 +214,26 @@ public class PickUpPutDown : MonoBehaviour
 			// woodPut = true로 하기
 			GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>().setWoodPut(true);
 			Object.Destroy(holdItem);
+			isHold = false;
 			holdItem = null;
 
 
 			Debug.Log("나무 블럭이 적용됨!!!!!");
+		}
+	}
+	
+	private void ResourcePutForSave()
+	{
+		trainRailMaking = GameObject.Find("train_railmakingmodule").transform.GetComponent<TrainRailMaking>();
+		if (trainRailMaking.GetCanResoucePut())
+		{
+			bool isRock = holdItem.CompareTag("RockStack");
+			int resourceNum = holdItem.GetComponent<ResourceStack>().GetInt();
+			trainRailMaking.SavingResource(isRock, resourceNum);
+			Object.Destroy(holdItem);
+			isHold = false;
+			holdItem = null;
+			Debug.Log("isHold " + isHold);
 		}
 	}
 
@@ -343,15 +371,15 @@ public class PickUpPutDown : MonoBehaviour
 			nearRail = nearItem.GetComponent("Rail") as Rail; // 충돌한 레일의 Rail스크립트 가져오기
 															  //holdRail = holdItem.GetComponent("Rail") as Rail; // 들고있는 레일의 Rail스크립트 가져오기
 															  // 쌓여있는 레일이 3개 이하일 때
-			if (nearRail.getInt() <= 3)
+			if (nearRail.GetInt() <= 3)
 			{
 				//develop
-				holdItem = nearRail.DeleteRail(nearRail.getInt());
+				holdItem = nearRail.DeleteRail(nearRail.GetInt());
 				nearItem = null;
 				nearRail = null;
 			}
 			// 쌓여있는 레일이 3개보다 많을 때
-			else if (nearRail.getInt() > 3)
+			else if (nearRail.GetInt() > 3)
 			{
 				//develop
 				holdItem = nearRail.DeleteRail(3);
@@ -369,7 +397,7 @@ public class PickUpPutDown : MonoBehaviour
 
 
 			// 쌓여있는 레일이 3개 이하일 때
-			if (nearRail.getInt() <= 3)
+			if (nearRail.GetInt() <= 3)
 			{
 				holdItem = nearItem;
 				nearItem = null;
@@ -387,14 +415,14 @@ public class PickUpPutDown : MonoBehaviour
 				isHoldRail = true;
 			}
 			// 쌓여있는 레일이 3개보다 많을 때
-			else if (nearRail.getInt() > 3)
+			else if (nearRail.GetInt() > 3)
 			{
-				//Debug.Log(nearRail.getInt());
-				nearItem.transform.GetChild(nearRail.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.getInt() - 3));
-				//Debug.Log(nearRail.getInt());
-				nearItem.transform.GetChild(nearRail.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.getInt() - 3));
-				//Debug.Log(nearRail.getInt());
-				holdItem = nearItem.transform.GetChild(nearRail.getInt() - 3).gameObject;
+				//Debug.Log(nearRail.GetInt());
+				nearItem.transform.GetChild(nearRail.GetInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.GetInt() - 3));
+				//Debug.Log(nearRail.GetInt());
+				nearItem.transform.GetChild(nearRail.GetInt() - 2).SetParent(nearItem.transform.GetChild(nearRail.GetInt() - 3));
+				//Debug.Log(nearRail.GetInt());
+				holdItem = nearItem.transform.GetChild(nearRail.GetInt() - 3).gameObject;
 
 
 				nearItem = null;
@@ -434,7 +462,7 @@ public class PickUpPutDown : MonoBehaviour
 		else if (nearItem.CompareTag("WoodStack"))
 		{
 			// 쌓여있는 나무블럭이 3개 이하일 때
-			if (nearWood.getInt() <= 3)
+			if (nearWood.GetInt() <= 3)
 			{
 				holdItem = nearItem;
 				nearItem = null;
@@ -448,11 +476,11 @@ public class PickUpPutDown : MonoBehaviour
 				isHold = true;
 			}
 			// 쌓여있는 나무블럭이 3개보다 많을 때
-			else if (nearWood.getInt() > 3)
+			else if (nearWood.GetInt() > 3)
 			{
-				nearItem.transform.GetChild(nearWood.getInt() - 2).SetParent(nearItem.transform.GetChild(nearWood.getInt() - 3));
-				nearItem.transform.GetChild(nearWood.getInt() - 2).SetParent(nearItem.transform.GetChild(nearWood.getInt() - 3));
-				holdItem = nearItem.transform.GetChild(nearWood.getInt() - 3).gameObject;
+				nearItem.transform.GetChild(nearWood.GetInt() - 2).SetParent(nearItem.transform.GetChild(nearWood.GetInt() - 3));
+				nearItem.transform.GetChild(nearWood.GetInt() - 2).SetParent(nearItem.transform.GetChild(nearWood.GetInt() - 3));
+				holdItem = nearItem.transform.GetChild(nearWood.GetInt() - 3).gameObject;
 
 
 				nearItem = null;
@@ -471,7 +499,7 @@ public class PickUpPutDown : MonoBehaviour
 		else if (nearItem.CompareTag("RockStack"))
 		{
 			// 쌓여있는 돌 블럭이 3개 이하일 때
-			if (nearRock.getInt() <= 3)
+			if (nearRock.GetInt() <= 3)
 			{
 				holdItem = nearItem;
 				nearItem = null;
@@ -485,11 +513,11 @@ public class PickUpPutDown : MonoBehaviour
 				isHold = true;
 			}
 			// 쌓여있는 돌 블럭이 3개보다 많을 때
-			else if (nearRock.getInt() > 3)
+			else if (nearRock.GetInt() > 3)
 			{
-				nearItem.transform.GetChild(nearRock.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRock.getInt() - 3));
-				nearItem.transform.GetChild(nearRock.getInt() - 2).SetParent(nearItem.transform.GetChild(nearRock.getInt() - 3));
-				holdItem = nearItem.transform.GetChild(nearRock.getInt() - 3).gameObject;
+				nearItem.transform.GetChild(nearRock.GetInt() - 2).SetParent(nearItem.transform.GetChild(nearRock.GetInt() - 3));
+				nearItem.transform.GetChild(nearRock.GetInt() - 2).SetParent(nearItem.transform.GetChild(nearRock.GetInt() - 3));
+				holdItem = nearItem.transform.GetChild(nearRock.GetInt() - 3).gameObject;
 
 
 				nearItem = null;
@@ -570,29 +598,29 @@ public class PickUpPutDown : MonoBehaviour
 			equipPoint.transform.DetachChildren();
 
 			// 들고 있는 레일이 1개 일 때
-			if (holdRail.getInt() == 1)
+			if (holdRail.GetInt() == 1)
 			{
 				holdItem.transform.SetParent(nearItem.transform);
 
-				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * nearRail.getInt();
+				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * nearRail.GetInt();
 				holdItem.transform.rotation = nearItem.transform.rotation;
 			}
 			// 들고 있는 레일이 2개 이상일 때
-			else if (holdRail.getInt() >= 2)
+			else if (holdRail.GetInt() >= 2)
 			{
 				int i;
-				for (i = 1; i < holdRail.getInt(); i++)
+				for (i = 1; i < holdRail.GetInt(); i++)
 				{
 					// 첫번째 자식rail을 setparent로 위치 바꿨으니까 그 뒤 2,3번째 자식 레일 인식이 문제가 되는것임. i를 1로 수정
 					Debug.Log(i);
-					holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRail.getInt() + i - 1);
+					holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRail.GetInt() + i - 1);
 					holdItem.transform.GetChild(1).transform.rotation = nearItem.transform.rotation;
 					holdItem.transform.GetChild(1).transform.SetParent(nearItem.transform);
 				}
 
 				holdItem.transform.SetParent(nearItem.transform);
 
-				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRail.getInt() + i - 1);
+				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRail.GetInt() + i - 1);
 				holdItem.transform.rotation = nearItem.transform.rotation;
 
 				//holdItem.transform.DetachChildren();
@@ -625,7 +653,7 @@ public class PickUpPutDown : MonoBehaviour
 															  //            Rail holdRail = holdItem.GetComponent<Rail>();
 
 
-			if (holdRail.getInt() == 1) // 들고 있는 레일이 1개일 때
+			if (holdRail.GetInt() == 1) // 들고 있는 레일이 1개일 때
 			{
 				equipPoint.transform.DetachChildren();
 				//develop       lastBeforeRail = holdRail.DeleteRail(1);
@@ -639,11 +667,11 @@ public class PickUpPutDown : MonoBehaviour
 
 				canSetZoneFront.SetActive(false);
 			}
-			else if (holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
+			else if (holdRail.GetInt() > 1) // 들고 있는 레일이 2개 이상일 때
 			{
 				//develop       lastBeforeRail = holdRail.DeleteRail(1);
-				lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
-				holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
+				lastBeforeRail = holdItem.transform.GetChild(holdRail.GetInt() - 1).gameObject;
+				holdItem.transform.GetChild(holdRail.GetInt() - 1).parent = null;
 
 			}
 			
@@ -685,7 +713,7 @@ public class PickUpPutDown : MonoBehaviour
 			curvedRailObject.layer = lastBeforeRailLayer;
 			AddRailToList(curvedRailObject);
 
-			if (holdRail.getInt() == 1) // 들고 있는 레일이 1개 일 때
+			if (holdRail.GetInt() == 1) // 들고 있는 레일이 1개 일 때
 			{
 				equipPoint.transform.DetachChildren();
 
@@ -700,11 +728,11 @@ public class PickUpPutDown : MonoBehaviour
 				canSetZoneFront.SetActive(false);
 			}
 
-			else if (holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
+			else if (holdRail.GetInt() > 1) // 들고 있는 레일이 2개 이상일 때
 			{
-				lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
+				lastBeforeRail = holdItem.transform.GetChild(holdRail.GetInt() - 1).gameObject;
 				//develop       lastBeforeRail = holdRail.DeleteRail(1);                
-				holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
+				holdItem.transform.GetChild(holdRail.GetInt() - 1).parent = null;
 			}
 
 			lastRailPos.transform.Translate(new Vector3(0, 0, 1.6f));
@@ -747,7 +775,7 @@ public class PickUpPutDown : MonoBehaviour
 			curvedRailObject.layer = lastBeforeRailLayer;
 			AddRailToList(curvedRailObject);
 
-			if (holdRail.getInt() == 1) // 들고 있는 레일이 1개 일 때
+			if (holdRail.GetInt() == 1) // 들고 있는 레일이 1개 일 때
 			{
 				equipPoint.transform.DetachChildren();
 				//develop       lastBeforeRail = holdRail.DeleteRail(1);
@@ -763,11 +791,11 @@ public class PickUpPutDown : MonoBehaviour
 				canSetZoneFront.SetActive(false);
 			}
 
-			else if (holdRail.getInt() > 1) // 들고 있는 레일이 2개 이상일 때
+			else if (holdRail.GetInt() > 1) // 들고 있는 레일이 2개 이상일 때
 			{
-				lastBeforeRail = holdItem.transform.GetChild(holdRail.getInt() - 1).gameObject;
+				lastBeforeRail = holdItem.transform.GetChild(holdRail.GetInt() - 1).gameObject;
 				//develop       lastBeforeRail = holdRail.DeleteRail(1);                
-				holdItem.transform.GetChild(holdRail.getInt() - 1).parent = null;
+				holdItem.transform.GetChild(holdRail.GetInt() - 1).parent = null;
 
 			}
 
@@ -826,29 +854,29 @@ public class PickUpPutDown : MonoBehaviour
 			equipPoint.transform.DetachChildren();
 
 			// 들고 있는 나무 블럭이 1개 일 때
-			if (holdWood.getInt() == 1)
+			if (holdWood.GetInt() == 1)
 			{
 				holdItem.transform.SetParent(nearItem.transform);
 
-				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * nearWood.getInt();
+				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * nearWood.GetInt();
 				holdItem.transform.rotation = nearItem.transform.rotation;
 			}
 
 			// 들고 있는 나무 블럭이 2개 이상일 때
-			else if (holdWood.getInt() >= 2)
+			else if (holdWood.GetInt() >= 2)
 			{
 				int i;
-				for (i = 1; i < holdWood.getInt(); i++)
+				for (i = 1; i < holdWood.GetInt(); i++)
 				{
 					Debug.Log(i);
-					holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearWood.getInt() + i - 1);
+					holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearWood.GetInt() + i - 1);
 					holdItem.transform.GetChild(1).transform.rotation = nearItem.transform.rotation;
 					holdItem.transform.GetChild(1).transform.SetParent(nearItem.transform);
 				}
 
 				holdItem.transform.SetParent(nearItem.transform);
 
-				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearWood.getInt() + i - 1);
+				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearWood.GetInt() + i - 1);
 				holdItem.transform.rotation = nearItem.transform.rotation;
 			}
 			isHold = false;
@@ -865,29 +893,29 @@ public class PickUpPutDown : MonoBehaviour
 			equipPoint.transform.DetachChildren();
 
 			// 들고 있는 돌 블럭이 1개 일 때
-			if (holdRock.getInt() == 1)
+			if (holdRock.GetInt() == 1)
 			{
 				holdItem.transform.SetParent(nearItem.transform);
 
-				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * nearRock.getInt();
+				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * nearRock.GetInt();
 				holdItem.transform.rotation = nearItem.transform.rotation;
 			}
 
 			// 들고 있는 돌 블럭이 2개 이상일 때
-			else if (holdRock.getInt() >= 2)
+			else if (holdRock.GetInt() >= 2)
 			{
 				int i;
-				for (i = 1; i < holdRock.getInt(); i++)
+				for (i = 1; i < holdRock.GetInt(); i++)
 				{
 					Debug.Log(i);
-					holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRock.getInt() + i - 1);
+					holdItem.transform.GetChild(1).transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRock.GetInt() + i - 1);
 					holdItem.transform.GetChild(1).transform.rotation = nearItem.transform.rotation;
 					holdItem.transform.GetChild(1).transform.SetParent(nearItem.transform);
 				}
 
 				holdItem.transform.SetParent(nearItem.transform);
 
-				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRock.getInt() + i - 1);
+				holdItem.transform.position = nearItem.transform.position + new Vector3(0, 0.3f, 0) * (nearRock.GetInt() + i - 1);
 				holdItem.transform.rotation = nearItem.transform.rotation;
 			}
 			isHold = false;
