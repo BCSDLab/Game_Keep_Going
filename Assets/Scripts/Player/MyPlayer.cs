@@ -61,7 +61,7 @@ public class MyPlayer : Player
 
         C_Move movePacket = new C_Move();
         movePacket.posX = transform.position.x;
-        movePacket.posY = transform.position.y;
+        movePacket.posY = 1.6f;
         movePacket.posZ = transform.position.z;
         movePacket.dirH = dirH;
         movePacket.dirV = dirV;
@@ -73,7 +73,7 @@ public class MyPlayer : Player
     {
         dirH = Input.GetAxisRaw("Horizontal");
         dirV = Input.GetAxisRaw("Vertical");
-        Vector3 moveInput = new Vector3(dirH, 0, dirV);
+        Vector3 moveInput = new Vector3(dirH, 1.6f, dirV);
         Vector3 moveVelocity = moveInput.normalized * moveSpeed;
         myRigidbody.MovePosition(myRigidbody.position + moveVelocity * Time.deltaTime);
 

@@ -32,6 +32,7 @@ public class StartWindow : MonoBehaviour
 
         for (int i = 1; i < 10; i++)
         {
+            int idx = i;
             Vector2 vec2Btn = new Vector2();
             vec2Btn.x = vec2Center.x + 70 * ((i - 1) % 3 - 1);
             vec2Btn.y = vec2Center.y - 70 * ((i - 1) / 3 - 1);
@@ -39,7 +40,7 @@ public class StartWindow : MonoBehaviour
             GameObject cloneBtn = GameObject.Instantiate(roomBtn, vec2Btn, Quaternion.identity, GameObject.Find("Canvas").transform);
             cloneBtn.AddComponent<RoomButton>();
             cloneBtn.SetActive(true);
-            cloneBtn.GetComponent<Button>().onClick.AddListener(() => { SceneManager.LoadScene(1); networkManager.ConnectRoom(i);});
+            cloneBtn.GetComponent<Button>().onClick.AddListener(() => { SceneManager.LoadScene(1); networkManager.ConnectRoom(idx);});
         }
     }
 

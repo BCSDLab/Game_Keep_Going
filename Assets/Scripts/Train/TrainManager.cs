@@ -11,16 +11,16 @@ public class TrainManager
     Train train;
     [SerializeField]
     ArrayList trainList = new ArrayList();
-    public void AddTrains()
+/*    public void AddTrains()
     {
         GameObject trainParant = GameObject.Find("Train");
         for (int i = 0; i < trainParant.transform.childCount; i++)
         {
             trainList.Add(trainParant.transform.GetChild(i).gameObject);
         }
-    }
+    }*/
     
-    public void Add()
+    /*public void Add()
     {
         if (!isCreated)
         {
@@ -32,7 +32,7 @@ public class TrainManager
             isCreated = true;
         }
         
-    }
+    }*/
     
 
     //public void CreateTrain(S_BroadcastTrainMove packet)
@@ -43,10 +43,10 @@ public class TrainManager
     //    _players.Add(p.playerId, player);
     //}
 
-    public void Move(S_BroadcastTrainMove packet)
+/*    public void Move(S_BroadcastTrainMove packet)
     {
         train.transform.position = new Vector3(packet.posX, 1.6f, packet.posZ);
         train.transform.rotation = Quaternion.Euler(0, packet.rotateY * 180, 0);
-    }
+    }*/
 
 }

@@ -28,6 +28,7 @@ public class OtherPlayer : Player
     */
     public void SetTargetPos(Vector3 vec3)
     {
+        vec3.y = 1.6f;
         targetPos = vec3;
     }
 
@@ -38,13 +39,13 @@ public class OtherPlayer : Player
         //playerRigid.MovePosition(playerRigid.position + moveVelocity * Time.deltaTime);
     }
 
-    IEnumerable ServerDelay()
+    IEnumerator ServerDelay()
     {
         float curTime = 0.0f;
         while (curTime < 6f * Time.deltaTime)
         {
             curTime += Time.deltaTime;
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
 
         GetComponent<PickUpPutDown>().PickUp();
@@ -53,6 +54,6 @@ public class OtherPlayer : Player
     public void Pick()
     {
         transform.position = targetPos;
-        StartCoroutine("ServerDelay");
+        StartCoroutine(ServerDelay());
     }
 }
