@@ -555,6 +555,17 @@ public class PickUpPutDown : MonoBehaviour
 		}
 	}
 
+	IEnumerator CanSetZoneActive()
+	{
+		yield return new WaitForSeconds(0.001f);
+		holdRail = holdItem.GetComponent("Rail") as Rail;
+		if (canSetZoneFrontS.canSetZone_BT != 1)
+		{
+			Debug.Log("흙바닥이어서 켜진 함수!!!");
+			canSetZoneFront.SetActive(true);
+		}
+	}
+
 	// 아이템 내려놓기 시도
 	private void TryItemPutDown()
 	{
@@ -666,7 +677,7 @@ public class PickUpPutDown : MonoBehaviour
 				isHoldRail = false;
 				holdItem = null;
 
-				canSetZoneFront.SetActive(false);
+				//canSetZoneFront.SetActive(false);
 			}
 			else if (holdRail.GetInt() > 1) // 들고 있는 레일이 2개 이상일 때
 			{
@@ -676,7 +687,7 @@ public class PickUpPutDown : MonoBehaviour
 
 			}
 			
-			lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));		
+			lastRailPos.transform.Translate(new Vector3(1.6f, 0, 0));
 			lastBeforeRail.transform.position = lastRailPos.transform.position;
 
 			lastBeforeRail.transform.rotation = lastRailPos.transform.rotation;
@@ -694,8 +705,11 @@ public class PickUpPutDown : MonoBehaviour
 
 			AddRailToList(lastBeforeRail);
 
-			if (FrontS.LastRail_BT == 1)
-				canSetZoneFront.SetActive(false);
+			canSetZoneFront.SetActive(false);
+			if (isHoldRail)
+			{
+				StartCoroutine(CanSetZoneActive());
+			}
 		}
 
 		// 왼쪽에 레일 설치하기
@@ -726,7 +740,7 @@ public class PickUpPutDown : MonoBehaviour
 				holdItem = null;
 
 
-				canSetZoneFront.SetActive(false);
+				//canSetZoneFront.SetActive(false);
 			}
 
 			else if (holdRail.GetInt() > 1) // 들고 있는 레일이 2개 이상일 때
@@ -756,8 +770,11 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
 
-			//if (canSetZoneLeftS.blockType == 1)
-			//	canSetZoneLeft.SetActive(false);
+			canSetZoneFront.SetActive(false);
+			if (isHoldRail)
+			{
+				StartCoroutine(CanSetZoneActive());
+			}
 
 			AddRailToList(lastBeforeRail);
 		}
@@ -789,7 +806,7 @@ public class PickUpPutDown : MonoBehaviour
 				holdItem = null;
 
 
-				canSetZoneFront.SetActive(false);
+				//canSetZoneFront.SetActive(false);
 			}
 
 			else if (holdRail.GetInt() > 1) // 들고 있는 레일이 2개 이상일 때
@@ -821,8 +838,11 @@ public class PickUpPutDown : MonoBehaviour
 			canSetZoneLeftS.isThereRail = false;
 			canSetZoneRightS.isThereRail = false;
 
-			//if (canSetZoneRightS.blockType == 1)
-			//	canSetZoneRight.SetActive(false);
+			canSetZoneFront.SetActive(false);
+			if (isHoldRail)
+			{
+				StartCoroutine(CanSetZoneActive());
+			}
 
 			AddRailToList(lastBeforeRail);
 
