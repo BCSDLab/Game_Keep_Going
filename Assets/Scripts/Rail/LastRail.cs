@@ -8,7 +8,6 @@ public class LastRail: MonoBehaviour
     private PickUpPutDown player;
     private PickUpPutDown otherPlayer;
     private CanSetZone canSetZone;
-	public int LastRail_BT; // LastRail에서 충돌했을 때의 BlockType
 
 
     void Start()
@@ -29,26 +28,24 @@ public class LastRail: MonoBehaviour
 	}
 	*/
 
+	IEnumerator CanSetZoneActive()
+	{
+		yield return new WaitForSeconds(0.001f);
+		if(canSetZone.canSetZone_BT != 1)
+		{
+			Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
+			trChild.gameObject.SetActive(true);
+		}
+	}
+
 	private void OnTriggerEnter(Collider other)
 	{
-        Debug.Log("BlockType은" + canSetZone.canSetZone_BT + " " + this.gameObject.name);
-
-		if (other.GetComponent<Block>() != null)
-		{
-			if (other.GetComponent<Block>().block_Type == BlockType.WATER)
-			{
-				LastRail_BT = 1;
-				//Debug.Log("블럭타입이 1!");
-			}
-		}
-
-		if (other.gameObject.CompareTag("Player") && !canSetZone.isThereRail && canSetZone.canSetZone_BT != 1)
+		if (other.gameObject.CompareTag("Player") && !canSetZone.isThereRail)
 		{
             if (other.transform.GetComponent<PickUpPutDown>().isHoldRail)
             {
-                Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
-                trChild.gameObject.SetActive(true);
-            }
+				StartCoroutine(CanSetZoneActive());
+			}
 		}
 	}
 
@@ -59,14 +56,5 @@ public class LastRail: MonoBehaviour
             Transform trChild = this.transform.GetChild(0).transform.GetChild(0);
             trChild.gameObject.SetActive(false);
         }
-
-		if (other.GetComponent<Block>() != null)
-		{
-			if (other.GetComponent<Block>().block_Type == BlockType.WATER)
-			{
-				LastRail_BT = 0;
-				//Debug.Log("블럭타입이 1!");
-			}
-		}
 	}
 }
