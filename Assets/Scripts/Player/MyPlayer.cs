@@ -73,7 +73,7 @@ public class MyPlayer : Player
     {
         dirH = Input.GetAxisRaw("Horizontal");
         dirV = Input.GetAxisRaw("Vertical");
-        Vector3 moveInput = new Vector3(dirH, 1.6f, dirV);
+        Vector3 moveInput = new Vector3(dirH, 0f, dirV);
         Vector3 moveVelocity = moveInput.normalized * moveSpeed;
         myRigidbody.MovePosition(myRigidbody.position + moveVelocity * Time.deltaTime);
 
