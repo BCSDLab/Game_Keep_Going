@@ -28,6 +28,8 @@ public class MyPlayer : Player
 
     void Update()
     {
+        if (viewCamera == null)
+            viewCamera = Camera.current;
         Plane groundPlane = new Plane(Vector3.up, -1.6f);
         float rayDistance;
         Ray ray = viewCamera.ScreenPointToRay(Input.mousePosition);

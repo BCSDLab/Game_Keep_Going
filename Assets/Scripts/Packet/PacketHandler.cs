@@ -61,7 +61,7 @@ class PacketHandler
 		S_BroadcastMapSeed pkt = packet as S_BroadcastMapSeed;
 		ServerSession serverSession = session as ServerSession;
 
-		MapManager.instance.seed = pkt.mapSeed;
+		MapSeedManager.Instance.UpdateSeed(pkt.mapSeed);
 	}
 	public static void S_BroadcastEnterRoomHandler(PacketSession session, IPacket packet)
 	{

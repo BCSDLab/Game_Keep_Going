@@ -600,6 +600,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3957338178714025036, guid: fb20018888818ba49aeb9185cbd45efa, type: 3}
   m_PrefabInstance: {fileID: 328187004}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &310043775
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8925307379278755616, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_Name
+      value: MapManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755616, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925307379278755617, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bbf1a9dd5aaae994693c8beb69061ff4, type: 3}
 --- !u!4 &311120235 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3957338178714025036, guid: fb20018888818ba49aeb9185cbd45efa, type: 3}
@@ -1339,7 +1400,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29cb05918c8b39142b527122d50bd31e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LastRail_BT: 0
 --- !u!65 &459585027
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1767,6 +1827,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: player
       objectReference: {fileID: 0}
+    - target: {fileID: 7646660870557716493, guid: ab631ba11df8edf4bad165b7467e27de, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab631ba11df8edf4bad165b7467e27de, type: 3}
 --- !u!4 &606793590 stripped
@@ -2134,7 +2198,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29cb05918c8b39142b527122d50bd31e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LastRail_BT: 0
 --- !u!65 &790781695
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3213,7 +3276,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29cb05918c8b39142b527122d50bd31e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LastRail_BT: 0
 --- !u!65 &1194456797
 BoxCollider:
   m_ObjectHideFlags: 0
