@@ -19,7 +19,7 @@ public class MapManager : MonoBehaviour
 
     [SerializeField]
     public int seedGen = 0;
-    public int seed;
+    public int seed = 0;
 
     public int stageLevel = 1;
     public int stageLength = 40;

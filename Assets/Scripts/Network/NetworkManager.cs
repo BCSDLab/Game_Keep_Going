@@ -16,7 +16,8 @@ public class NetworkManager : MonoBehaviour
 	public int ping_time { get; private set; }
 	public bool isHost { get; private set; } = false;
 	private static NetworkManager instance;
-	public static NetworkManager Instance
+
+    public static NetworkManager Instance
 	{
 		get
 		{
