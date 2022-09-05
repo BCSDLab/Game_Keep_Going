@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -529,7 +529,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffab52e2317de634aac3499e3b801197, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Train: {fileID: 958522214}
+  train: {fileID: 0}
+  player: {fileID: 0}
+  isTargetTrain: 1
 --- !u!4 &33932686 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3957338178714025036, guid: fb20018888818ba49aeb9185cbd45efa, type: 3}
@@ -7861,6 +7863,10 @@ PrefabInstance:
     - target: {fileID: 8891777915450606439, guid: 964e16ee395ddb44a995cf5bc026b103, type: 3}
       propertyPath: m_Name
       value: NetworkManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8891777915450606439, guid: 964e16ee395ddb44a995cf5bc026b103, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 964e16ee395ddb44a995cf5bc026b103, type: 3}

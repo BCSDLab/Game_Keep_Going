@@ -118,11 +118,14 @@ public class PickUpPutDown : MonoBehaviour
 			AddRailToList(lastBeforeRail);
 		}
 
-		if (GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
+		if (GameObject.Find("Train"))
 		{
-			if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+			if (GameObject.Find("Train").transform.Find("train_breakingmodule") != null)
 			{
-				canWoodPut = GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>();
+				if (GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.activeSelf == true)
+				{
+					canWoodPut = GameObject.Find("Train").transform.Find("train_breakingmodule").gameObject.GetComponent<TrainBrake>();
+				}
 			}
 		}
 	}
@@ -246,14 +249,29 @@ public class PickUpPutDown : MonoBehaviour
 
 	private void AddRailToList(GameObject rail)
 	{
-		railroad1.Add(rail);
-		railroad2.Add(rail);
+		if (gameObject.name == "player")
+		{
+			railroad1.Add(rail);
+			railroad2.Add(rail);
+		}
+		else
+		{
+			GameObject.Find("player").GetComponent<PickUpPutDown>().AddRailToList(rail);
+		}
+
 	}
 
 	private void RemoveRailToList(GameObject rail)
 	{
-		railroad1.Remove(rail);
-		railroad2.Remove(rail);
+		if (gameObject.name == "player")
+		{
+			railroad1.Remove(rail);
+			railroad2.Remove(rail);
+		}
+		else
+		{
+			GameObject.Find("player").GetComponent<PickUpPutDown>().RemoveRailToList(rail);
+		}
 	}
 
 	public List<GameObject> GetRailRoad()
