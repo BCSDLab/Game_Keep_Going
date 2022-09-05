@@ -23,7 +23,7 @@ public class PlayerManager : MonoBehaviour
                 GameObject go = GameObject.Find("player");
                 MyPlayer myPlayer = go.GetComponent<MyPlayer>();
                 myPlayer.PlayerId = p.playerId;
-                myPlayer.transform.position = new Vector3(10, 1.6f, 10);
+                myPlayer.transform.position = new Vector3(5, 1.6f, 5);
                 _myPlayer = myPlayer;
                 //TrainManager.Instance.AddTrains();
             }
