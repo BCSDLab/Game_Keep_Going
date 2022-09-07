@@ -36,6 +36,8 @@ public class PickUpPutDown : MonoBehaviour
 	private GameObject nearItem;
 	[SerializeField]
 	private GameObject holdItem;
+	private GameObject ModuleCase1;
+	private GameObject stickRail;
 
 	public Rail nearRail;
 	public Rail holdRail;
@@ -51,6 +53,7 @@ public class PickUpPutDown : MonoBehaviour
 
 	private Vector3 PutDownPosition = Vector3.zero;
 
+	[SerializeField]
 	private List<GameObject> railroad1;
 	private List<GameObject> railroad2;
 
@@ -103,6 +106,8 @@ public class PickUpPutDown : MonoBehaviour
 		canSetZoneRightS = GameObject.Find("PreCanSetZoneRight").GetComponent<CanSetZone>();
 		lastRailPos = GameObject.Find("LastRailPos");
 		curvedRail = Resources.Load("Prefabs/rail_curvedbase") as GameObject;
+		ModuleCase1 = GameObject.Find("ModuleCase1");
+		stickRail = GameObject.FindWithTag("StickRail");
 
 		// 테스트를 위해 주석 처리함
 		//lastBeforeRail = GameObject.Find("FixedRail");
@@ -129,6 +134,11 @@ public class PickUpPutDown : MonoBehaviour
 
 	void Update()
 	{
+		// stickRail이 있는 곳 바로 전까지 레일을 설치한 경우
+		if (canSetZoneFrontS.isRailComplete || canSetZoneLeftS.isRailComplete || canSetZoneRightS.isRailComplete)
+		{
+			checkStageEnd();
+		}
 	}
 
 	public void PickUp()
@@ -167,8 +177,19 @@ public class PickUpPutDown : MonoBehaviour
 					}
 				}
 			}
-			
 		}
+	}
+
+	// stickrail 직전까지 레일 설치하면 raillist에 stickrail 추가해줌
+	private void checkStageEnd()
+	{
+		canSetZoneFrontS.isRailComplete = false;
+		canSetZoneLeftS.isRailComplete = false;
+		canSetZoneRightS.isRailComplete = false;
+
+		Debug.Log("스틱레일 추가함");
+		AddRailToList(stickRail);
+		stickRail.tag = "Rail";
 	}
 
 	private void RockPutForPlatform()
@@ -254,6 +275,12 @@ public class PickUpPutDown : MonoBehaviour
 	{
 		railroad1.Remove(rail);
 		railroad2.Remove(rail);
+	}
+
+	private void ClearRailList()
+	{
+		railroad1.Clear();
+		railroad2.Clear();
 	}
 
 	public List<GameObject> GetRailRoad()
