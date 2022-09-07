@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class Map : MonoBehaviour
@@ -127,12 +128,31 @@ public class Map : MonoBehaviour
             S_BroadcastMapSeed packet = new S_BroadcastMapSeed();
             packet.mapSeed = Random.seed;
             NetworkManager.Instance.Send(packet.Write());
+            SecondSetup();
         }
         else
-            Random.seed = MapManager.instance.seed;
+        {
+            RandomNumberGenSetup();
+            SecondSetup();
+            //StartCoroutine(LoadSeedTime());
+        }
+    }
 
-        
+    IEnumerator LoadSeedTime()
+    {
+        float curTime = 0.0f;
+        while (curTime < 0.5f)
+        {
+            curTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        Random.seed = GameObject.Find("MapManager").GetComponent<MapManager>().seed;
+        SecondSetup();
+    }
 
+    void SecondSetup()
+    {
+        GameObject.Find("Canvas").transform.GetChild(2).GetComponent<Text>().text = Random.seed.ToString();
         BaseField(); // 기반이 되는 블럭 설정.
         LakeLineGen(); // Lake의 기준이 되는 Line생성.
         //LakeLineTest();
@@ -146,8 +166,6 @@ public class Map : MonoBehaviour
         //MobCampGen(); // 몹 캠프 생성.
         SnowLayerSetup(); // 눈 레이어 설정. 모든 오브젝트가 설정된 다음에 만들어져야 함.
     }
-
-
 
     void ResourceLoad()
     {

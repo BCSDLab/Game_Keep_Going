@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
     Dictionary<int, Player> _players = new Dictionary<int, Player>();
     GameObject[] playerList;
     public static PlayerManager Instance { get; } = new PlayerManager();
+    public int maxPlayer = 1;
 
     public void Add(S_PlayerList packet)
     {
@@ -22,9 +23,9 @@ public class PlayerManager : MonoBehaviour
                 GameObject go = GameObject.Find("player");
                 MyPlayer myPlayer = go.GetComponent<MyPlayer>();
                 myPlayer.PlayerId = p.playerId;
-                myPlayer.transform.position = new Vector3(10, 4.0f, 10);
+                myPlayer.transform.position = new Vector3(5, 1.6f, 5);
                 _myPlayer = myPlayer;
-                TrainManager.Instance.AddTrains();
+                //TrainManager.Instance.AddTrains();
             }
             else
             {
@@ -68,6 +69,7 @@ public class PlayerManager : MonoBehaviour
 
     public void EnterGame(S_BroadcastEnterGame packet)
     {
+        maxPlayer += 1;
         if (packet.playerId == _myPlayer.PlayerId)
             return;
         

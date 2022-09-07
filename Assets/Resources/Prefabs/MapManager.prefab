@@ -45,6 +45,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentStartPos: {x: 0, y: 0, z: 0}
   nextStartPos: {x: 0, y: 0, z: 0}
-  MapPrefab: {fileID: 6806601045315322174}
+  MapPrefab: {fileID: 2527065226147694246, guid: 98fc440022ffc06458cb7b4b86ecf6e6, type: 3}
+  seedGen: 0
+  seed: 0
   stageLevel: 0
-  stageLength: 15
+  stageLength: 40
+  currentMap: {fileID: 0}
+  snowingLevel: 6000
+  isSnowing: 1
+  snowTiming: 0
+  playerReturnPos: {x: 0, y: 0, z: 0}

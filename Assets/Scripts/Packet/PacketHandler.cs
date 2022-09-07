@@ -29,7 +29,7 @@ class PacketHandler
 		ServerSession serverSession = session as ServerSession;
 
 		PlayerManager.Instance.Add(pkt);
-		TrainManager.Instance.Add();
+		//TrainManager.Instance.Add();
 	}
 
 	public static void S_BroadcastMoveHandler(PacketSession session, IPacket packet)
@@ -45,7 +45,7 @@ class PacketHandler
 		S_BroadcastTrainMove pkt = packet as S_BroadcastTrainMove;
 		ServerSession serverSession = session as ServerSession;
 
-		TrainManager.Instance.Move(pkt);
+		//TrainManager.Instance.Move(pkt);
 	}
 
 	public static void S_BroadcastShotHandler(PacketSession session, IPacket packet)
@@ -61,7 +61,7 @@ class PacketHandler
 		S_BroadcastMapSeed pkt = packet as S_BroadcastMapSeed;
 		ServerSession serverSession = session as ServerSession;
 
-		MapManager.instance.seed = pkt.mapSeed;
+		MapSeedManager.Instance.UpdateSeed(pkt.mapSeed);
 	}
 	public static void S_BroadcastEnterRoomHandler(PacketSession session, IPacket packet)
 	{
