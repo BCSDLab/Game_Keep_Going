@@ -36,7 +36,7 @@ public class StoreBar : MonoBehaviour
             CameraManager.instance.ChangeTargetToTrain();
             // À¯°æ¾¾ ºÎÅ¹º».
             player.GetComponent<PickUpPutDown>().StoreLoadUnload();
-            GameObject train2 = GameObject.Find("Train");
+            GameObject train = GameObject.Find("Train");
             train.GetComponent<LoadJsonData>().loadInStore = true;
         }
 	}
