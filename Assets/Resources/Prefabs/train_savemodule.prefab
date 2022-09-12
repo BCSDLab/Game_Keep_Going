@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2910880010355599846}
   m_Layer: 0
   m_Name: train_savemodule
-  m_TagString: Untagged
+  m_TagString: Train
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

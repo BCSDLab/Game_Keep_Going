@@ -100,8 +100,8 @@ public class TrainSingleton : MonoBehaviour
                 moduleDic[moduleL[i-1]] = moduleDic[moduleL[i]];
                 moduleDic[moduleL[i]] = 0;
 
-                GameObject.Find("Train").transform.GetChild(i).transform.GetChild(1).parent = GameObject.Find("Train").transform.GetChild(i - 1);
-                GameObject.Find("Train").transform.GetChild(i - 1).GetChild(1).transform.localPosition = Vector3.zero;
+                GameObject.Find("Train2").transform.GetChild(i).transform.GetChild(1).parent = GameObject.Find("Train2").transform.GetChild(i - 1);
+                GameObject.Find("Train2").transform.GetChild(i - 1).GetChild(1).transform.localPosition = Vector3.zero;
             }
 		}
 
@@ -117,8 +117,8 @@ public class TrainSingleton : MonoBehaviour
                 moduleDic[moduleL[i]] = moduleDic[moduleL[i + 1]];
                 moduleDic[moduleL[i + 1]] = 0;
 
-                GameObject.Find("Train").transform.GetChild(i+1).transform.GetChild(1).parent = GameObject.Find("Train").transform.GetChild(i);
-                GameObject.Find("Train").transform.GetChild(i).GetChild(1).transform.localPosition = Vector3.zero;
+                GameObject.Find("Train2").transform.GetChild(i+1).transform.GetChild(1).parent = GameObject.Find("Train2").transform.GetChild(i);
+                GameObject.Find("Train2").transform.GetChild(i).GetChild(1).transform.localPosition = Vector3.zero;
             }
 		}
 
