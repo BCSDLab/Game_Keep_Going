@@ -7,7 +7,7 @@ public class PlayerMining : MonoBehaviour
 {
     // Start is called before the first frame update
     GameObject timeObj;
-    Image timeImage;
+    Image timeImage = null;
     GameObject stoneResourceObj;
     GameObject woodResourceObj;
     Coroutine miningCorutine;
@@ -21,10 +21,8 @@ public class PlayerMining : MonoBehaviour
         stoneResourceObj = Resources.Load("Prefabs/rock_stack") as GameObject;
         woodResourceObj =  Resources.Load("Prefabs/wood_stack") as GameObject;
         miningCorutine = null;
-        map = MapManager.instance.currentMap;
         timeObj = Resources.Load("Prefabs/timeImage") as GameObject;
-        timeObj = Instantiate(timeObj, Vector2.zero, Quaternion.identity, GameObject.Find("Canvas").transform); 
-        timeImage = timeObj.GetComponent<Image>();
+        
         
     }
 
@@ -34,6 +32,7 @@ public class PlayerMining : MonoBehaviour
         {
             if (miningCorutine == null)
             {
+                InitTimeImage();
                 GameObject resourceObject = collider.gameObject;
                 Debug.Log(collider.gameObject.name);
                 StartMining(resourceObject);
@@ -106,9 +105,16 @@ public class PlayerMining : MonoBehaviour
         Mining(collObj);
     }
 
+    void InitTimeImage()
+    {
+        if (timeImage == null)
+        {
+            timeObj = Instantiate(timeObj, Vector2.zero, Quaternion.identity, GameObject.Find("Canvas").transform);
+            timeImage = timeObj.GetComponent<Image>();
+        }
+    }
     // Update is called once per frame
     void Update()
     {
-        
     }
 }
