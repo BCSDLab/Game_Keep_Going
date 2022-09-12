@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -29,6 +30,16 @@ public class NetworkManager : MonoBehaviour
 		}
 	}
 
+	public void InputIp()
+	{
+		Debug.Log("ipText");
+		string ipText = GameObject.Find("IPInputField").transform.GetChild(2).GetComponent<Text>().text;
+        Debug.Log(ipText);
+        ipAddr = IPAddress.Parse(ipText);
+		Debug.Log(ipAddr);
+		endPoint = new IPEndPoint(ipAddr, 7777);
+	}
+
 	private void Awake()
 	{
 		if (instance == null)
@@ -49,11 +60,12 @@ public class NetworkManager : MonoBehaviour
 		string host = Dns.GetHostName();
 		IPHostEntry ipHost = Dns.GetHostEntry(host);
 		IPAddress ipAddr = ipHost.AddressList[0];
+		Debug.Log(ipAddr);
 		endPoint = new IPEndPoint(ipAddr, 7777);
 
 		connector = new Connector();
 
-		Connect();
+		//Connect();
 		ping_time = 10;
 	}
 
@@ -63,7 +75,7 @@ public class NetworkManager : MonoBehaviour
 	}
 
 	public void Connect()
-    {
+	{
 		connector.Connect(endPoint,
 			() => { return _session; },
 			1);
