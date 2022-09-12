@@ -5,12 +5,16 @@ using UnityEngine.UI;
 
 public class StoreBar : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject player;
+
     Color innerColor;
 
     // Start is called before the first frame update
     void Start()
     {
         innerColor = transform.GetComponent<Image>().color;
+        player = GameObject.Find("player");
     }
 
     // Update is called once per frame
@@ -30,7 +34,11 @@ public class StoreBar : MonoBehaviour
             other.gameObject.transform.position = MapManager.instance.playerReturnPos;
             MapManager.instance.SetupNewLevel(MapManager.instance.stageLength);
             CameraManager.instance.ChangeTargetToTrain();
-		}
+            // À¯°æ¾¾ ºÎÅ¹º».
+            player.GetComponent<PickUpPutDown>().StoreLoadUnload();
+            GameObject train2 = GameObject.Find("Train");
+            train.GetComponent<LoadJsonData>().loadInStore = true;
+        }
 	}
 
 	private void OnTriggerExit(Collider other)
