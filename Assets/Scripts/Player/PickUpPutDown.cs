@@ -95,6 +95,11 @@ public class PickUpPutDown : MonoBehaviour
 		return isHold;
 	}
 
+    public void StoreLoadUnload()
+    {
+        isStore = !isStore;
+    }
+
 	void Start()
 	{
 		FrontS = GameObject.Find("Front").GetComponent<LastRail>();

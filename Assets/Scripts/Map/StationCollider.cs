@@ -46,5 +46,10 @@ public class StationCollider : MonoBehaviour
         // 들고 있는 물건 데이터가 옮겨지도록 만들기
         player.transform.position = playerSpawnPoint.position;
         // 카메라 위치 옮기기
+
+        // 유경씨 작업 부탁한 부분.
+        player.GetComponent<PickUpPutDown>().StoreLoadUnload();
+        GameObject train2 = GameObject.Find("Train2");
+        train2.GetComponent<LoadJsonData>().loadInStore = true;
     }
 }
