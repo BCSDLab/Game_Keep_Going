@@ -1686,6 +1686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 346ae750e446a1243a450e09f84b5aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
 --- !u!65 &576179876
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1761,7 +1762,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7412657108190358873, guid: ab631ba11df8edf4bad165b7467e27de, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7412657108190358874, guid: ab631ba11df8edf4bad165b7467e27de, type: 3}
       propertyPath: m_Constraints
@@ -1871,6 +1872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 346ae750e446a1243a450e09f84b5aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
 --- !u!65 &626834218
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5260,6 +5262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 346ae750e446a1243a450e09f84b5aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
 --- !u!65 &1784898879
 BoxCollider:
   m_ObjectHideFlags: 0
