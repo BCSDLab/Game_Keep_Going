@@ -23,7 +23,7 @@ public class Map : MonoBehaviour
     private int block_VertLength = 24;
 
     [SerializeField]
-    private string Seed = "qweasfds"; // 시드는 8단어의 String으로 구성.
+    private string Seed = "asdqwsss"; // 시드는 8단어의 String으로 구성.
     private int seedGen = 0;
 
     
