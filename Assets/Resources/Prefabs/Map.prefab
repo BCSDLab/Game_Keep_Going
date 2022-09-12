@@ -47,7 +47,7 @@ MonoBehaviour:
   map_BasedPos: {x: 0, y: 0, z: 0}
   block_HorizLength: 40
   block_VertLength: 24
-  Seed: qweasfds
+  Seed: psodjskd
   rail: {fileID: 0}
   stickRail: {fileID: 0}
   beforeRail: {fileID: 0}
